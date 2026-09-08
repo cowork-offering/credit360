@@ -1,122 +1,64 @@
-# > Credit 360
+# Credit 360 · a private screening
 
-The launch page for the Credit 360 film. Dreamforce 2026. Accenture.
+One page. Cream paper, ink text, Inter, hairlines, and one accent: the Accenture
+chevron in `#A100FF`. **The page is the product.** Every surface on it is the Credit
+360 cockpit's own, so the site and the film it carries are the same object seen twice.
 
-One page. A gate, a hero, the film, five pinned chapters, an endcard. No nav bar,
-no feature list, no logo wall. The page is the film's title sequence extended
-into a site.
+Live: <https://cowork-offering.github.io/credit360/>
 
-```
-index.html            the whole page: markup, tokens, styles, choreography
-assets/
-  gate.js             the invitation gate (loaded synchronously in <head>)
-  fonts/              Graphik woff2, self-hosted, same faces as the roadshow site
-  logos/              Accenture wordmark
-  vendor/             GSAP 3.12.5 + ScrollTrigger, Lenis 1.1.20, pinned and vendored
-  hero/               the aerial loop behind the hero, and its poster
-  film/               the reel (1080p and 720p) + film.json + the poster
-  chapters/           the five muted cockpit loops and their posters
-tools/
-  sync-assets.sh      pull the delivered media into assets/ in web shape
-  prepare-film.sh     fragment the reel and write film.json
-```
+## What is lifted, and from where
+
+Nothing on this page was designed for it. Each component was taken off a real
+surface and rebuilt as live HTML at its real scale:
+
+| On the page | Lifted from |
+|---|---|
+| The gate: the `Morning.` greeting, the 106 px composer with its 20 px radius, the `Chat \| Cowork` pillbed, the `Fable 5.1 · Medium` meta, the send control | `c360-film/door/index.html`, shots 8 and 9 (measured off the Cowork reference PNGs with PIL) |
+| The connector rows: the 19 px slot, the coral dashed spinner resolving to the vendor glyph, the 1 px thread, the 14 px label | `c360-film/door/index.html` shot 11 and `c360-film-b/room/index.html` shot 34, including the `Credit Memo · drafting` row |
+| The Cowork window chrome and its title bar | the same two cells |
+| The context chips and the `>` skill mark | the door cell's rail |
+| The landing: the `.kicker` eyebrow, the `.brief h1` headline, the `.card .kpis` metric strip, the `.wlrow` worklist row with its 40 px monogram and `.st` dot chips | the live build, `customer-360-reinvented/app/dist/cockpit.html` |
+| The rating ring: `viewBox 0 0 46 46`, `r 19`, stroke 4, circumference 119.4, grade over 8 | the same build's risk-rating anchor |
+| The `AI-drafted · Pending reviewer verification` banner and the `Review as drafted` / `Edit narrative` controls | `app/src/memo/vendor/assets/review-shell.js` |
+| The `>` mark itself | the Accenture wordmark's own chevron path, not a greater-than glyph |
+| The halo | the film's climax, as a conic sweep through the product's spectrum |
+| The film player | the previous build's MediaSource path, unchanged |
+
+Drawn new, because no source existed: the eleven browser tabs, the modification
+card, the memo section list, and the plan read-back. All four are built out of the
+primitives above and carry no geometry of their own.
 
 ## The gate
 
-The passcode is **dreamforce2026**, verified in the browser.
+Client-side only, and a courtesy lock rather than a security boundary: GitHub Pages
+serves static files and anyone with the bundle can read `assets/gate.js`. The phrase
+itself is never in the repo, only its salted SHA-256. Access is remembered on the
+device for 30 days. Append `?lock` to re-lock (booth reset), or call `c360Gate.lock()`.
 
-`assets/gate.js` holds the salted SHA-256 of the phrase and nothing else:
+The reel's URL is not in the DOM before unlock: `film.json` is fetched, and the reel
+streamed, only after the door sequence has run.
+
+## Structure
 
 ```
-SALT = 'c360-premiere:'
-HASH = sha256(SALT + phrase.trim().toLowerCase())
-     = e324137a08515de0a585f28b33865b7d02e7ccf129d1b0e1675653162e40b508
+index.html                 the page: one file, one <style>, one <script>
+assets/gate.js             the door, loaded synchronously in <head>
+assets/film/               the reel (1080p + 720p, fragmented), poster, film.json
+assets/fonts/              Inter 400/500/600 and Newsreader, subset to Latin
+assets/vendor/             GSAP, ScrollTrigger, Lenis
+assets/logos/              the wordmark, recoloured to ink for the cream ground
+tools/sync-assets.sh       pull the delivered reel in
+tools/prepare-film.sh      fragment it for MediaSource and write film.json
 ```
 
-On submit the page hashes `SALT + input` with WebCrypto (with a small pure-JS
-SHA-256 fallback for `file://` previews) and compares. The plaintext phrase is
-never in the repo. A correct unlock writes `{h, t}` to `localStorage` under
-`c360.gate.v1` and is remembered on that device for 30 days.
+## Measured
 
-The gate is a separate overlay that is mounted before anything else and hides the
-page from first paint (`html.gate-locked`), so there is no flash of the site
-behind it and **the film's URL is never in the DOM before entry**: the `<video>`
-carries no `src` and `film.json` is not fetched until the gate opens.
+At 1440x900, Chromium, over the local build:
 
-Wrong phrase: the chevron dims and the field shakes two pixels, once.
-Right phrase: the chevron strikes to full purple, then the black lifts over 600 ms.
+- first contentful paint **104 ms**, load **105 ms**, 9 requests, 445 KB
+- first film frame **8 ms** after the press (the stream is warmed on unlock)
+- cumulative layout shift **0.0000** over the whole scroll
+- 0 console errors, 0 failed requests, at 1440x900 and 390x844
 
-To re-lock a machine (booth reset): append `?lock` to the URL, or run
-`c360Gate.lock()` in the console.
-
-**This is a courtesy lock, not a security boundary.** GitHub Pages serves static
-files: anyone who opens devtools can read `gate.js`, and a determined visitor can
-brute-force a known-format phrase offline. It keeps the page off the open web for
-a casual visitor. It does not protect the film from someone who wants it.
-
-To change the phrase:
-
-```bash
-python3 -c "import hashlib; print(hashlib.sha256(('c360-premiere:'+'NEWPHRASE').encode()).hexdigest())"
-# paste the result into HASH in assets/gate.js, and bump KEY to c360.gate.v2
-```
-
-## The film, and why it is not downloadable
-
-The reel is streamed into the page through MediaSource after unlock and attached
-as a `blob:` URL, so no plain file URL sits in the markup. The player also sets
-`controlslist="nodownload noremoteplayback noplaybackrate"`,
-`disablepictureinpicture`, `disableremoteplayback`, uses no native controls, and
-suppresses the context menu over the player.
-
-**A determined engineer can still capture the film.** The bytes reach the browser,
-so they can be read from the network panel, from the fragmented MP4 that
-`film.json` names, or by recording the screen. These measures stop a right-click
-and a casual save. They are not DRM and should not be described as such.
-
-`tools/prepare-film.sh` writes the film as a fragmented MP4 (`-movflags
-+frag_keyframe+empty_moov+default_base_moof`, stream copy, no re-encode). That is
-what lets MediaSource start playback on the first fragments instead of waiting for
-all 55 MB, and a fragmented MP4 still plays as an ordinary file, so one artefact
-per resolution serves both the MediaSource path and the blob fallback.
-
-The page warms the fetch as soon as the hero is up, picks the 720p file under
-900 px of viewport, and falls back to a whole-file blob if MediaSource is
-unavailable.
-
-## Themes, motion, type
-
-Dark is the primary theme and the page follows the operating system; append
-`?theme=light` or `?theme=dark` to force one. The three media surfaces (gate,
-hero, film, endcard) stay cinematic black in both themes because they carry the
-film; the chapter band between them is the one that turns editorial white.
-
-Every value is a design token. Every animation has a `prefers-reduced-motion`
-fallback: no smooth scroll, no scrubbed scale, the halo draws one static frame,
-the chapter loops hold on their posters.
-
-Type is Graphik, self-hosted from `assets/fonts/`, the same faces the roadshow
-site uses, with tabular numerals on.
-
-## Redeploying
-
-```bash
-# 1. refresh the media from the delivery folder (never writes to it)
-tools/sync-assets.sh [delivery-dir] [film-master.mp4]
-
-# 2. or just re-fragment the reel and rewrite film.json
-tools/prepare-film.sh
-
-# 3. preview
-python3 -m http.server 8791 --bind 127.0.0.1
-
-# 4. ship
-git add -A && git commit -m "..." && git push
-```
-
-GitHub Pages serves this repo from `main` at `/root`. There is no build step: the
-files in the repo are the files that are served.
-
-Budgets the page is held to: first paint under 1 s, hero loop under 3 MB, each
-chapter loop under 4 MB, zero layout shift (every media box reserves its
-aspect-ratio), zero console errors, no horizontal scroll at any width.
+Reduced motion is respected throughout: every entrance resolves instantly, the
+spinners stop, the halo is lit without breathing.
