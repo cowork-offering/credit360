@@ -101,6 +101,17 @@ At 1440x900, Chromium, over the local build:
 - no request over 3 MB besides the reel; the hero plate is 1.19 MB
 - 0 console errors, 0 failed requests, no horizontal overflow
 
+The reel in `assets/film/` is the rev 4 master. Its FILE md5 does not match the
+delivered master's, and is not meant to: `tools/prepare-film.sh` rewrites the
+container in place with `-c copy -movflags +frag_keyframe+empty_moov+default_base_moof`
+so MediaSource can start on the first seconds. Both elementary streams are
+bit-identical to the delivery, and that is the check to run:
+
+```
+ffmpeg -v error -i <file> -map 0:v -c copy -f md5 -   # 5329b5cbf3ab6c6d3de6cb67cedc8a28
+ffmpeg -v error -i <file> -map 0:a -c copy -f md5 -   # a8b9262c929aa8462d0ab4b0103e77b1
+```
+
 Reduced motion is respected throughout: every entrance resolves instantly, the
 spinners stop, the cards arrive flat, the plate holds its first frame, the lines
 are set rather than typed, and the halo is lit without breathing.
