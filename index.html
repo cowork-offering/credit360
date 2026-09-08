@@ -496,7 +496,15 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
 #gate.running .runrows{opacity:1; transition:opacity .3s var(--ease-out)}
 #gate.gone{opacity:0; pointer-events:none; transition:opacity .34s var(--ease-out)}
 html.locked{overflow:hidden}
-html.locked body>*:not(#gate){visibility:hidden}
+/* THE SPRITE IS EXEMPT, and it has to be. This rule hides the page behind the
+   gate, and it used to hide #sprite with it. A <use> clone inherits visibility
+   from the use element, so every VECTOR mark in the gate's run painted anyway
+   and the rule looked harmless. A raster <image> does not: Chromium will not
+   paint one whose own element sits in a visibility:hidden subtree, so
+   IBISWorld, the page's one raster mark, resolved to an empty slot at the door
+   and to its mark everywhere else. #sprite is 0x0 and absolutely positioned,
+   so leaving it visible shows nothing and paints nothing. */
+html.locked body>*:not(#gate):not(#sprite){visibility:hidden}
 @media (max-width:760px){
   #gate{flex-direction:column}
   .gpane-mark{flex:0 0 clamp(148px,25vh,208px)}
@@ -1352,7 +1360,7 @@ html{scroll-snap-type:y proximity}
 <body>
 
 <!-- the connector glyphs, lifted verbatim from the film's door and room cells -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<svg id="sprite" width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
   <symbol id="g-sf" viewBox="0.5 -149.379 999 999"><path fill="#00A1E0" d="M416.224 76.763c32.219-33.57 77.074-54.391 126.682-54.391 65.946 0 123.48 36.772 154.12 91.361 26.626-11.896 56.098-18.514 87.106-18.514 118.94 0 215.368 97.268 215.368 217.247 0 119.993-96.428 217.261-215.368 217.261a213.735 213.735 0 0 1-42.422-4.227c-26.981 48.128-78.397 80.646-137.412 80.646-24.705 0-48.072-5.706-68.877-15.853-27.352 64.337-91.077 109.448-165.348 109.448-77.344 0-143.261-48.939-168.563-117.574-11.057 2.348-22.513 3.572-34.268 3.572C75.155 585.74.5 510.317.5 417.262c0-62.359 33.542-116.807 83.378-145.937-10.26-23.608-15.967-49.665-15.967-77.06C67.911 87.25 154.79.5 261.948.5c62.914 0 118.827 29.913 154.276 76.263"/></symbol>
   <symbol id="g-ms" viewBox="0 0 21 21"><rect x="0" y="0" width="10" height="10" fill="#F25022"/><rect x="11" y="0" width="10" height="10" fill="#7FBA00"/><rect x="0" y="11" width="10" height="10" fill="#00A4EF"/><rect x="11" y="11" width="10" height="10" fill="#FFB900"/></symbol>
   <symbol id="g-idb" viewBox="0 0 19 19"><g fill="#0092DA"><rect x="1.2" y="6.7" width="5.4" height="5.6" rx="1.7"/><rect x="12.4" y="6.7" width="5.4" height="5.6" rx="1.7"/></g><g fill="none" stroke="#0092DA" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7.4 9.5H11.2"/><path d="M9.6 7.9 11.2 9.5 9.6 11.1"/></g></symbol>

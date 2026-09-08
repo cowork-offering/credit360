@@ -111,6 +111,16 @@ cells so the site and the reel resolve to the same seven marks:
   has no path to lift: the cells' own 38 px favicon, carried as a data URI and
   clipped to the 4 px radius the rows draw it with
 
+Being the one raster mark cost it its place at the door for one build. The rule
+that hides the page behind the gate, `html.locked body>*:not(#gate)`, was hiding
+the sprite sheet with it. A `<use>` clone inherits visibility from the use
+element, so every vector mark in the gate's run painted anyway and the rule
+looked harmless; a raster `<image>` does not, and Chromium will not paint one
+whose own element sits in a `visibility:hidden` subtree. IBISWorld resolved to an
+empty slot at the door and to its mark everywhere else, which is why chapter 03
+never showed it. The sheet is `#sprite` now and the rule exempts it. It is 0x0
+and absolutely positioned, so leaving it visible shows nothing and paints nothing.
+
 That makes seven integrations rather than six, and chapter 03 says seven: the sub,
 the figure, the list that names them and the run's own summary line. The gate
 resolves six of them, because the memo is not drafted at the door.
@@ -567,6 +577,7 @@ because the drop is paint rather than motion and is the only reason it reads on 
 sky.
 
 ## Build log
+- 2026-09-08: the gate's IBISWorld row resolves to its mark. The rule that hides the page behind the gate was hiding the sprite sheet, and Chromium will not paint a raster `<image>` cloned out of a `visibility:hidden` subtree, so the page's one raster mark went to an empty slot at the door and nowhere else. The sheet is `#sprite` and the rule exempts it.
 - 2026-09-08: the door is paced to be read and runs in the film's order. The unlock spends 4627 ms from the send rather than 2976: 300 ms to the rows, 350 ms of the first row spinning, 320 ms between ticks, 500 ms to the page. The run resolves Salesforce, Customer 360, Microsoft 365, IBISWorld, Boom Spreading, IDB gateway, which is the reel's own door with the gateway last. The reel is re-rendered to match (rev 6); the picture changed and the audio did not.
 - 2026-09-08: the connector marks are the vendors' own. Microsoft 365 takes the four-square, Boom becomes Boom Spreading with its three chevrons, IBISWorld joins the run as the page's one raster mark, and chapter 03 counts seven. The reel is re-rendered to match (rev 5).
 - 2026-09-08: passes landed in order: bloom and native scroll, one-screen chapters and facts, gate skyline plate, eleven tabs, two-column chapter grid, the San Francisco close with the place card, one chevron a screen, the gate's own mark dead centre, and the gate plate cut from the close's own San Francisco aerial so the page opens and closes on one city.
