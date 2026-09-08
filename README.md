@@ -13,7 +13,7 @@ surface and rebuilt as live HTML at its real scale:
 
 | On the page | Lifted from |
 |---|---|
-| The gate's left pane: the pre-dawn aerial full bleed and running, the film's own chevron dead centre at 22% of the pane, its focus-pull arrival, its 4 s breath, and the two-frame strike to white and back | `c360-film/overture/assets/video/V1-aerial-push-film-1080p.mp4` (the uncut plate) and `c360-film/mark/index.html`, the endcard cell: the mark's own path, its rack-in and its strike |
+| The gate's left pane: the San Francisco aerial turned tall, full bleed and running, the film's own chevron dead centre at 22% of the pane, its focus-pull arrival, its 4 s breath, and the two-frame strike to white and back | `assets/end/raw.mp4`, the close's own aerial, cropped to the pane's portrait so the gate and the close open and close on one city; and `c360-film/mark/index.html`, the endcard cell: the mark's own path, its rack-in and its strike |
 | The gate's right pane: the `Morning.` greeting, the 106 px composer with its 20 px radius, the `Chat \| Cowork` pillbed, the `Fable 5.1 · Medium` meta, the send control | `c360-film/door/index.html`, shots 8 and 9 (measured off the Cowork reference PNGs with PIL) |
 | The hero plate: the clean raw aerial the film's shot 1 was cut from, looping, and bare (see The one mark) | `c360-film/overture/assets/video/V1-aerial-push-film-1080p-cut.mp4` |
 | The breathers: three full-bleed people frames with the film's headline typed over them at 24 characters a second, white with one purple key word and the film's own drop | the reel's own frames at 17.967 s, 44.700 s and 50.000 s, plus `c360-film/type/OVERLAY.md` for the type's rate, colour and shadow |
@@ -114,16 +114,63 @@ Both pane moves are transforms, so the composer's own box never reflows while th
 visitor is looking at it. On a phone the panes stack and the plate takes a short band
 at the top. Wrong phrase: the composer moves 2 px, once, and says `Not on the list.`
 
-The left pane is now a plate rather than a field with a mark on it. It carries 3.5 s
-of the UNCUT aerial the overture opens on, cropped 756x1080 out of the centre of the
-frame to 672x960 for the pane's own portrait, lifted plum in the shadows (a black
-point of +4/255 on red and +8/255 on blue, one step on green, then saturation 0.94
-and contrast 1.03), slowed 1.6x with motion interpolation and mirrored into an
-11.0 s ping-pong. Both joins are single-frame steps, at the turnaround and at the
-restart, so neither is visible. The scrim is CSS, not baked, so it tracks the pane at
-every aspect including the phone's band; the plate itself stays photographic. It
-ships `preload="none"` behind its own first frame as a poster, so the pane is painted
-before a byte of the loop is asked for.
+**The left pane is San Francisco, and it is the close's own aerial.** The door opens
+on the city the page ends in, so the gate and the close are one picture seen twice,
+the way the hero and the close already are. It is cut from the same
+`assets/end/raw.mp4` the close ping-pongs: 3.5 s of it, cropped 750x1072 at x 420 out
+of the 1928x1072 frame and scaled to 672x960 for the pane's own portrait. That offset
+is the whole framing decision. It puts **Salesforce Tower at 70% of the pane**,
+standing its full height and clear of the centred mark, with the Marin headlands
+behind it and the Bay Bridge and open water closing the bottom of the frame. A centre
+crop puts the tower at 47%, where the chevron's own arm cuts across its shaft; at 70%
+the two stop competing and each is read on its own.
+
+The grade is the London plate's curve, unchanged, and it is a **black point rather
+than a wash**: +4/255 on red and +8/255 on blue with one step on green, then
+saturation 0.94 and contrast 1.03. It moves the shadows cool plum and leaves the mids
+and highs alone, which is why the pane sits in the page's register while the light
+stays the close's golden hour. The two read as the same city on the same evening.
+
+Slowed 1.6x with motion interpolation and mirrored into an **11.0 s ping-pong**: 132
+forward frames, the reverse half trimmed to frames 1..131 so the turnaround drops the
+duplicated last frame and the restart drops the duplicated first. Both joins are
+single-frame steps, and they are measured rather than assumed: over the finished loop
+the turnaround is **2.10** RMS and the restart **1.77**, against a mean of 1.61 and a
+p95 of **2.42** for ordinary adjacent frames, with no step anywhere above twice the
+mean. Neither join is visible, which is what earns the ping-pong. **949 KB**, crf 24.
+
+The scrim is CSS, not baked, so it tracks the pane at every aspect including the
+phone's band; the plate itself stays photographic. It ships `preload="none"` behind
+its own first frame as a poster, so the pane is painted before a byte of the loop is
+asked for.
+
+**The scrim carries nothing for the mark.** The mark is dead centre, it is lit by its
+own drop-shadow, and this plate's centre is haze and lit towers rather than the
+darkness the pre-dawn one resolved into: the chevron measures **2.1:1** against it
+unaided. So the scrim is reduced to the one job left, seating the pane on the paper at
+the bottom edge. It was 45% while a wordmark stood in the lower third, then 22.5% when
+the mark went to the centre, and it is **14% at .60** now: the pre-dawn plate resolved
+into noise down there and needed covering, and this one ends on open water under the
+bridge, which is already calm and already dark.
+
+**Nothing is laid over the top, and the eyebrow is ink.** That was the one real cost of
+changing cities. On the pre-dawn aerial the top of the pane was almost black and
+`Dreamforce 2026 · A private screening` stood on it in white at .66, at **2.90:1**. San
+Francisco puts pale golden sky there, where the same white measures **1.14:1** and is
+simply gone. A veil deep enough to put it back reads as a plum slab across the one part
+of the plate that is pure light, which is the wash this pane is supposed to avoid; it
+was built, looked at, and thrown away. Ink at .74 measures **6.9:1** at 1440x900,
+**7.0:1** at 1920x1080 and **6.6:1** on the phone's band, costs the picture nothing, and
+is the ink the right-hand pane is already set in, so the two panes are lettered the
+same way.
+
+On a phone the band is scaled to its WIDTH, so only a slice of the plate's height
+survives, about 37% of it at 208 px and 27% at 148 px. **The band crops to the
+tower**: at `object-position: 50% 36%` the window is 23% to 60% of the plate on the
+tall band and 26% to 53% on the short one, and the tower stands between 27% and 61%,
+so its crown is inside the frame at either end and the band reads as the city rather
+than as a strip of sky. The seat is deeper there, 24%, because the band ends mid-city
+rather than on the open water the full pane closes on.
 
 The mark on it is the film's own: the single chevron in `#A100FF`, the same `#g-chev`
 path the hero lockup is built on and the frame the film opens on, and nothing else.
@@ -368,14 +415,15 @@ index.html                 the page: one file, one <style>, one <script>
 assets/gate.js             the door, loaded synchronously in <head>
 assets/film/               the reel (1080p + 720p, fragmented), film.json, the hero
                            plate (the looping pre-dawn aerial and its first frame),
-                           the gate plate (the same aerial turned tall for the door's
-                           left pane) and the close's San Francisco plate, each with
-                           its own first frame
+                           the gate plate (the close's San Francisco aerial turned
+                           tall for the door's left pane) and the close's own wide
+                           San Francisco plate, each with its own first frame
 assets/stills/             the three breather frames, cut from the reel
 assets/fonts/              Inter 400/500/600 and Newsreader, subset to Latin
 assets/vendor/             GSAP and ScrollTrigger. The scroll itself is the browser's.
 assets/logos/              the wordmark in white, for the hairline row on the picture
-tools/sync-assets.sh       pull the delivered reel in and build the hero plate
+tools/sync-assets.sh       pull the delivered reel in and build the hero plate and
+                           the gate plate, the latter from the close's SF source
 tools/prepare-film.sh      fragment it for MediaSource and write film.json
 ```
 
@@ -411,7 +459,7 @@ At 1440x900, Chromium, over the local build:
   reads 0 at every width
 - one frame longer than 25 ms and zero long tasks over the full scroll
 - no request over 3 MB besides the reel; the hero plate is 1.19 MB and the gate
-  plate is 1.01 MB
+  plate is 949 KB
 - the gate paints on 12 requests and 760 KB, none of it the pane's loop: the loop
   follows as a 13th request and under `prefers-reduced-motion` it is never asked for
   at all, the poster standing in as the whole plate. (686 KB before the close's own
@@ -442,4 +490,4 @@ because the drop is paint rather than motion and is the only reason it reads on 
 sky.
 
 ## Build log
-- 2026-09-08: passes landed in order: bloom and native scroll, one-screen chapters and facts, gate skyline plate, eleven tabs, two-column chapter grid, the San Francisco close with the place card, one chevron a screen, the gate's own mark dead centre.
+- 2026-09-08: passes landed in order: bloom and native scroll, one-screen chapters and facts, gate skyline plate, eleven tabs, two-column chapter grid, the San Francisco close with the place card, one chevron a screen, the gate's own mark dead centre, and the gate plate cut from the close's own San Francisco aerial so the page opens and closes on one city.

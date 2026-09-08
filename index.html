@@ -348,31 +348,59 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
   background:linear-gradient(158deg,#120014 0%,#26002F 38%,#3F0069 72%,#54008C 100%);
   transition:transform .52s var(--ease-out);
 }
-/* the film's pre-dawn aerial, no longer ghosted behind a mark but the pane
-   itself: 3.5 s of the UNCUT plate the overture opens on, cropped to the pane's
-   own portrait, lifted plum in the shadows and slowed 1.6x into an 11 s
-   ping-pong. Same sky as the first frame behind the door, seen closer. The
-   poster is the loop's own first frame, so the pane is painted before a single
-   byte of the loop is asked for, and under reduced motion that is all there is. */
+/* THE PLATE IS SAN FRANCISCO, and it is the close's own aerial: the door opens
+   on the city the page ends in, so the two are the same picture seen twice, the
+   same way the hero and the close already are. 3.5 s of the same source the
+   close ping-pongs, cropped 750x1072 out of it at x 420 and scaled to 672x960
+   for the pane's portrait, which puts Salesforce Tower at 70% of the pane,
+   clear of the centred mark and standing its full height. Lifted plum in the
+   shadows on the London plate's own curve, so the grade is the pane's and the
+   light is still the close's golden hour: it is a black point, not a wash.
+   Slowed 1.6x with motion interpolation and mirrored into an 11 s ping-pong,
+   whose turnaround and restart are both single-frame steps inside the drift's
+   own frame-to-frame range, so neither join is visible. The poster is the
+   loop's own first frame, so the pane is painted before a single byte of the
+   loop is asked for, and under reduced motion that is all there is. */
 .gplate{
   position:absolute; inset:0; width:100%; height:100%;
   object-fit:cover; object-position:50% 50%; pointer-events:none;
 }
-/* the pane's own ground. It was the bottom 45% and it was carrying a wordmark
-   set in the lower third; the mark is dead centre now, so a floor cannot light
-   it whatever depth it is given, and holding 45% would only be darkening a
-   picture for nothing. It is halved: enough to seat the pane on the paper and
-   to keep the plate from resolving into noise at the bottom edge, and out of
-   the mark's way entirely. The mark carries its own contrast (see .gmark-c). */
+/* The scrim carries nothing for the mark. The mark is dead centre, it is lit by
+   its own drop-shadow (see .gmark), and this plate's centre is haze and lit
+   towers rather than the darkness the pre-dawn one resolved into: the chevron
+   measures 2.1:1 against it unaided. So the scrim is reduced to the one job
+   left, which is seating the pane on the paper at the bottom edge.
+
+   It was 45% while a wordmark stood in the lower third, then 22.5% when the
+   mark went to the centre. It is 14% at .60 now. The pre-dawn plate resolved
+   into noise down there and needed covering; this one ends on open water under
+   the bridge, which is already calm and already dark, so the seat can be a
+   touch of weight at the very edge rather than a bar drawn across the picture.
+
+   Nothing is laid over the top. A veil there is what the eyebrow would need if
+   it were still white, and on a pale golden sky it reads as a plum slab across
+   the one part of the plate that is pure light. The eyebrow takes ink instead
+   (see .gp-eyebrow), which costs the picture nothing. */
 .gscrim{
-  position:absolute; left:0; right:0; bottom:0; height:22.5%; z-index:1;
+  position:absolute; left:0; right:0; bottom:0; height:14%; z-index:1;
   background:linear-gradient(to top,
-    rgba(18,0,20,.96) 0%, rgba(18,0,20,.88) 20%, rgba(18,0,20,.72) 40%,
-    rgba(18,0,20,.48) 60%, rgba(18,0,20,.22) 80%, rgba(18,0,20,0) 100%);
+    rgba(18,0,20,.60) 0%, rgba(18,0,20,.46) 22%, rgba(18,0,20,.28) 45%,
+    rgba(18,0,20,.12) 70%, rgba(18,0,20,0) 100%);
 }
+/* THE EYEBROW IS INK, because the plate under it changed colour. On the
+   pre-dawn aerial the top of the pane was almost black and white at .66 stood
+   on it at 2.90:1. San Francisco puts pale golden sky there, where the same
+   white measures 1.14:1 and is gone. Ink at .74 reads 6.9:1 on that sky at
+   1440x900, 7.0:1 at 1920x1080 and 6.6:1 on the phone's band, against the
+   2.90:1 the white was getting on the plate it was chosen for. It is the honest
+   answer rather than a veil: it costs the picture nothing, and
+   it is the ink the right-hand pane is already set in, so the two panes are
+   lettered the same way. The faint light halo is the one concession to the
+   plate's own range: where the band on a phone crops down onto the headlands
+   the sky is a stop darker, and the halo keeps the line off it. */
 .gp-eyebrow{
   position:absolute; left:clamp(24px,4vw,44px); top:clamp(24px,4vw,44px); z-index:3;
-  color:rgba(255,255,255,.66);
+  color:rgba(24,20,26,.74); text-shadow:0 0 10px rgba(255,255,255,.42);
 }
 /* THE MARK. The pane carried the full accenture wordmark set in the lower
    third. It carries the film's own mark instead: the single chevron in
@@ -474,13 +502,20 @@ html.locked body>*:not(#gate){visibility:hidden}
   .gpane-mark{flex:0 0 clamp(148px,25vh,208px)}
   #gate.opened .gpane-mark{transform:translateY(-100%)}
   #gate.opened .gpane-form{transform:none}
-  /* the band is all the pane a phone gets, so the crop is biased up to keep the
-     sky at the top: the eyebrow needs a ground, and a centre crop lands it on
-     the lit towers. The scrim reaches further for the same reason, and is
-     halved here as well now that it is a ground rather than a floor under a
-     mark. */
-  .gplate{object-position:50% 12%}
-  .gscrim{height:29%}
+  /* THE BAND CROPS TO THE TOWER. A phone gets a wide, short band, so the plate
+     is scaled to the band's WIDTH and only a slice of its height survives:
+     about 37% of it at 208 px, 27% at 148 px. That slice is placed to hold
+     Salesforce Tower, which stands between 27% and 61% of the plate. At 36%
+     the window is 23% to 60% on the tall band and 26% to 53% on the short one,
+     so the tower's crown is inside the frame at either end and the band reads
+     as the city rather than as a strip of sky. The horizontal has no freedom
+     here and none is needed: scaling to width shows the plate's full width, so
+     the tower arrives wherever the crop already put it. */
+  .gplate{object-position:50% 36%}
+  /* the seat is deeper on the band, because the band ends mid-city rather than
+     on the open water the full pane closes on, and because the cream form pane
+     begins immediately under it. */
+  .gscrim{height:24%}
   /* the film's own 64 px, which is what the band has room for: 22% of a
      390 px pane would draw the mark at 86 px in a 208 px band. */
   .gmark-c{width:64px}
@@ -1339,8 +1374,8 @@ html{scroll-snap-type:y proximity}
        chevron the film opens on and the hero lockup is built from, so the mark
        the visitor strikes is the one the page is going to keep showing them. -->
   <div class="gpane-mark" aria-hidden="true">
-    <video class="gplate" src="assets/film/gate-plate.mp4"
-           poster="assets/film/gate-plate.jpg" width="672" height="960"
+    <video class="gplate" src="assets/film/sf-gate-plate.mp4"
+           poster="assets/film/sf-gate-plate.jpg" width="672" height="960"
            muted loop playsinline preload="none" tabindex="-1"
            disablepictureinpicture disableremoteplayback></video>
     <span class="gscrim"></span>
