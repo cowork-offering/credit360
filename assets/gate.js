@@ -127,7 +127,7 @@
       /* two frames to full purple: the endcard's own strike, not a fade */
       gate.classList.add('striking');
 
-      if (RM) { gate.classList.add('opened'); typedT.textContent = PROMPT; run(60); return; }
+      if (RM) { gate.classList.add('opened'); typedT.textContent = PROMPT; run(); return; }
 
       /* ONE motion. The pane leaves on frame 8 and the prompt starts typing
          while it is still leaving, so the door and the composer are the same
@@ -145,20 +145,50 @@
           clearInterval(tick);
           setTimeout(function () {
             send.classList.add('fire');
+            /* the rows fade in over .3s, which IS the hold: see HOLD below */
             gate.classList.add('running');
-            run(140);
+            run();
           }, 180);
         }
       }, 42);
     }
 
-    function run(base) {
-      /* the rows resolve left to right, exactly as shot 11 cuts them */
-      var step = RM ? 0 : 100;
+    /* THE HOLDS OF THE RUN.
+
+       The run used to start 140 ms after the send and resolve a row every
+       100 ms, so all six were ticked inside 640 ms: the eye had not registered
+       that anything was loading before the loading was over. Every row was a
+       tick that had never visibly been a spinner. The same gesture is spent
+       where it can be read instead.
+
+         HOLD  the beat between the send and the rows standing on the paper.
+               The rows fade in over exactly this (.3s on #gate.running), so
+               the hold is motion rather than a gap in it.
+         SPIN  how long the first row stands as a spinner before it ticks, so
+               no row is ever a tick that was never a loader. Every row after
+               it spins for this plus its own place in the queue.
+         STEP  one row resolving to the next.
+         TAIL  the beat after the last tick, before the page continues.
+
+       Nothing here is longer than 500 ms, so the unlock is still ONE motion
+       and never a pause: 300 to the rows, 350 to the first tick, 320 between
+       ticks, 500 to the page. From the send that is 2750 ms.
+
+       Under reduce there are no holds at all: the six are resolved on the
+       spot and the page continues, exactly as before. */
+    var HOLD = 300, SPIN = 350, STEP = 320, TAIL = 500;
+
+    function run() {
+      /* the rows resolve top to bottom, exactly as shot 11 cuts them */
+      if (RM) {
+        rows.forEach(function (row) { row.classList.add('done'); });
+        setTimeout(release, 60);
+        return;
+      }
       rows.forEach(function (row, n) {
-        setTimeout(function () { row.classList.add('done'); }, base + n * step);
+        setTimeout(function () { row.classList.add('done'); }, HOLD + SPIN + n * STEP);
       });
-      setTimeout(release, base + rows.length * step + (RM ? 0 : 360));
+      setTimeout(release, HOLD + SPIN + (rows.length - 1) * STEP + TAIL);
     }
 
     function release() {

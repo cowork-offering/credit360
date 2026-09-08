@@ -107,14 +107,27 @@ cells so the site and the reel resolve to the same seven marks:
 - **Boom** is **Boom Spreading**, with its three chevrons in `#0018F5` on the
   cells' own `viewBox 0 -0.32 24.3222 24.3222`. The name changes everywhere it is
   said: the gate's run, chapter 03's rail, the plugin chip and the tab
-- **IBISWorld** joins the run, after Boom Spreading and before the memo. It is the
-  one raster mark on the page, because it has no path to lift: the cells' own
-  38 px favicon, carried as a data URI and clipped to the 4 px radius the rows
-  draw it with
+- **IBISWorld** joins the run. It is the one raster mark on the page, because it
+  has no path to lift: the cells' own 38 px favicon, carried as a data URI and
+  clipped to the 4 px radius the rows draw it with
 
 That makes seven integrations rather than six, and chapter 03 says seven: the sub,
 the figure, the list that names them and the run's own summary line. The gate
 resolves six of them, because the memo is not drafted at the door.
+
+**The gate's run is in the film's order.** The reel's own door shows Salesforce,
+Customer 360, Microsoft 365, IBISWorld and Boom Spreading, so the gate resolves
+them in exactly that order and puts IDB gateway last:
+
+```
+Salesforce · accounts        Customer 360 · portfolio    Microsoft 365 · mailbox
+IBISWorld · industry         Boom Spreading · spreads    IDB gateway · customer
+```
+
+IDB stays, because the door is the page's own and the gateway is one of the seven;
+it goes last because it is the one row the film does not name. Chapter 03's rail
+keeps its own order, which is the room cell's rather than the door's, and it ends
+on the memo the door never drafts.
 
 ## The breathers
 
@@ -140,6 +153,37 @@ frame, and only then does the composer type itself out and run the connectors.
 Both pane moves are transforms, so the composer's own box never reflows while the
 visitor is looking at it. On a phone the panes stack and the plate takes a short band
 at the top. Wrong phrase: the composer moves 2 px, once, and says `Not on the list.`
+
+**The run is paced to be read.** The unlock ran in 3.0 s, and the six connectors were
+the part that paid for it: the run began 140 ms after the send and resolved a row
+every 100 ms, so all six were ticked inside 640 ms. Every row was a tick that had
+never visibly been a spinner, and the one thing the door exists to say, that the book
+is being opened out of real systems, went past before the eye could register it. The
+same gesture is spent where it can be read instead. From the send: 300 ms before the
+rows stand on the paper, which is the fade they already had rather than a gap put in
+front of it; 350 ms of the first row visibly spinning before it ticks; 320 ms from
+one row resolving to the next; 500 ms after the last tick before the page continues.
+
+| from the send | before | now |
+|---|---|---|
+| the rows appear | 0 ms, under the first tick | 300 ms |
+| Salesforce ticks | 140 ms | 650 ms |
+| Customer 360 | 240 ms | 970 ms |
+| Microsoft 365 | 340 ms | 1290 ms |
+| IBISWorld | 640 ms | 1610 ms |
+| Boom Spreading | 540 ms | 1930 ms |
+| IDB gateway | 440 ms | 2250 ms |
+| the page continues | 1100 ms | 2750 ms |
+
+Measured off the form's own submit rather than assumed: the strike at 2 ms, the pane
+away at 132, the first character at 605, the prompt complete at 1696, the send at
+1877, and the page continuing at **4627 ms**, against 2976 ms before. The same figures
+hold at 390x844 to within 2 ms. Nothing in it is a pause: the longest step from one
+thing happening to the next is the 500 ms tail, and every other beat is 350 ms or
+less, so the unlock is still one motion rather than four. It is untouched under
+reduced motion, where the six are resolved on the spot and the page continues in
+61 ms, and it costs the layout-shift ledger nothing, because the rows were always in
+the DOM at their own height and only their opacity moves.
 
 **The left pane is San Francisco, and it is the close's own aerial.** The door opens
 on the city the page ends in, so the gate and the close are one picture seen twice,
@@ -498,17 +542,22 @@ At 1440x900, Chromium, over the local build:
   and 64.00 px
 - 0 console errors, 0 failed requests, no horizontal overflow
 
-The reel in `assets/film/` is the rev 5 master, the re-render that carries the
-new connector marks. Its FILE md5 does not match the delivered master's, and is
+The reel in `assets/film/` is the rev 6 master, the re-render whose door shows
+IBISWorld where the gateway used to stand, which is the order the gate's own run
+now resolves in. Its FILE md5 does not match the delivered master's, and is
 not meant to: `tools/prepare-film.sh` rewrites the container in place with
 `-c copy -movflags +frag_keyframe+empty_moov+default_base_moof` so MediaSource
 can start on the first seconds. Both elementary streams are
 bit-identical to the delivery, and that is the check to run:
 
 ```
-ffmpeg -v error -i <file> -map 0:v -c copy -f md5 -   # e25d36fb88a6d33ce24dec8bff0dbe55
+ffmpeg -v error -i <file> -map 0:v -c copy -f md5 -   # 6a6ee1d9828fe78775861458fabe59d5
 ffmpeg -v error -i <file> -map 0:a -c copy -f md5 -   # a8b9262c929aa8462d0ab4b0103e77b1
 ```
+
+The audio is byte for byte the rev 5 delivery's; only the picture was re-rendered.
+The 720p carries `8033938c402e6853209fa88ad084d10d` and
+`7a83723491707b5ac95c5fbb26ae3db5`.
 
 Reduced motion is respected throughout: every entrance resolves instantly, the
 spinners stop, the cards arrive flat, the plate holds its first frame, the gate's mark
@@ -518,5 +567,6 @@ because the drop is paint rather than motion and is the only reason it reads on 
 sky.
 
 ## Build log
+- 2026-09-08: the door is paced to be read and runs in the film's order. The unlock spends 4627 ms from the send rather than 2976: 300 ms to the rows, 350 ms of the first row spinning, 320 ms between ticks, 500 ms to the page. The run resolves Salesforce, Customer 360, Microsoft 365, IBISWorld, Boom Spreading, IDB gateway, which is the reel's own door with the gateway last. The reel is re-rendered to match (rev 6); the picture changed and the audio did not.
 - 2026-09-08: the connector marks are the vendors' own. Microsoft 365 takes the four-square, Boom becomes Boom Spreading with its three chevrons, IBISWorld joins the run as the page's one raster mark, and chapter 03 counts seven. The reel is re-rendered to match (rev 5).
 - 2026-09-08: passes landed in order: bloom and native scroll, one-screen chapters and facts, gate skyline plate, eleven tabs, two-column chapter grid, the San Francisco close with the place card, one chevron a screen, the gate's own mark dead centre, and the gate plate cut from the close's own San Francisco aerial so the page opens and closes on one city.
