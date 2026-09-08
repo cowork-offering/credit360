@@ -937,6 +937,9 @@ html{scroll-snap-type:y proximity}
 .btab .fav{width:16px; height:16px; flex:none}
 .btab .fav path,.btab .fav circle,.btab .fav rect{
   fill:none; stroke:currentColor; stroke-width:1.4; stroke-linecap:round; stroke-linejoin:round}
+/* the Boom Spreading mark is a solid glyph rather than a line one, so in the
+   strip it takes the same grey as a fill instead of as a stroke */
+.btab .fav.solid path{fill:currentColor; stroke:none}
 /* the title is a child of the tab and is clipped BY the tab, so the strip
    cannot read as a row of loose words even if a rule above fails to land */
 .btab .tt{
@@ -1002,6 +1005,7 @@ html{scroll-snap-type:y proximity}
 .chipstrip.in .chip:nth-child(3){transition-delay:80ms}
 .chipstrip.in .chip:nth-child(4){transition-delay:120ms}
 .chipstrip.in .chip:nth-child(5){transition-delay:160ms}
+.chipstrip.in .chip:nth-child(6){transition-delay:200ms}
 .striplbl{font-size:12px; color:var(--muted); margin-top:26px}
 
 /* d. the ownership graph */
@@ -1350,9 +1354,11 @@ html{scroll-snap-type:y proximity}
 <!-- the connector glyphs, lifted verbatim from the film's door and room cells -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
   <symbol id="g-sf" viewBox="0.5 -149.379 999 999"><path fill="#00A1E0" d="M416.224 76.763c32.219-33.57 77.074-54.391 126.682-54.391 65.946 0 123.48 36.772 154.12 91.361 26.626-11.896 56.098-18.514 87.106-18.514 118.94 0 215.368 97.268 215.368 217.247 0 119.993-96.428 217.261-215.368 217.261a213.735 213.735 0 0 1-42.422-4.227c-26.981 48.128-78.397 80.646-137.412 80.646-24.705 0-48.072-5.706-68.877-15.853-27.352 64.337-91.077 109.448-165.348 109.448-77.344 0-143.261-48.939-168.563-117.574-11.057 2.348-22.513 3.572-34.268 3.572C75.155 585.74.5 510.317.5 417.262c0-62.359 33.542-116.807 83.378-145.937-10.26-23.608-15.967-49.665-15.967-77.06C67.911 87.25 154.79.5 261.948.5c62.914 0 118.827 29.913 154.276 76.263"/></symbol>
-  <symbol id="g-ms" viewBox="0 0 78.799 96"><linearGradient id="msa" gradientUnits="userSpaceOnUse" x1="16.942" x2="85.671" y1="83.36" y2="89.583"><stop offset="0" stop-color="#f32b44"/><stop offset=".6" stop-color="#a4070a"/></linearGradient><linearGradient id="msb"><stop offset="0" stop-opacity=".4"/><stop offset="1" stop-opacity="0"/></linearGradient><linearGradient id="msc" gradientUnits="userSpaceOnUse" x1="63.515" x2="33.003" href="#msb" y1="87.298" y2="84.535"/><linearGradient id="msd" gradientUnits="userSpaceOnUse" x1="44.738" x2="-5.901" y1="-3.312" y2="71.527"><stop offset="0" stop-color="#800600"/><stop offset=".6" stop-color="#c72127"/><stop offset=".728" stop-color="#c13959"/><stop offset=".847" stop-color="#bc4b81"/><stop offset=".942" stop-color="#b95799"/><stop offset="1" stop-color="#b85ba2"/></linearGradient><linearGradient id="mse" gradientUnits="userSpaceOnUse" x1="45.823" x2="35.099" href="#msb" y1="-4.81" y2="11.039"/><linearGradient id="msf" gradientUnits="userSpaceOnUse" x1="61.486" x2="61.486" y1="-4.887" y2="88.781"><stop offset="0" stop-color="#ffb900"/><stop offset=".166" stop-color="#ef8400"/><stop offset=".313" stop-color="#e25c01"/><stop offset=".429" stop-color="#db4401"/><stop offset=".5" stop-color="#d83b01"/></linearGradient><path d="m19.143 75.558c-2.724 0-4.945 2.121-4.945 4.753 0 1.789 1.031 3.322 2.565 4.14l19.118 10.246a10.11 10.11 0 0 0 4.969 1.303c1.164 0 2.275-.204 3.306-.562l6.531-1.814v-18.091c.027.025-31.519.025-31.545.025z" fill="url(#msa)"/><path d="m19.143 75.558c-2.724 0-4.945 2.121-4.945 4.753 0 1.789 1.031 3.322 2.565 4.14l19.118 10.246a10.11 10.11 0 0 0 4.969 1.303c1.164 0 2.275-.204 3.306-.562l6.531-1.814v-18.091c.027.025-31.519.025-31.545.025z" fill="url(#msc)"/><path d="m43.736.383a9.968 9.968 0 0 0 -2.777-.383c-1.56 0-3.12.307-4.522 1.022-.29.128-31.096 16.864-31.096 16.864-.423.205-.82.46-1.19.716-.052.025-.079.051-.132.077-.238.178-.45.357-.687.536-.106.077-.212.18-.291.256-.132.127-.265.255-.37.383-.37.383-1.005 1.2-1.005 1.2a9.15 9.15 0 0 0 -1.666 5.291v44.46c0 2.633 2.221 4.754 4.945 4.754.687 0 1.322-.128 1.904-.384l8.805-4.778c1.586-.766 2.856-2.07 3.517-3.68.158-.332.29-.74.37-1.15.026-.102.053-.23.053-.332 0-.05.026-.127.026-.178.027-.18.053-.384.053-.562 0-.154.027-.282.027-.435v-23.662-7.385c0-2.07.925-3.935 2.38-5.238 0 0-.688.613 0 0 .687-.613 1.586-1.15 2.644-1.507 1.057-.384 26.072-9.122 26.072-9.122v-14.744z" fill="url(#msd)"/><path d="m43.736.383a9.968 9.968 0 0 0 -2.777-.383c-1.56 0-3.12.307-4.522 1.022-.29.128-31.096 16.864-31.096 16.864-.423.205-.82.46-1.19.716-.052.025-.079.051-.132.077-.238.178-.45.357-.687.536-.106.077-.212.18-.291.256-.132.127-.265.255-.37.383-.37.383-1.005 1.2-1.005 1.2a9.15 9.15 0 0 0 -1.666 5.291v44.46c0 2.633 2.221 4.754 4.945 4.754.687 0 1.322-.128 1.904-.384l8.805-4.778c1.586-.766 2.856-2.07 3.517-3.68.158-.332.29-.74.37-1.15.026-.102.053-.23.053-.332 0-.05.026-.127.026-.178.027-.18.053-.384.053-.562 0-.154.027-.282.027-.435v-23.662-7.385c0-2.07.925-3.935 2.38-5.238 0 0-.688.613 0 0 .687-.613 1.586-1.15 2.644-1.507 1.057-.384 26.072-9.122 26.072-9.122v-14.744z" fill="url(#mse)"/><path d="m71.898 8.35-27.738-7.843c4.019 1.508 6.53 4.906 6.53 9.046 0 0-.025 75.2 0 77.014.027 4.088-2.67 7.589-6.53 8.892.846-.23 27.738-7.717 27.738-7.717 3.992-1.226 6.875-4.804 6.875-9.07v-61.252c.026-4.24-2.883-7.844-6.875-9.07z" fill="url(#msf)"/></symbol>
+  <symbol id="g-ms" viewBox="0 0 21 21"><rect x="0" y="0" width="10" height="10" fill="#F25022"/><rect x="11" y="0" width="10" height="10" fill="#7FBA00"/><rect x="0" y="11" width="10" height="10" fill="#00A4EF"/><rect x="11" y="11" width="10" height="10" fill="#FFB900"/></symbol>
   <symbol id="g-idb" viewBox="0 0 19 19"><g fill="#0092DA"><rect x="1.2" y="6.7" width="5.4" height="5.6" rx="1.7"/><rect x="12.4" y="6.7" width="5.4" height="5.6" rx="1.7"/></g><g fill="none" stroke="#0092DA" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7.4 9.5H11.2"/><path d="M9.6 7.9 11.2 9.5 9.6 11.1"/></g></symbol>
-  <symbol id="g-boom" viewBox="0 0 19 19"><rect x="1.7" y="1.7" width="15.6" height="15.6" rx="4" fill="none" stroke="#0092DA" stroke-width="1.5"/><g fill="#0092DA"><rect x="5.0" y="10.4" width="2.3" height="3.6" rx="1.0"/><rect x="8.35" y="8.0" width="2.3" height="6.0" rx="1.0"/><rect x="11.7" y="5.6" width="2.3" height="8.4" rx="1.0"/></g></symbol>
+  <symbol id="g-boom" viewBox="0 -0.32 24.3222 24.3222"><g fill="#0018F5"><path d="M20.2685 16.2488L18.2416 18.2798L12.1611 12.1867L6.08054 18.2798L4.05369 16.2488L12.1611 8.12465L20.2685 16.2488Z"/><path d="M24.3222 12.1862L22.1761 14.3368L12.1611 4.30103L2.14607 14.3368L0 12.1862L12.1611 0L24.3222 12.1862Z"/><path d="M12.1831 16.495L15.7661 20.0854L12.1831 23.6758L8.60015 20.0854L12.1831 16.495Z"/></g></symbol>
+  <clipPath id="g-ibis-r"><rect width="19" height="19" rx="4"/></clipPath>
+  <symbol id="g-ibis" viewBox="0 0 19 19"><image width="19" height="19" clip-path="url(#g-ibis-r)" href="data:image/png;base64,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"/></symbol>
   <symbol id="g-memo" viewBox="0 0 19 19"><rect x="1.7" y="1.7" width="15.6" height="15.6" rx="4" fill="none" stroke="#A100FF" stroke-width="1.5"/><g fill="none" stroke="#A100FF" stroke-width="1.5" stroke-linecap="round"><path d="M5.4 6.4h8.2M5.4 9.5h8.2M5.4 12.6h5.2"/></g></symbol>
   <symbol id="g-ast" viewBox="0 0 40 40"><g stroke="#D97757" stroke-width="2.6" stroke-linecap="round"><line x1="20.00" y1="17.80" x2="20.00" y2="1.40"/><line x1="21.19" y1="18.15" x2="28.87" y2="6.20"/><line x1="22.00" y1="19.09" x2="36.19" y2="12.61"/><line x1="22.18" y1="20.31" x2="35.84" y2="22.28"/><line x1="21.66" y1="21.44" x2="33.91" y2="32.05"/><line x1="20.62" y1="22.11" x2="24.73" y2="36.12"/><line x1="19.38" y1="22.11" x2="15.10" y2="36.70"/><line x1="18.34" y1="21.44" x2="7.76" y2="30.61"/><line x1="17.82" y1="20.31" x2="1.99" y2="22.59"/><line x1="18.00" y1="19.09" x2="4.90" y2="13.10"/><line x1="18.81" y1="18.15" x2="10.48" y2="5.19"/></g><circle cx="20" cy="20" r="4.2" fill="#D97757"/></symbol>
   <symbol id="g-chev" viewBox="116.99973 0 19.792 20.93"><path fill="currentColor" d="m 116.99973,0 v 5.97866 l 11.556,4.516 -11.556,4.296 v 6.15467 l 19.792,-8.016 V 7.97066 Z"/></symbol>
@@ -1409,7 +1415,8 @@ html{scroll-snap-type:y proximity}
       <div class="runrow"><span class="thread"></span><span class="slot"><svg class="spin" viewBox="0 0 19 19"><circle cx="9.5" cy="9.5" r="7.4"/></svg><svg class="gl"><use href="#g-sf"/></svg></span><span class="lbl">Customer 360 &middot; portfolio</span></div>
       <div class="runrow"><span class="thread"></span><span class="slot"><svg class="spin" viewBox="0 0 19 19"><circle cx="9.5" cy="9.5" r="7.4"/></svg><svg class="gl"><use href="#g-ms"/></svg></span><span class="lbl">Microsoft 365 &middot; mailbox</span></div>
       <div class="runrow"><span class="thread"></span><span class="slot"><svg class="spin" viewBox="0 0 19 19"><circle cx="9.5" cy="9.5" r="7.4"/></svg><svg class="gl"><use href="#g-idb"/></svg></span><span class="lbl">IDB gateway &middot; customer</span></div>
-      <div class="runrow"><span class="thread"></span><span class="slot"><svg class="spin" viewBox="0 0 19 19"><circle cx="9.5" cy="9.5" r="7.4"/></svg><svg class="gl"><use href="#g-boom"/></svg></span><span class="lbl">Boom &middot; spreads</span></div>
+      <div class="runrow"><span class="thread"></span><span class="slot"><svg class="spin" viewBox="0 0 19 19"><circle cx="9.5" cy="9.5" r="7.4"/></svg><svg class="gl"><use href="#g-boom"/></svg></span><span class="lbl">Boom Spreading &middot; spreads</span></div>
+      <div class="runrow"><span class="thread"></span><span class="slot"><svg class="spin" viewBox="0 0 19 19"><circle cx="9.5" cy="9.5" r="7.4"/></svg><svg class="gl"><use href="#g-ibis"/></svg></span><span class="lbl">IBISWorld &middot; industry</span></div>
     </div>
   </div>
   </div>
@@ -1510,7 +1517,7 @@ html{scroll-snap-type:y proximity}
             <div class="tabstrip" id="tabstrip">
             <span class="btab"><svg class="fav a" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.4"/><path d="M5.7 10.6V6.9c1.5-1.2 3.1-1.2 4.6 0v3.7"/></svg><span class="tt a">nCino</span><svg class="fav b" viewBox="0 0 19.792 20.93"><use href="#g-chev"/></svg><span class="tt b">Credit 360 for my book</span></span>
             <span class="btab"><svg class="fav a" viewBox="0 0 16 16"><path d="M4.5 11.6h6.7a2.2 2.2 0 0 0 .3-4.4 3.1 3.1 0 0 0-5.5-1.4 2.4 2.4 0 0 0-1.5 5.8Z"/></svg><span class="tt a">Salesforce</span></span>
-            <span class="btab"><svg class="fav a" viewBox="0 0 16 16"><rect x="1.9" y="1.9" width="12.2" height="12.2" rx="3"/><path d="M5.2 10.9V9.4M8 10.9V7.1M10.8 10.9V5.2"/></svg><span class="tt a">Boom</span></span>
+            <span class="btab"><svg class="fav a solid" viewBox="0 -0.32 24.3222 24.3222"><path d="M20.2685 16.2488L18.2416 18.2798L12.1611 12.1867L6.08054 18.2798L4.05369 16.2488L12.1611 8.12465L20.2685 16.2488Z"/><path d="M24.3222 12.1862L22.1761 14.3368L12.1611 4.30103L2.14607 14.3368L0 12.1862L12.1611 0L24.3222 12.1862Z"/><path d="M12.1831 16.495L15.7661 20.0854L12.1831 23.6758L8.60015 20.0854L12.1831 16.495Z"/></svg><span class="tt a">Boom Spreading</span></span>
             <span class="btab"><svg class="fav a" viewBox="0 0 16 16"><path d="M2.2 6.4 8 3.1l5.8 3.3"/><path d="M4.2 6.9v4.6M8 6.9v4.6M11.8 6.9v4.6"/><path d="M2.6 12.9h10.8"/></svg><span class="tt a">AFS</span></span>
             <span class="btab"><svg class="fav a" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.4"/><circle cx="8" cy="8" r="2.3"/></svg><span class="tt a">IRIS</span></span>
             <span class="btab"><svg class="fav a" viewBox="0 0 16 16"><path d="M8 1.8v12.4M2.6 4.9l10.8 6.2M2.6 11.1l10.8-6.2"/></svg><span class="tt a">Snowflake</span></span>
@@ -1634,17 +1641,17 @@ html{scroll-snap-type:y proximity}
     <div class="cap">
       <p class="eyebrow chno"><b>03</b><i>/</i>07</p>
       <h2 class="head">Systems, client emails and internal threads all land here, already digested.</h2>
-      <p class="sub">Six integrations resolve before the first question is asked. You never open one of them.</p>
+      <p class="sub">Seven integrations resolve before the first question is asked. You never open one of them.</p>
     </div>
     <div class="facts">
       <div class="fact rise">
         <span class="fl">Integrations</span>
-        <span class="fv num">6</span>
+        <span class="fv num">7</span>
         <span class="fs">resolve before the first question</span>
       </div>
       <div class="fact rise">
         <span class="fl">Resolved</span>
-        <span class="fp">Salesforce, Customer 360, Microsoft 365, IDB, Boom, Credit Memo</span>
+        <span class="fp">Salesforce, Customer 360, Microsoft 365, IDB, Boom Spreading, IBISWorld, Credit Memo</span>
       </div>
       <div class="fact rise">
         <span class="fl">The surface</span>
@@ -1659,20 +1666,22 @@ html{scroll-snap-type:y proximity}
             <span class="dev-title">Credit 360 for my book</span>
           </div>
           <div class="dev-body">
-            <p style="font-size:14px;color:var(--muted);margin-bottom:16px">Updated tasks, used 6 integrations, used a skill</p>
+            <p style="font-size:14px;color:var(--muted);margin-bottom:16px">Updated tasks, used 7 integrations, used a skill</p>
             <div class="runrows" id="railrows">
               <div class="runrow"><span class="thread"></span><span class="slot"><svg class="spin" viewBox="0 0 19 19"><circle cx="9.5" cy="9.5" r="7.4"/></svg><svg class="gl"><use href="#g-sf"/></svg></span><span class="lbl">Salesforce &middot; accounts</span></div>
               <div class="runrow"><span class="thread"></span><span class="slot"><svg class="spin" viewBox="0 0 19 19"><circle cx="9.5" cy="9.5" r="7.4"/></svg><svg class="gl"><use href="#g-sf"/></svg></span><span class="lbl">Customer 360 &middot; portfolio</span></div>
               <div class="runrow"><span class="thread"></span><span class="slot"><svg class="spin" viewBox="0 0 19 19"><circle cx="9.5" cy="9.5" r="7.4"/></svg><svg class="gl"><use href="#g-ms"/></svg></span><span class="lbl">Microsoft 365 &middot; mailbox</span></div>
               <div class="runrow"><span class="thread"></span><span class="slot"><svg class="spin" viewBox="0 0 19 19"><circle cx="9.5" cy="9.5" r="7.4"/></svg><svg class="gl"><use href="#g-idb"/></svg></span><span class="lbl">IDB gateway &middot; customer</span></div>
-              <div class="runrow"><span class="thread"></span><span class="slot"><svg class="spin" viewBox="0 0 19 19"><circle cx="9.5" cy="9.5" r="7.4"/></svg><svg class="gl"><use href="#g-boom"/></svg></span><span class="lbl">Boom &middot; spreads</span></div>
+              <div class="runrow"><span class="thread"></span><span class="slot"><svg class="spin" viewBox="0 0 19 19"><circle cx="9.5" cy="9.5" r="7.4"/></svg><svg class="gl"><use href="#g-boom"/></svg></span><span class="lbl">Boom Spreading &middot; spreads</span></div>
+              <div class="runrow"><span class="thread"></span><span class="slot"><svg class="spin" viewBox="0 0 19 19"><circle cx="9.5" cy="9.5" r="7.4"/></svg><svg class="gl"><use href="#g-ibis"/></svg></span><span class="lbl">IBISWorld &middot; industry</span></div>
               <div class="runrow"><span class="thread"></span><span class="slot"><svg class="spin" viewBox="0 0 19 19"><circle cx="9.5" cy="9.5" r="7.4"/></svg><svg class="gl"><use href="#g-memo"/></svg></span><span class="lbl">Credit Memo &middot; drafting</span></div>
             </div>
             <p class="striplbl">One brain of plugins</p>
             <div class="chipstrip" id="chipstrip">
               <span class="chip"><span class="mk">&gt;</span>Credit 360</span>
               <span class="chip"><svg aria-hidden="true"><use href="#g-memo"/></svg>Credit Memo</span>
-              <span class="chip"><svg aria-hidden="true"><use href="#g-boom"/></svg>Boom</span>
+              <span class="chip"><svg aria-hidden="true"><use href="#g-boom"/></svg>Boom Spreading</span>
+              <span class="chip"><span class="mk" style="color:var(--faint)">&bull;</span>IBISWorld</span>
               <span class="chip"><span class="mk" style="color:var(--faint)">&bull;</span>AFS</span>
               <span class="chip"><span class="mk" style="color:var(--faint)">&bull;</span>nCino</span>
             </div>

@@ -17,7 +17,7 @@ surface and rebuilt as live HTML at its real scale:
 | The gate's right pane: the `Morning.` greeting, the 106 px composer with its 20 px radius, the `Chat \| Cowork` pillbed, the `Fable 5.1 · Medium` meta, the send control | `c360-film/door/index.html`, shots 8 and 9 (measured off the Cowork reference PNGs with PIL) |
 | The hero plate: the clean raw aerial the film's shot 1 was cut from, looping, and bare (see The one mark) | `c360-film/overture/assets/video/V1-aerial-push-film-1080p-cut.mp4` |
 | The breathers: three full-bleed people frames with the film's headline typed over them at 24 characters a second, white with one purple key word and the film's own drop | the reel's own frames at 17.967 s, 44.700 s and 50.000 s, plus `c360-film/type/OVERLAY.md` for the type's rate, colour and shadow |
-| The connector rows: the 19 px slot, the coral dashed spinner resolving to the vendor glyph, the 1 px thread, the 14 px label | `c360-film/door/index.html` shot 11 and `c360-film-b/room/index.html` shot 34, including the `Credit Memo · drafting` row |
+| The connector rows: the 19 px slot, the coral dashed spinner resolving to the vendor glyph, the 1 px thread, the 14 px label. Seven of them, and every mark is the vendor's own: the Microsoft four-square, the Boom Spreading chevrons in `#0018F5`, the IBISWorld favicon | `c360-film/door/index.html` shot 11 and `c360-film-b/room/index.html` shot 34, including the `Credit Memo · drafting` and `IBISWorld · industry` rows |
 | The Cowork window chrome and its title bar | the same two cells |
 | The context chips and the `>` skill mark | the door cell's rail |
 | The landing: the `.kicker` eyebrow, the `.brief h1` headline, the `.card .kpis` metric strip, the `.wlrow` worklist row with its 40 px monogram and `.st` dot chips | the live build, `customer-360-reinvented/app/dist/cockpit.html` |
@@ -61,11 +61,15 @@ address bar carrying a real internal Lightning record URL.
 The eleven are crammed into one row the way a browser crams them. Every tab is
 `flex:1 1 0` with `min-width:0` and a 186 px cap, so at 1440 each one is drawn at
 96 px and compresses to a 16 px favicon plus a title the tab itself clips: nCino,
-Salesforce, Boom, AFS, IRIS, Snowflake, Outlook, SharePoint, Teams, Spreads.xlsx,
-DocMan. The favicons are monochrome 16 px line marks in the product's grey, drawn
-for this page because no source existed. The strip never wraps, so it cannot read
-as a row of loose words, and the titles are children of the tabs rather than
-siblings of them, so it cannot read as a list even with the stylesheet gone.
+Salesforce, Boom Spreading, AFS, IRIS, Snowflake, Outlook, SharePoint, Teams,
+Spreads.xlsx, DocMan. The favicons are monochrome 16 px line marks in the
+product's grey, drawn for this page because no source existed. The one exception is Boom Spreading,
+which has a mark of its own and takes it: the same three chevrons the film's
+cells carry, filled with the strip's grey rather than stroked with it, so it
+stands at the weight of the line marks beside it. The strip never wraps, so it
+cannot read as a row of loose words, and the titles are children of the tabs
+rather than siblings of them, so it cannot read as a list even with the
+stylesheet gone.
 
 On a phone there is no paper to compress eleven tabs and still show a letter of
 each, so it does what a phone browser does: the tabs hold 108 px, the strip scrolls,
@@ -88,6 +92,29 @@ own 24 characters a second.
 The window's height is fixed from first paint and no close touches it, so the whole
 chapter contributes nothing to the layout-shift ledger. Under reduced motion the
 ten are closed, the one has landed and the payoff is set, all without animation.
+
+## The connector marks
+
+The rows used to resolve to marks drawn for this page: a bar chart for Boom, the
+Office document glyph for Microsoft 365. Those were placeholders standing in for
+vendors that have marks of their own, and on a page whose whole argument is that
+nothing on it was designed for it, a placeholder is the one thing that cannot
+stand. They are the vendors' own now, lifted verbatim from the film's Version B
+cells so the site and the reel resolve to the same seven marks:
+
+- **Microsoft 365** keeps its label and takes the four-square, `viewBox 0 0 21 21`
+  in `#F25022`, `#7FBA00`, `#00A4EF` and `#FFB900`
+- **Boom** is **Boom Spreading**, with its three chevrons in `#0018F5` on the
+  cells' own `viewBox 0 -0.32 24.3222 24.3222`. The name changes everywhere it is
+  said: the gate's run, chapter 03's rail, the plugin chip and the tab
+- **IBISWorld** joins the run, after Boom Spreading and before the memo. It is the
+  one raster mark on the page, because it has no path to lift: the cells' own
+  38 px favicon, carried as a data URI and clipped to the 4 px radius the rows
+  draw it with
+
+That makes seven integrations rather than six, and chapter 03 says seven: the sub,
+the figure, the list that names them and the run's own summary line. The gate
+resolves six of them, because the memo is not drafted at the door.
 
 ## The breathers
 
@@ -288,7 +315,7 @@ At 1440x900, natural height, scale, drawn height:
 |---|---|---|---|---|---|
 | a the eleven tabs | 675 | 810 | 354 | 1.000 | 354 |
 | b the book | 675 | 809 | 791 | 0.819 | 648 |
-| c the integrations | 675 | 810 | 435 | 1.000 | 435 |
+| c the integrations | 675 | 810 | 503 | 1.000 | 503 |
 | d the relationship | 675 | 809 | 368 | 1.000 | 368 |
 | e the sentence | 675 | 809 | 375 | 1.000 | 375 |
 | f the memo | 675 | 810 | 633 | 1.000 | 633 |
@@ -471,14 +498,15 @@ At 1440x900, Chromium, over the local build:
   and 64.00 px
 - 0 console errors, 0 failed requests, no horizontal overflow
 
-The reel in `assets/film/` is the rev 4 master. Its FILE md5 does not match the
-delivered master's, and is not meant to: `tools/prepare-film.sh` rewrites the
-container in place with `-c copy -movflags +frag_keyframe+empty_moov+default_base_moof`
-so MediaSource can start on the first seconds. Both elementary streams are
+The reel in `assets/film/` is the rev 5 master, the re-render that carries the
+new connector marks. Its FILE md5 does not match the delivered master's, and is
+not meant to: `tools/prepare-film.sh` rewrites the container in place with
+`-c copy -movflags +frag_keyframe+empty_moov+default_base_moof` so MediaSource
+can start on the first seconds. Both elementary streams are
 bit-identical to the delivery, and that is the check to run:
 
 ```
-ffmpeg -v error -i <file> -map 0:v -c copy -f md5 -   # 5329b5cbf3ab6c6d3de6cb67cedc8a28
+ffmpeg -v error -i <file> -map 0:v -c copy -f md5 -   # e25d36fb88a6d33ce24dec8bff0dbe55
 ffmpeg -v error -i <file> -map 0:a -c copy -f md5 -   # a8b9262c929aa8462d0ab4b0103e77b1
 ```
 
@@ -490,4 +518,5 @@ because the drop is paint rather than motion and is the only reason it reads on 
 sky.
 
 ## Build log
+- 2026-09-08: the connector marks are the vendors' own. Microsoft 365 takes the four-square, Boom becomes Boom Spreading with its three chevrons, IBISWorld joins the run as the page's one raster mark, and chapter 03 counts seven. The reel is re-rendered to match (rev 5).
 - 2026-09-08: passes landed in order: bloom and native scroll, one-screen chapters and facts, gate skyline plate, eleven tabs, two-column chapter grid, the San Francisco close with the place card, one chevron a screen, the gate's own mark dead centre, and the gate plate cut from the close's own San Francisco aerial so the page opens and closes on one city.
