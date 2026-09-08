@@ -1136,6 +1136,9 @@ html{scroll-snap-type:y proximity}
      This scroller is the one place on the page allowed to scroll sideways. */
   .tabstrip{overflow-x:auto; overscroll-behavior-x:contain}
   .btab{flex:0 0 108px; max-width:108px}
+  /* the eleven hold their size here, but the one they become is still the full
+     Cowork tab: it takes the row back once it is the only one left in it */
+  .btab.only{flex:1 1 auto; max-width:none}
   .bwin-page{height:132px; padding:16px 18px}
   /* the row reflows the way the artifact does: the monogram and the arrow
      drop out, the name and the exposure stack, the reason chips stay */
