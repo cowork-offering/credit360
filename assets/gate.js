@@ -7,7 +7,8 @@
 
    Wrong phrase: the composer moves 2 px, once, and says "Not on the list."
    Right phrase: the composer types itself out to the film's own prompt,
-   sends, and the connector rows resolve one by one. Then the page continues.
+   sends, and the connector rows resolve one by one. Then the door hands the
+   page its mark: see THE HANDOFF at the bottom of this file.
 
    Client-side only. This is a courtesy lock for an invited audience, not a
    security boundary: GitHub Pages serves static files and anyone with the
@@ -114,10 +115,10 @@
       });
     });
 
-    /* the door sequence, as live HTML: the mark strikes, the dark pane leaves,
-       the prompt types, it sends, the rows resolve */
+    /* the door sequence, as live HTML: the mark strikes, the prompt types, it
+       sends, the rows resolve, and then the door hands the mark to the hero */
     function open() {
-      try { localStorage.setItem(KEY, JSON.stringify({ h: HASH, t: Date.now() + TTL })); } catch (e) {} 
+      try { localStorage.setItem(KEY, JSON.stringify({ h: HASH, t: Date.now() + TTL })); } catch (e) {}
       input.blur();
       input.hidden = true;
       typed.hidden = false;
@@ -127,12 +128,18 @@
       /* two frames to full purple: the endcard's own strike, not a fade */
       gate.classList.add('striking');
 
-      if (RM) { gate.classList.add('opened'); typedT.textContent = PROMPT; run(); return; }
+      /* the visitor is through, so the hero's own plate may start loading. It
+         has to be RUNNING by the time the opening puts it on the screen, and
+         the run is four and a half seconds of head start. */
+      window.dispatchEvent(new CustomEvent('gate:accepted'));
 
-      /* ONE motion. The pane leaves on frame 8 and the prompt starts typing
-         while it is still leaving, so the door and the composer are the same
-         gesture rather than three beats with gaps between them. */
-      setTimeout(function () { gate.classList.add('opened'); }, 130);
+      if (RM) { typedT.textContent = PROMPT; run(); return; }
+
+      /* THE PANE STAYS. It used to leave the frame on frame 8, sliding out
+         while the composer glided to the centre of the paper, which spent the
+         mark before the run it was waiting on had even started. It stands
+         through the whole run now and veils to cream at the end, so the mark
+         is still on the screen when there is somewhere for it to go. */
       setTimeout(type, 560);
     }
 
@@ -191,13 +198,36 @@
       setTimeout(release, HOLD + SPIN + (rows.length - 1) * STEP + TAIL);
     }
 
+    /* THE HANDOFF.
+
+       The door used to end by cutting itself away: the page was unhidden, the
+       gate cross-faded out over 340 ms and the hero was simply there, finished,
+       with its mark already struck. The one thing the visitor had been looking
+       at for five seconds, the chevron standing on the pane, went out with the
+       gate and a second copy of it appeared in the lockup.
+
+       It is one mark now, and it is handed over rather than replaced. The page
+       is unhidden BEHIND the gate, which is still standing and still cream, and
+       the opening is then offered to whoever owns the hero. Taking the offer
+       (preventDefault) makes that listener the owner of the gate element from
+       here, including removing it. If nobody takes it, if the visitor has asked
+       for less motion, or if the hero is not on the screen to fly to, the door
+       cross-fades exactly as it always did. */
     function release() {
       api.locked = false;
       root.classList.remove('locked');
-      gate.classList.add('gone');
+      var taken = false;
+      if (!RM) {
+        taken = !window.dispatchEvent(new CustomEvent('gate:opening', {
+          cancelable: true,
+          detail: { gate: gate, mark: gate.querySelector('.gmark-c') }
+        }));
+      }
       window.dispatchEvent(new CustomEvent('gate:unlocked'));
       var w = waiters.splice(0);
       for (var i = 0; i < w.length; i++) { try { w[i](); } catch (e) {} }
+      if (taken) { return; }
+      gate.classList.add('gone');
       setTimeout(function () { gate.remove(); }, RM ? 200 : 420);
     }
   }

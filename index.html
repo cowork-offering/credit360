@@ -346,7 +346,6 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
 .gpane-mark{
   position:relative; flex:0 0 42%; min-width:0; overflow:hidden;
   background:linear-gradient(158deg,#120014 0%,#26002F 38%,#3F0069 72%,#54008C 100%);
-  transition:transform .52s var(--ease-out);
 }
 /* THE PLATE IS SAN FRANCISCO, and it is the close's own aerial: the door opens
    on the city the page ends in, so the two are the same picture seen twice, the
@@ -417,7 +416,7 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
    drag the mark off centre: it is scaled about its own centre, which IS the
    pane's. */
 .gmark{
-  position:absolute; inset:0; z-index:2;
+  position:absolute; inset:0; z-index:5;
   display:grid; place-items:center; pointer-events:none;
   /* The drop is the film's own, off type/OVERLAY.md, and it is what gives the
      mark its contrast now that the scrim is out from under it: the plate's
@@ -516,15 +515,40 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
 .gpane-form{
   flex:1 1 auto; min-width:0; background:var(--paper);
   display:grid; place-items:center; padding:24px var(--gutter); overflow-y:auto;
-  transition:transform .52s var(--ease-out);
 }
 #gate .gwrap{width:100%; max-width:652px}
 
-/* the door opens: the chevron strikes, then the dark pane leaves the frame and
-   the composer glides to the centre of the paper. Both are transforms: the
-   composer's own box never reflows while the visitor is looking at it. */
-#gate.opened .gpane-mark{transform:translateX(-100%)}
-#gate.opened .gpane-form{transform:translateX(-36.2%)}
+/* THE HANDOFF, and it is the door's last 400 ms.
+
+   The pane used to LEAVE. On the right phrase it slid out of the frame on
+   frame 8 while the composer glided to the centre of the paper, so by the time
+   the six connectors had resolved, the mark the visitor had struck to get in
+   was long gone and the hero's lockup had to introduce a second copy of it.
+
+   The pane stands through the whole run now, and at the end a cream veil rises
+   over the plate, the scrim and the eyebrow and stops UNDER the mark. The
+   picture goes and the mark stays exactly where it was standing, alone on
+   cream, which is what gives the opening something to fly. The composer and
+   the six resolved rows settle out over the page's own 240 ms while it
+   happens, so the two are one gesture rather than two.
+
+   Nothing here moves layout: the veil is an opacity and the wrap is an opacity
+   over a 6 px rise. */
+#gate.handoff .gwrap{
+  opacity:0; transform:translateY(-6px); pointer-events:none;
+  transition:opacity .24s var(--ease-out), transform .24s var(--ease-out);
+}
+/* z-index 4: over the eyebrow's 3, under the mark's 5. The mark was 2 and sat
+   under the eyebrow, which never showed because the two do not overlap; it has
+   to be over the veil, so it takes the top of the pane's stack. */
+.gpane-mark::after{
+  content:""; position:absolute; inset:0; z-index:4; background:var(--paper);
+  opacity:0; pointer-events:none; transition:opacity .4s var(--ease-out);
+}
+#gate.handoff .gpane-mark::after{opacity:1}
+/* the drop is the mark's contrast on the picture (see .gmark). On cream it is
+   a smudge, so it leaves with the picture and over the same 400 ms. */
+#gate.handoff .gmark{filter:none; transition:filter .4s var(--ease-out)}
 .greet{
   text-align:center; font-family:var(--serif); font-size:clamp(28px,4.6vw,42px);
   line-height:1.06; color:var(--ink-max); letter-spacing:-.004em;
@@ -566,8 +590,6 @@ html.locked body>*:not(#gate):not(#sprite){visibility:hidden}
 @media (max-width:760px){
   #gate{flex-direction:column}
   .gpane-mark{flex:0 0 clamp(148px,25vh,208px)}
-  #gate.opened .gpane-mark{transform:translateY(-100%)}
-  #gate.opened .gpane-form{transform:none}
   /* THE BAND CROPS TO THE TOWER. A phone gets a wide, short band, so the plate
      is scaled to the band's WIDTH and only a slice of its height survives:
      about 37% of it at 208 px, 27% at 148 px. That slice is placed to hold
@@ -598,6 +620,74 @@ html.locked body>*:not(#gate):not(#sprite){visibility:hidden}
      the sky. */
   .gmark-c,#gate.striking .gmark-c{animation:none}
   .gm-sweep{display:none}
+}
+
+/* ============================================================
+   3b. THE OPENING
+   The 2.4 s between the last connector tick and the Watch control, and the
+   one place on the page where the gate and the hero are the same object.
+
+   THE HERO IS DRESSED BEFORE THE DOOR LEAVES. html goes .opening while the
+   gate is still standing and still cream, so the page is painted underneath
+   with every member of the hero already in its FINAL BOX at opacity 0. That
+   is the whole layout-shift argument: the sequence is opacity, one clip and
+   one transform, and nothing in it has a size to arrive at.
+
+   The scroll is held for the length of it. The mark is flying to a box that
+   was measured when the flight started, and a page that can be scrolled under
+   it is a page that can move that box mid-flight.
+
+   EVERY DURATION IS ON THE ARRIVING RULE, never on the resting one. A
+   transition declared on the hidden state is a transition INTO it: adding
+   .opening would have faded the hero out over its own durations instead of
+   putting it there, and the plate's 600 ms of that was still running under the
+   gate when the gate left. The hidden state is instant and only .op-in moves.
+   ============================================================ */
+html.opening{overflow:hidden}
+html.opening #hero .eyebrow{opacity:0; transform:translateY(4px)}
+html.opening #hero .eyebrow.op-in{
+  opacity:1; transform:none;
+  transition:opacity .2s var(--ease-out), transform .2s var(--ease-out);
+}
+/* the lockup's chevron is not revealed: it is LANDED ON. It holds at zero
+   until the mark that flew out of the door arrives on its box, and the swap
+   between the two is one frame on one clock (see THE OPENING in the script). */
+html.opening #hero .lockup .chev{opacity:0}
+/* THE NAME IS WIPED IN, not faded. The clip runs left to right out of the
+   mark's own edge, so the lockup reads as one object arriving rather than as
+   two things that appeared at the same time. The clip is dropped altogether
+   at the end (.op-done), because inset(0) is the border box and a glyph's
+   antialiased edge is allowed to sit half a pixel outside it. */
+html.opening #hero .lockup span{clip-path:inset(0 100% 0 0)}
+html.opening #hero .lockup span.op-in{
+  clip-path:inset(0 0 0 0); transition:clip-path .48s var(--ease-out);
+}
+html.opening #hero .lockup span.op-done{clip-path:none; transition:none}
+html.opening #hero .hero-line{opacity:0; transform:translateY(8px)}
+html.opening #hero .hero-line.op-in{
+  opacity:1; transform:none;
+  transition:opacity .24s var(--ease-out), transform .24s var(--ease-out);
+}
+/* THE PLATE ARRIVES LAST, AND IT ARRIVES MOVING. The aerial has been looping
+   since the phrase was accepted, so what lands is a running picture rather
+   than a poster that starts a moment after it. It comes out of the endcard's
+   own focus pull: 6 px of blur and 0.96 resolving over 600 ms, which is the
+   same device the gate's mark arrives on and the heaviest blur on the page. */
+html.opening #hero .player{opacity:0; transform:scale(.96); filter:blur(6px)}
+html.opening #hero .player.op-in{
+  opacity:1; transform:none; filter:none;
+  transition:opacity .6s var(--ease-out), transform .6s var(--ease-out),
+             filter .6s var(--ease-out);
+}
+html.opening #hero .pl-watch{opacity:0}
+html.opening #hero .pl-watch.op-in{opacity:1; transition:opacity .2s var(--ease-out)}
+/* the mark in flight. It is the gate's own mark cloned at its own rect, fixed
+   over a page that is cream from edge to edge, and it is the only thing on the
+   screen for 700 ms. Scaled about its top left, because a FLIP maps one border
+   box onto another and the origin has to be the corner it measures from. */
+#flymark{
+  position:fixed; left:0; top:0; margin:0; z-index:960;
+  transform-origin:0 0; pointer-events:none; will-change:transform;
 }
 
 /* ============================================================
@@ -2359,16 +2449,223 @@ html{scroll-snap-type:y proximity}
     setTimeout(function () { restart(); play(); }, RM ? 0 : 620);
   });
 
-  /* the reel warms as soon as the visitor is through the door, and the plate
-     starts breathing. Neither is fetched while the gate is up. */
+  /* the plate is asked for the moment the phrase is ACCEPTED rather than at
+     the end of the run. The opening puts it on the screen four and a half
+     seconds later and it has to be running when it gets there, not starting. */
+  function wakePlate() {
+    if (RM || !plate) { return; }
+    plate.preload = 'auto';
+    var pp = plate.play();
+    if (pp && pp.catch) { pp.catch(function () {}); }
+  }
+  window.addEventListener('gate:accepted', wakePlate, { once: true });
+
+  /* ==========================================================
+     THE OPENING
+
+     The door used to end by cutting itself away: the gate cross-faded out over
+     340 ms and the hero was simply there, finished, with its mark already
+     struck. The one thing the visitor had been looking at for five seconds,
+     the chevron standing on the pane, went out with the gate, and the lockup
+     then introduced a second copy of it.
+
+     It is ONE mark now, and it is carried. From the 500 ms hold after the last
+     connector tick:
+
+         0 ms  the composer and the six resolved rows settle out (240 ms) and
+               the pane veils to cream (400 ms), the mark coming up out of its
+               breath to full over the same 400
+       400     the pane is cream and the mark stands alone on it
+       440     a fixed clone takes the mark at its own rect and the gate is
+               removed in the same frame. The page under it is the same cream,
+               so nothing on the screen changes
+       480     THE FLIGHT: 700 ms from the pane's centre to the lockup's box,
+               position and scale, on Element.animate and its own clock
+      1180     the mark lands, the lockup's chevron takes over on that frame,
+               and Credit 360 wipes in beside it (480 ms)
+      1380     the film plate arrives out of the endcard's focus pull (600 ms)
+      1660     the eyebrow fades up (200 ms)
+      1740     the line rises 8 px (240 ms)
+      2180     the Watch control fades in (200 ms)
+      2380     the strike, two frames of ink to purple, the closing beat
+
+     THE SWAPS ARE FRAMES, NOT TIMERS. The flight, the clone's last frame and
+     the lockup's first are three animations sharing one startTime on one
+     timeline, each stepping at its own end, so the mark is on the screen
+     exactly once in every frame of the sequence. Driven by setTimeout, either
+     swap would land a frame to one side of the landing and the mark would be
+     on the screen twice or not at all.
+
+     It runs from the door and only from the door. A reload with the unlock
+     already held never reaches gate:opening and the hero is at rest; under
+     reduced motion the gate does not offer it; and if the hero is not the
+     current viewport the offer is declined and the door cross-fades as before.
+     ========================================================== */
+  var cine = false;                        /* is the opening driving the page? */
+  (function () {
+    var EASE = 'cubic-bezier(.2,.7,.2,1)';
+    /* --ink-max and --brand as literals: a keyframe takes a computed value and
+       var() does not resolve inside Element.animate */
+    var INK = '#050503', BRAND = '#A100FF';
+
+    window.addEventListener('gate:opening', function (ev) {
+      if (RM) { return; }
+      var gate = ev.detail.gate, gmark = ev.detail.mark;
+      if (!gate || !gmark) { return; }
+      var chev = $('#herochev'), word = $('#hero .lockup span'),
+          brow = $('#hero .eyebrow'), line = $('#hero .hero-line'),
+          watch = $('#hero .pl-watch');
+
+      /* the mark can only be flown to a hero that is on the screen */
+      var hb = chev.getBoundingClientRect();
+      if (window.scrollY !== 0 || hb.width < 1 ||
+          hb.top < 0 || hb.bottom > window.innerHeight) { return; }
+
+      ev.preventDefault();
+      cine = true;
+      var t0 = performance.now(), log = window.__c360.opening = [];
+      var timers = [], anims = [], fly = null, gr = null, over = false;
+
+      function beat(n) { log.push([n, Math.round(performance.now() - t0)]); }
+      function at(ms, n, fn) { timers.push(setTimeout(function () { beat(n); fn(); }, ms)); }
+
+      /* wherever this stops it stops on the rest state: everything set, nothing
+         mid-transition, the page scrollable and the hero at the top. It is the
+         sequence's own last beat and it is the resize abort. */
+      function settle() {
+        if (over) { return; }
+        over = true;
+        timers.forEach(clearTimeout);
+        window.removeEventListener('resize', settle);
+        if (fly && fly.parentNode) { fly.parentNode.removeChild(fly); fly = null; }
+        if (gate.parentNode) { gate.parentNode.removeChild(gate); }
+        word.classList.add('op-in'); word.classList.add('op-done');
+        brow.classList.add('op-in'); line.classList.add('op-in');
+        player.classList.add('op-in'); watch.classList.add('op-in');
+        chev.classList.add('struck');
+        /* the class goes before the animations do: cancelling the lockup's
+           own opacity animation while .opening still holds the chevron at
+           zero would put it back to nothing for the rest of the page */
+        root.classList.remove('opening');
+        anims.forEach(function (a) { try { a.cancel(); } catch (e) {} });
+        window.scrollTo(0, 0);
+        cine = false;
+        beat('rest');
+      }
+      window.addEventListener('resize', settle);
+
+      /* 1. THE DOOR SETTLES OUT. The mark comes off its breath at whatever
+         opacity the cycle had reached and is brought up to full over the
+         veil's own 400 ms, so it is at its strongest for the flight and the
+         change is never seen as a step. */
+      root.classList.add('opening');
+      var held = getComputedStyle(gmark).opacity;
+      gmark.style.animation = 'none';
+      gmark.style.opacity = held;
+      gate.classList.add('handoff');
+      requestAnimationFrame(function () {
+        gmark.style.transition = 'opacity .4s ' + EASE;
+        gmark.style.opacity = '1';
+      });
+      beat('composer settles out, pane veils to cream');
+
+      /* 2. the clone takes the mark, and the gate leaves under it */
+      at(440, 'mark handed to the clone, gate removed', function () {
+        gr = gmark.getBoundingClientRect();
+        fly = gmark.cloneNode(true);
+        fly.removeAttribute('class');
+        fly.removeAttribute('style');
+        fly.id = 'flymark';
+        fly.setAttribute('aria-hidden', 'true');
+        fly.style.width = gr.width + 'px';
+        fly.style.height = gr.height + 'px';
+        fly.style.color = BRAND;
+        fly.style.transform = 'translate(' + gr.left + 'px,' + gr.top + 'px)';
+        document.body.appendChild(fly);
+        gate.parentNode.removeChild(gate);
+      });
+
+      /* 3. THE FLIGHT. A FLIP from the pane's centre onto the lockup's box:
+         both scales are carried, because the two boxes are not quite the same
+         shape and it is the BOX the mark has to land on.
+
+         IT IS LAUNCHED ON A FRAME, not out of a timer. The four animations are
+         anchored to document.timeline.currentTime, which is the time of the
+         frame in progress: launched from a timer, they would be backdated by
+         however much of that frame had already run, and the mark's first
+         painted position would be a frame's worth of travel away from where it
+         had been standing. On this ease that is 12 px, which is a jump. The
+         wait is a frame loop rather than a timer and then a frame, because a
+         page with nothing animating on it does not produce frames to be waited
+         on: the loop is what asks for them. */
+      (function wait() {
+        if (over) { return; }
+        if (performance.now() - t0 >= 480) { launch(); return; }
+        requestAnimationFrame(wait);
+      })();
+      function launch() {
+        beat('flight starts');
+        var h = chev.getBoundingClientRect();
+        var f = fly.animate([
+          { transform: 'translate(' + gr.left + 'px,' + gr.top + 'px) scale(1,1)' },
+          { transform: 'translate(' + h.left + 'px,' + h.top + 'px) scale(' +
+              (h.width / gr.width).toFixed(6) + ',' + (h.height / gr.height).toFixed(6) + ')' }
+        ], { duration: 700, easing: EASE, fill: 'both' });
+        /* it leaves the door in the brand and lands in the page's own ink,
+           which is what gives the lockup its device back: the mark strikes ink
+           to purple as the closing beat. The colour crosses in the last third,
+           so the swap at the end is ink onto ink and there is nothing in it
+           to see. */
+        var c = fly.animate([{ color: BRAND }, { color: BRAND, offset: .66 }, { color: INK }],
+          { duration: 700, easing: 'linear', fill: 'both' });
+        var out = fly.animate([{ opacity: 1 }, { opacity: 0 }],
+          { duration: 700, easing: 'steps(1,end)', fill: 'forwards' });
+        var into = chev.animate([{ opacity: 0 }, { opacity: 1 }],
+          { duration: 700, easing: 'steps(1,end)', fill: 'forwards' });
+        var st = document.timeline.currentTime;
+        [f, c, out, into].forEach(function (a) { a.startTime = st; anims.push(a); });
+        /* the rejection arm is the abort: settle() cancels these, and a
+           cancelled animation rejects its finished promise */
+        f.finished.then(land, function () {});
+      }
+
+      /* 4. everything after the landing hangs off the flight's own clock */
+      function land() {
+        if (over) { return; }
+        beat('mark lands, the lockup takes over');
+        var fr = fly.getBoundingClientRect(), cr = chev.getBoundingClientRect();
+        window.__c360.flip = {
+          dx: +(fr.left - cr.left).toFixed(3), dy: +(fr.top - cr.top).toFixed(3),
+          dw: +(fr.width - cr.width).toFixed(3), dh: +(fr.height - cr.height).toFixed(3)
+        };
+        fly.parentNode.removeChild(fly); fly = null;
+        word.classList.add('op-in');
+
+        at(200, 'plate arrives', function () {
+          if (plate && plate.paused) { wakePlate(); }
+          player.classList.add('op-in');
+        });
+        at(480, 'name is in, eyebrow fades up', function () {
+          word.classList.add('op-done');
+          brow.classList.add('op-in');
+        });
+        at(560, 'line rises', function () { line.classList.add('op-in'); });
+        at(1000, 'Watch fades in', function () { watch.classList.add('op-in'); });
+        at(1200, 'Watch visible, the mark strikes', function () { chev.classList.add('struck'); });
+        timers.push(setTimeout(settle, 1283));
+      }
+    });
+  })();
+
+  /* the reel warms as soon as the visitor is through the door. Neither it nor
+     the plate is fetched while the gate is up. */
   function afterGate() {
     setTimeout(warmFilm, RM ? 0 : 500);
-    if (!RM && plate) {
-      plate.preload = 'auto';
-      var pp = plate.play();
-      if (pp && pp.catch) { pp.catch(function () {}); }
+    wakePlate();
+    /* where the opening runs, the strike is its closing beat and belongs to it */
+    if (!cine) {
+      setTimeout(function () { $('#herochev').classList.add('struck'); }, RM ? 0 : 400);
     }
-    setTimeout(function () { $('#herochev').classList.add('struck'); }, RM ? 0 : 400);
     var b1 = $('#breath-1 img');
     if (b1) { b1.loading = 'eager'; b1.fetchPriority = 'high'; }
   }

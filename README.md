@@ -40,13 +40,17 @@ logo. Counted at 1440x900 and at 390x844, this is what stands on each screen at 
 | Screen | Marks | Why |
 |---|---|---|
 | Gate | the plate's mark, and the composer's send control | the count is unchanged: the pane's mark used to be the one inside the `accenture` wordmark and is now the chevron standing on its own. The send button is the product's own control, not a decoration |
-| Hero | the lockup's | the plate used to carry a second copy dead centre so it cross-faded mark-on-mark into the reel's first frame. It is gone: the film brings its own mark 1.4 s in, and one small mark at the press is cheaper than two on the screen at rest |
+| Hero | the lockup's, and it is the gate's own, flown there | the plate used to carry a second copy dead centre so it cross-faded mark-on-mark into the reel's first frame. It is gone: the film brings its own mark 1.4 s in, and one small mark at the press is cheaper than two on the screen at rest. The lockup's is not a second copy of the gate's either, it IS the gate's: see The opening |
 | Chapters | the product's own UI only | the `Credit 360 for my book` tab favicon, the `>` on the skill chip, the ask composer's send control. No decorative marks |
 | Close | the lockup's, and the wordmark's | the SF plate carries none burned in, and `Watch again` gave its glyph up for a hairline |
 
 The gate is the exception, and it is the reason the device exists: its mark is the one
 the visitor strikes to get in. Because that mark is already at full purple, it strikes
 the other way, two frames to white and back.
+
+There is only ever one on the screen at a time, and that is now true THROUGH the
+unlock as well as at rest: the gate's mark is the lockup's, carried onto its box by a
+FLIP and handed over on a single frame.
 
 The lockup's mark is the one moment, so it is the one thing that strikes: ink to purple
 in the hero, white to purple on the close, two frames each, and nothing else on either
@@ -163,11 +167,14 @@ left, the Cowork greeting and the composer on the right. The
 greeting is the product's, addressed to the room it opens in: `Morning, San
 Francisco.` The composer asks for the passcode by name, and one muted line under it
 says who the page is for and where the phrase is: `Invited guests only. The passcode
-is on your invitation.` On the right phrase the mark strikes, the dark pane leaves the
-frame, and only then does the composer type itself out and run the connectors.
-Both pane moves are transforms, so the composer's own box never reflows while the
-visitor is looking at it. On a phone the panes stack and the plate takes a short band
-at the top. Wrong phrase: the composer moves 2 px, once, and says `Not on the list.`
+is on your invitation.` On the right phrase the mark strikes, the composer types
+itself out and the connectors run. **The pane does not leave.** It used to slide out
+of the frame on frame 8 while the composer glided to the centre of the paper, which
+spent the mark before the run it was waiting on had started; it stands through the
+whole run now and veils to cream at the end, and what it leaves standing is the mark
+the hero is built on (see The opening). On a phone the panes stack and the plate takes
+a short band at the top. Wrong phrase: the composer moves 2 px, once, and says
+`Not on the list.`
 
 **The run is paced to be read.** The unlock ran in 3.0 s, and the six connectors were
 the part that paid for it: the run began 140 ms after the send and resolved a row
@@ -188,15 +195,15 @@ one row resolving to the next; 500 ms after the last tick before the page contin
 | IBISWorld | 640 ms | 1610 ms |
 | Boom Spreading | 540 ms | 1930 ms |
 | IDB gateway | 440 ms | 2250 ms |
-| the page continues | 1100 ms | 2750 ms |
+| the door hands over | 1100 ms | 2750 ms |
 
-Measured off the form's own submit rather than assumed: the strike at 2 ms, the pane
-away at 132, the first character at 605, the prompt complete at 1696, the send at
-1877, and the page continuing at **4627 ms**, against 2976 ms before. The same figures
-hold at 390x844 to within 2 ms. Nothing in it is a pause: the longest step from one
-thing happening to the next is the 500 ms tail, and every other beat is 350 ms or
-less, so the unlock is still one motion rather than four. It is untouched under
-reduced motion, where the six are resolved on the spot and the page continues in
+Measured off the form's own submit rather than assumed: the strike at 1 ms, the first
+character at 604, the prompt complete at 1696, the send at 1876, the six ticks at
+2526, 2846, 3166, 3486, 3806 and 4126, and the handover at **4635 ms**. The same
+figures hold at 390x844 to within 2 ms. Nothing in it is a pause: the longest step
+from one thing happening to the next is the 500 ms tail, and every other beat is
+350 ms or less, so the unlock is still one motion rather than four. It is untouched
+under reduced motion, where the six are resolved on the spot and the page continues in
 61 ms, and it costs the layout-shift ledger nothing, because the rows were always in
 the DOM at their own height and only their opacity moves.
 
@@ -356,6 +363,94 @@ device for 30 days. Append `?lock` to re-lock (booth reset), or call `c360Gate.l
 Nothing heavy is fetched behind the gate. The reel's URL is not in the DOM before
 unlock (`film.json` is fetched, and the reel streamed, only after the door sequence
 has run) and the hero plate carries `preload="none"` until the same moment.
+
+## The opening
+
+The door used to end by cutting itself away. The page was unhidden, the gate
+cross-faded out over 340 ms, and the hero was simply there, finished, with its mark
+already struck. The one thing the visitor had been looking at for five seconds, the
+chevron standing on the pane, went out with the gate, and the lockup then introduced a
+second copy of it.
+
+**It is one mark now, and it is carried.** From the 500 ms hold after the last
+connector tick, measured at 1440x900 off the page's own clock:
+
+| from the last tick | from the sequence's zero | |
+|---|---|---|
+| 500 ms | **0** | the composer and the six resolved rows settle out over 240 ms, the pane veils to cream over 400, and the mark comes up out of its breath to full over the same 400 |
+| 900 | 400 | the pane is cream. The mark stands alone on it |
+| 941 | **441** | a fixed clone takes the mark at its own rect and the gate is removed in the same frame. The page under it is the same cream, so nothing on the screen changes |
+| 983 | **483** | THE FLIGHT: 700 ms from the pane's centre onto the lockup's box, position and scale, on `Element.animate` and its own clock |
+| 1683 | **1183** | the mark lands, the lockup's chevron takes over on that frame, and `Credit 360` wipes in beside it left to right over 480 ms |
+| 1883 | 1383 | the film plate arrives out of the endcard's own focus pull: 0.96 and 6 px of blur resolving over 600 ms |
+| 2163 | 1663 | the wipe is done and the eyebrow fades up over 200 ms |
+| 2243 | 1743 | the line rises 8 px into place over 240 ms |
+| 2683 | 2183 | the Watch control fades in over 200 ms |
+| 2883 | **2383** | the Watch control is visible and the mark strikes: two frames of ink to purple, the closing beat |
+| 2966 | 2466 | rest. The page is scrollable and the hero is at scrollY 0 |
+
+From the form's own submit that is **7018 ms** to the Watch control at 1440x900 and
+7030 ms at 390x844, of which 4635 is the door's own run and 2383 is the opening.
+
+**The mark lands on its box to 0.000 px.** The flight is a FLIP: the clone is fixed at
+the gate mark's rect and scaled about its top left onto the lockup chevron's, carrying
+BOTH scales because the two boxes are not quite the same shape and it is the box the
+mark has to land on. Measured at the landing frame, border box against border box, at
+1440x900 and at 390x844 alike: **dx 0.000, dy 0.000, dw 0.000, dh 0.000**.
+
+**The swaps are frames, not timers.** There are two: the gate's own mark to the clone,
+and the clone to the lockup's chevron. The first is a synchronous DOM write at
+identical rects. The second cannot be, because a timer set to fire at the landing
+lands a frame to one side of it and the mark is then on the screen twice or not at
+all. So the flight, the clone's last frame and the lockup's first are THREE animations
+sharing one `startTime` on one timeline, the two opacity animations easing on
+`steps(1,end)` so each steps at its own end and both steps are the same frame.
+
+Read off a calibrated screencast at every frame from the veil to the wipe, at
+1440x900, where the paper is cream from edge to edge and the only thing on it is the
+mark: **66 consecutive frames, and in every one of them the bounding box of everything
+that is not the paper is the size of ONE mark**. Two marks at different positions
+would span both; none would be an empty frame. Neither happens. The box travels
+133.05 x 140.70 at the pane's centre, on 302.4 x 450.0 to 0.000 px, down to
+56.45 x 59.47 on the content margin, and the mark is at rest on the lockup for four
+frames before the wipe starts.
+
+**And the flight leaves in the brand and arrives in the ink.** The gate's mark is at
+full purple, and a mark that lands purple has nothing left to strike; the lockup's own
+device is that it lands in ink and strikes to purple. So the colour crosses in the
+flight's last third, which puts ink onto ink at the swap and gives the sequence its
+closing beat. It is the one property in the opening that is not a transform, an
+opacity or a clip, and it is the lockup's own two colours.
+
+**Nothing in the hero moves in layout.** `html` goes `.opening` while the gate is still
+standing and still cream, so the page is painted underneath with every member of the
+hero already in its FINAL BOX at opacity 0: the whole sequence is opacity, one
+`clip-path` and one transform. Every duration is on the ARRIVING rule and never on the
+resting one, because a transition declared on a hidden state is a transition INTO it,
+and the first build of this faded the hero out over its own durations instead of
+putting it there, leaving the plate's 600 ms of that still running under the gate when
+the gate left. Measured over the whole unlock, from first paint to rest: cumulative
+layout shift **0.0000098** at 1440x900 and **0.0000285** at 390x844, of which the
+opening's own share is **0.0000000** at both. The last shift on the page happens at
+3.1 s, three seconds before the sequence starts, and it is the composer typing.
+
+The scroll is held for the length of it, because the mark is flying to a box measured
+when the flight started and a page that can be scrolled under it is a page that can
+move that box mid-flight.
+
+**It runs from the door and only from the door.** A reload with the unlock already held
+never reaches the handover and the hero is at rest, exactly as before. Under reduced
+motion the gate does not offer it, and the door cross-fades as it always did. If the
+hero is not the current viewport when the door hands over, because the window was
+resized or scrolled mid-run, the offer is declined and the same cross-fade runs. And a
+resize DURING the sequence settles it on the spot: every timer cleared, every
+animation cancelled, the clone removed and the hero simply set. All four were measured
+and all four land on the same rest state.
+
+The plate is asked for the moment the phrase is ACCEPTED rather than at the end of the
+run, because the opening puts it on the screen four and a half seconds later and it
+has to be running when it gets there rather than starting. At rest it is 2.52 s into
+its loop. Under reduced motion it is never fetched at all.
 
 ## The halo
 
@@ -527,6 +622,11 @@ whole reveal runs past about a second, so a component is always finished before 
 section has left the screen. The cards used to arrive out of a `rotateY(-6deg)` tilt;
 against a still page that read as a hinge, not as the film, and it is gone.
 
+The one thing that runs longer is the opening, and it is a sequence rather than an
+entrance: 2.4 s from the last connector tick to the Watch control, on the same ease,
+in transforms, opacities and one `clip-path`, with a single 6 px blur on the plate's
+arrival. It is documented in The opening above.
+
 The scroll is the browser's own. This page used to run Lenis over the top of it; on a
 trackpad that is a lerp fighting the pointer's own inertia, and every cue lands
 behind the scroll it belongs to. Driven with identical wheel events, Lenis delivered
@@ -538,7 +638,10 @@ frames longer than 25 ms across the page. Native: 53.7 px delivered, one frame o
 
 ```
 index.html                 the page: one file, one <style>, one <script>
-assets/gate.js             the door, loaded synchronously in <head>
+assets/gate.js             the door, loaded synchronously in <head>. It ends by
+                           OFFERING the opening (gate:opening, cancelable): the page
+                           takes it and owns the gate from there, or the door
+                           cross-fades as it always did
 assets/film/               the reel (1080p + 720p, fragmented), film.json, the hero
                            plate (the looping pre-dawn aerial and its first frame),
                            the gate plate (the close's San Francisco aerial turned
@@ -602,6 +705,16 @@ At 1440x900, Chromium, over the local build:
   strength is `.62` on the first pass and `.372` on every repeat, stepped at 2150 ms.
   On the glyph itself the first pass lifts a peak of 136/255 and the repeat 79, a
   ratio of 0.58; parked between passes it is within 2/255 of the mark at rest
+- the opening runs **2383 ms** from the door's handover to the Watch control at
+  1440x900 and 2394 at 390x844, against a design of 2380: the flight starts at 483
+  and 494 against 480, and lands at 1183 and 1194 against 1180. From the form's own
+  submit that is 7018 ms and 7030 ms
+- the flying mark lands on the lockup chevron's border box to **0.000 px** on all four
+  figures at both viewports, and over 66 consecutive screencast frames from the veil
+  to the wipe the mark is on the screen exactly once in every one
+- cumulative layout shift over the WHOLE unlock, first paint to rest, is **0.0000098**
+  at 1440x900 and **0.0000285** at 390x844, of which the opening's own share is
+  **0.0000000** at both. The last shift on the page is the composer typing, at 3.1 s
 - 0 console errors, 0 failed requests, no horizontal overflow
 
 The reel in `assets/film/` is the rev 6 master, the re-render whose door shows
@@ -624,11 +737,13 @@ The 720p carries `8033938c402e6853209fa88ad084d10d` and
 Reduced motion is respected throughout: every entrance resolves instantly, the
 spinners stop, the cards arrive flat, the plate holds its first frame, the gate's mark
 is simply there with no pull, no breath and no strike, the lines are set rather than
-typed, and the halo is lit without breathing. The mark keeps its drop under reduce,
+typed, the opening is never offered and the door cross-fades as it always did, and the
+halo is lit without breathing. The mark keeps its drop under reduce,
 because the drop is paint rather than motion and is the only reason it reads on the
 sky.
 
 ## Build log
+- 2026-09-08: the door hands the page its mark. The gate no longer cuts itself away: the pane veils to cream, the mark it leaves standing flies onto the lockup's chevron on a 700 ms FLIP, the name wipes in beside it, the plate arrives out of a focus pull already running, and the mark strikes ink to purple as the closing beat. 2383 ms from the handover to the Watch control, the landing on the box to 0.000 px, and 0.0000000 of layout shift for the sequence. The pane's slide and the composer's glide are gone with it.
 - 2026-09-08: the gate's IBISWorld row resolves to its mark. The rule that hides the page behind the gate was hiding the sprite sheet, and Chromium will not paint a raster `<image>` cloned out of a `visibility:hidden` subtree, so the page's one raster mark went to an empty slot at the door and nowhere else. The sheet is `#sprite` and the rule exempts it.
 - 2026-09-08: the door is paced to be read and runs in the film's order. The unlock spends 4627 ms from the send rather than 2976: 300 ms to the rows, 350 ms of the first row spinning, 320 ms between ticks, 500 ms to the page. The run resolves Salesforce, Customer 360, Microsoft 365, IBISWorld, Boom Spreading, IDB gateway, which is the reel's own door with the gateway last. The reel is re-rendered to match (rev 6); the picture changed and the audio did not.
 - 2026-09-08: the connector marks are the vendors' own. Microsoft 365 takes the four-square, Boom becomes Boom Spreading with its three chevrons, IBISWorld joins the run as the page's one raster mark, and chapter 03 counts seven. The reel is re-rendered to match (rev 5).
