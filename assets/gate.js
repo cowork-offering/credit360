@@ -129,13 +129,16 @@
 
       if (RM) { gate.classList.add('opened'); typedT.textContent = PROMPT; run(60); return; }
 
-      setTimeout(function () { gate.classList.add('opened'); }, 240);
-      setTimeout(type, 860);
+      /* ONE motion. The pane leaves on frame 8 and the prompt starts typing
+         while it is still leaving, so the door and the composer are the same
+         gesture rather than three beats with gaps between them. */
+      setTimeout(function () { gate.classList.add('opened'); }, 130);
+      setTimeout(type, 560);
     }
 
     function type() {
       var i = 0;
-      /* 16 chars per second, the film's own type rate */
+      /* 24 characters a second, the film's own rate and the page's only one */
       var tick = setInterval(function () {
         typedT.textContent = PROMPT.slice(0, ++i);
         if (i >= PROMPT.length) {
@@ -143,19 +146,19 @@
           setTimeout(function () {
             send.classList.add('fire');
             gate.classList.add('running');
-            run(200);
-          }, 260);
+            run(140);
+          }, 180);
         }
-      }, 62);
+      }, 42);
     }
 
     function run(base) {
-      /* the rows resolve on eighths, left to right, exactly as shot 11 cuts them */
-      var step = RM ? 0 : 190;
+      /* the rows resolve left to right, exactly as shot 11 cuts them */
+      var step = RM ? 0 : 100;
       rows.forEach(function (row, n) {
         setTimeout(function () { row.classList.add('done'); }, base + n * step);
       });
-      setTimeout(release, base + rows.length * step + (RM ? 0 : 520));
+      setTimeout(release, base + rows.length * step + (RM ? 0 : 360));
     }
 
     function release() {
@@ -165,7 +168,7 @@
       window.dispatchEvent(new CustomEvent('gate:unlocked'));
       var w = waiters.splice(0);
       for (var i = 0; i < w.length; i++) { try { w[i](); } catch (e) {} }
-      setTimeout(function () { gate.remove(); }, RM ? 200 : 620);
+      setTimeout(function () { gate.remove(); }, RM ? 200 : 420);
     }
   }
 

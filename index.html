@@ -80,11 +80,16 @@
   --ui: "Inter", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
   --serif: "CoworkSerif", Georgia, "Times New Roman", serif;
 
-  /* MOTION. The product's own curves and durations, not new ones. */
-  --ease-out:    cubic-bezier(.2,.7,.3,1);
-  --ease-settle: cubic-bezier(.19,1,.3,1);
+  /* MOTION. ONE language, everywhere on the page: an entrance is 240 ms of
+     opacity over an 8 px rise on --ease-out, and members of one card follow
+     each other 40 ms apart. Nothing on the page runs longer than 900 ms
+     except the halo's bloom, and no chapter's whole reveal runs past 1.1 s,
+     so a component is always finished before its section has left. */
+  --ease-out:    cubic-bezier(.2,.7,.2,1);
+  --ease-settle: cubic-bezier(.2,.7,.2,1);
   --ease-spring: cubic-bezier(.22,1,.36,1);
-  --dur-fast:.13s; --dur-mid:.24s; --dur-odo:.6s; --beat:.46s;
+  --dur-fast:.13s; --dur-mid:.24s; --dur-odo:.6s; --beat:.24s;
+  --enter:.24s; --lift:8px;
 
   --radius: 16px;
   --radius-ctl: 10px;
@@ -106,8 +111,11 @@ body{
   font-family:var(--ui); font-size:14.5px; line-height:1.5; font-weight:400;
   letter-spacing:-.01em;
   -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
-  overflow-x:hidden;
 }
+/* the one horizontal clip on the page, and it is at the document, not on a
+   section: a clip on a section cuts the halo's bloom off flat at the section's
+   own left and right edges. */
+html,body{overflow-x:hidden}
 img,svg,video{display:block; max-width:100%}
 [hidden]{display:none!important}
 button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
@@ -249,7 +257,7 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
 .runrow .gl{opacity:0; transform:scale(.86)}
 .runrow .lbl{font-size:14px; line-height:19px; color:var(--faint);
   overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
-.runrow .spin,.runrow .gl{transition:opacity .22s var(--ease-out), transform .32s var(--ease-settle)}
+.runrow .spin,.runrow .gl{transition:opacity var(--enter) var(--ease-out), transform var(--enter) var(--ease-out)}
 .runrow.done .spin{opacity:0}
 .runrow.done .gl{opacity:1; transform:none}
 .runrow.done .lbl{color:var(--sub)}
@@ -313,7 +321,7 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
 .gr{width:46px; height:46px; flex:none}
 .gr .bg{stroke:var(--overlay)}
 .gr .fg{stroke:var(--brand); stroke-linecap:round; stroke-dasharray:119.4;
-  stroke-dashoffset:119.4; transition:stroke-dashoffset 1s var(--ease-spring)}
+  stroke-dashoffset:119.4; transition:stroke-dashoffset .7s var(--ease-out)}
 .gr text{font:600 14px var(--ui); fill:var(--ink-max)}
 .anchor{display:flex; align-items:center; gap:12px}
 .anchor .l{font-size:10.5px; font-weight:600; letter-spacing:.09em;
@@ -338,7 +346,7 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
 .gpane-mark{
   position:relative; flex:0 0 42%; min-width:0; overflow:hidden;
   background:linear-gradient(158deg,#120014 0%,#26002F 38%,#3F0069 72%,#54008C 100%);
-  transition:transform .62s var(--ease-settle);
+  transition:transform .52s var(--ease-out);
 }
 /* the film's pre-dawn aerial, ghosted, drifting. It is the same plate the
    overture opens on, so the door and the first frame share a sky. */
@@ -367,7 +375,7 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
 .gpane-form{
   flex:1 1 auto; min-width:0; background:var(--paper);
   display:grid; place-items:center; padding:24px var(--gutter); overflow-y:auto;
-  transition:transform .62s var(--ease-settle);
+  transition:transform .52s var(--ease-out);
 }
 #gate .gwrap{width:100%; max-width:652px}
 
@@ -401,7 +409,7 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
 .g-sub .no{color:var(--muted)}
 #gate .runrows{margin-top:26px; padding-left:22px; opacity:0}
 #gate.running .runrows{opacity:1; transition:opacity .3s var(--ease-out)}
-#gate.gone{opacity:0; pointer-events:none; transition:opacity .5s var(--ease-out)}
+#gate.gone{opacity:0; pointer-events:none; transition:opacity .34s var(--ease-out)}
 html.locked{overflow:hidden}
 html.locked body>*:not(#gate){visibility:hidden}
 @media (max-width:760px){
@@ -544,7 +552,12 @@ html.locked body>*:not(#gate){visibility:hidden}
    Caption in the landing headline style, one muted sub, then the
    component at its real scale.
    ============================================================ */
-.chapter{padding:clamp(56px,10vh,116px) 0; position:relative; overflow-x:clip}
+/* ONE vertical value between chapters. Nothing clips here: the halo's bloom is
+   allowed to bleed past this section's edges and behind its neighbours. */
+.chapter{padding:clamp(56px,10vh,116px) 0; position:relative}
+/* a breather is already a full stop; the chapter after it does not need the
+   full rest on top of it as well */
+.breath + .chapter{padding-top:clamp(34px,5vh,60px)}
 .chapter + .chapter{border-top:1px solid var(--hair)}
 .cap{max-width:640px; margin-bottom:clamp(28px,4vh,44px)}
 .stage{position:relative}
@@ -554,19 +567,14 @@ html.locked body>*:not(#gate){visibility:hidden}
 .chno b{font-weight:600; color:var(--ink-max)}
 .chno i{font-style:normal; margin:0 7px; opacity:.55}
 
-/* enter: the product's own landing gesture, 8 px and 420 ms */
-.rise{opacity:0; transform:translateY(8px)}
+/* ENTER. The whole page arrives this one way: 8 px, 240 ms, --ease-out.
+   The cards used to arrive out of a rotateY(-6deg) tilt and settle flat. On a
+   real scroll that read mechanical, not cinematic: a flat rectangle swinging on
+   a hinge while the paper under it stayed still. It is gone. */
+.rise{opacity:0; transform:translateY(var(--lift))}
 .js .rise{will-change:opacity,transform}
 .rise.in{opacity:1; transform:none;
-  transition:opacity .42s var(--ease-out), transform .46s var(--ease-settle)}
-
-/* The card arrives out of the film's tilted world and settles flat. The
-   perspective is on the card's own transform, not on the stage: perspective on
-   an ancestor makes a stacking context, and that would drop the halo's stage
-   under the dim. */
-.tilt{transform:perspective(1600px) translateY(10px) rotateY(-6deg)}
-.tilt.in{transform:none;
-  transition:opacity .5s var(--ease-out), transform .78s var(--ease-settle)}
+  transition:opacity var(--enter) var(--ease-out), transform var(--enter) var(--ease-out)}
 
 /* ------------------------------------------------------------
    THE BREATHER. The film's own device between chapters: one of
@@ -574,7 +582,11 @@ html.locked body>*:not(#gate){visibility:hidden}
    and the film's headline typed over the person at 24 chars a
    second. White, one purple key word, the film's own drop.
    ------------------------------------------------------------ */
-.breath{position:relative; height:100svh; min-height:480px; overflow:hidden; background:#0B0B0A}
+/* A breather is one screen tall, and the height is MEASURED and then held.
+   100svh is stable but 100vh is not: on a phone the browser chrome collapses on
+   the first scroll, every full-height section reflows mid-gesture, and the page
+   lurches. --vph is written once per width and never touched again. */
+.breath{position:relative; height:var(--vph,100svh); min-height:480px; overflow:hidden; background:#0B0B0A}
 .breath > img{
   position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
   transform-origin:52% 46%; will-change:transform;
@@ -599,7 +611,7 @@ html.locked body>*:not(#gate){visibility:hidden}
   transform:translate3d(0,0,0); will-change:transform; opacity:0;
 }
 .breath.typing .caret{opacity:1; transition:opacity .12s var(--ease-out)}
-.breath.said .caret{opacity:0; transition:opacity .5s var(--ease-out) 1.1s}
+.breath.said .caret{opacity:0; transition:opacity .3s var(--ease-out) .5s}
 /* the zero-size marker the caret follows; it paints nothing */
 .breath-type .mk{display:inline-block; width:0; height:0; overflow:hidden}
 
@@ -610,30 +622,28 @@ html.locked body>*:not(#gate){visibility:hidden}
 .tab{
   height:28px; padding:0 12px; border-radius:7px; background:var(--pillbg);
   border:1px solid var(--hair); font-size:12px; line-height:26px; color:var(--muted);
-  white-space:nowrap; transition:opacity .34s var(--ease-out), transform .42s var(--ease-settle),
-    filter .34s var(--ease-out);
+  white-space:nowrap; transition:opacity var(--enter) var(--ease-out), transform var(--enter) var(--ease-out);
 }
-.tabs.collapse .tab{opacity:0; transform:translateY(-4px) scale(.97); filter:blur(1px)}
+.tabs.collapse .tab{opacity:0; transform:translateY(calc(var(--lift) * -1))}
 .notthis{
   margin:30px 0 0; font-size:clamp(20px,2.4vw,28px); font-weight:600;
   letter-spacing:-.022em; color:var(--ink-max); opacity:0; transform:translateY(6px);
 }
 .notthis.in{opacity:1; transform:none;
-  transition:opacity .4s var(--ease-out) .1s, transform .46s var(--ease-settle) .1s}
-.onetab{opacity:0; transform:scale(.985); max-width:520px}
+  transition:opacity var(--enter) var(--ease-out), transform var(--enter) var(--ease-out)}
+.onetab{opacity:0; transform:translateY(var(--lift)); max-width:520px}
 .onetab.in{opacity:1; transform:none;
-  transition:opacity .4s var(--ease-out), transform .5s var(--ease-settle)}
+  transition:opacity var(--enter) var(--ease-out), transform var(--enter) var(--ease-out)}
 
 /* c. the chip strip */
 .chipstrip{display:flex; flex-wrap:wrap; gap:8px; margin-top:26px}
 .chipstrip .chip{opacity:0; transform:translateY(6px)}
 .chipstrip.in .chip{opacity:1; transform:none;
-  transition:opacity .34s var(--ease-out), transform .4s var(--ease-settle)}
-.chipstrip.in .chip:nth-child(1){transition-delay:.00s}
-.chipstrip.in .chip:nth-child(2){transition-delay:.05s}
-.chipstrip.in .chip:nth-child(3){transition-delay:.10s}
-.chipstrip.in .chip:nth-child(4){transition-delay:.15s}
-.chipstrip.in .chip:nth-child(5){transition-delay:.20s}
+  transition:opacity var(--enter) var(--ease-out), transform var(--enter) var(--ease-out)}
+.chipstrip.in .chip:nth-child(2){transition-delay:40ms}
+.chipstrip.in .chip:nth-child(3){transition-delay:80ms}
+.chipstrip.in .chip:nth-child(4){transition-delay:120ms}
+.chipstrip.in .chip:nth-child(5){transition-delay:160ms}
 .striplbl{font-size:12px; color:var(--muted); margin-top:26px}
 
 /* d. the ownership graph */
@@ -641,31 +651,31 @@ html.locked body>*:not(#gate){visibility:hidden}
 /* pathLength="1" makes every edge draw at the same rate whatever its length */
 .graph .edge{fill:none; stroke:#DCDCE3; stroke-width:1.25; stroke-linecap:round;
   stroke-dasharray:1; stroke-dashoffset:1}
-.graph.in .edge{stroke-dashoffset:0; transition:stroke-dashoffset .5s var(--ease-out) .12s}
-.graph.in .edge.bus{transition:stroke-dashoffset .55s var(--ease-out) .5s}
-.graph.in .edge.stem{transition:stroke-dashoffset .34s var(--ease-out) 1s}
+.graph.in .edge{stroke-dashoffset:0; transition:stroke-dashoffset .3s var(--ease-out)}
+.graph.in .edge.bus{transition:stroke-dashoffset .3s var(--ease-out) .14s}
+.graph.in .edge.stem{transition:stroke-dashoffset .26s var(--ease-out) .3s}
 .graph .nbox{fill:#fff; stroke:var(--divider); stroke-width:1}
 .graph .nbox.borrower{stroke:var(--acc-hair); stroke-width:1.25}
 .graph .nname{font:500 13px var(--ui); fill:var(--ink-max); letter-spacing:-.01em}
 .graph .nrole{font:600 10px var(--ui); fill:var(--faint); letter-spacing:.09em}
 .graph .nrole.acc{fill:var(--accent)}
-.graph .node{opacity:0; transform:translateY(6px)}
+.graph .node{opacity:0; transform:translateY(var(--lift))}
 .graph.in .node{opacity:1; transform:none;
-  transition:opacity .34s var(--ease-out), transform .4s var(--ease-settle)}
-.graph.in .node:nth-of-type(2){transition-delay:.06s}
-.graph.in .node:nth-of-type(3){transition-delay:.12s}
-.graph.in .node:nth-of-type(4){transition-delay:.18s}
-.graph.in .node.borrow{transition-delay:1.18s}
+  transition:opacity var(--enter) var(--ease-out), transform var(--enter) var(--ease-out)}
+.graph.in .node:nth-of-type(2){transition-delay:40ms}
+.graph.in .node:nth-of-type(3){transition-delay:80ms}
+.graph.in .node:nth-of-type(4){transition-delay:120ms}
+.graph.in .node.borrow{transition-delay:.44s}
 .graph .arrow{fill:#DCDCE3; opacity:0}
-.graph.in .arrow{opacity:1; transition:opacity .26s var(--ease-out) 1.3s}
+.graph.in .arrow{opacity:1; transition:opacity var(--enter) var(--ease-out) .58s}
 .nodechip{
   display:inline-flex; align-items:center; gap:8px; height:26px; padding:0 12px;
   border-radius:999px; background:var(--lilac); border:1px solid #E4D5F5;
   font-size:11px; font-weight:600; letter-spacing:.09em; color:#6A17A6;
-  margin-top:22px; opacity:0; transform:translateY(6px);
+  margin-top:22px; opacity:0; transform:translateY(var(--lift));
 }
 .nodechip.in{opacity:1; transform:none;
-  transition:opacity .4s var(--ease-out), transform .46s var(--ease-settle)}
+  transition:opacity var(--enter) var(--ease-out), transform var(--enter) var(--ease-out)}
 
 /* e. the modification card */
 .modcard{
@@ -673,10 +683,10 @@ html.locked body>*:not(#gate){visibility:hidden}
   flex-wrap:wrap;
   background:var(--raised); border:1px solid var(--hair); border-radius:10px;
   padding:18px 20px; margin-top:18px;
-  opacity:0; transform:translateY(10px);
+  opacity:0; transform:translateY(var(--lift));
 }
 .modcard.in{opacity:1; transform:none;
-  transition:opacity .4s var(--ease-out), transform .5s var(--ease-settle)}
+  transition:opacity var(--enter) var(--ease-out), transform var(--enter) var(--ease-out)}
 .modcard .fac{font-size:13px; font-weight:500; color:var(--ink-max)}
 .modcard .facm{font-size:12px; color:var(--muted); margin-top:3px}
 .delta{display:flex; align-items:center; gap:14px; font-variant-numeric:tabular-nums}
@@ -688,7 +698,7 @@ html.locked body>*:not(#gate){visibility:hidden}
   display:flex; align-items:center; gap:8px; margin-top:16px;
   font-size:13px; color:var(--sub); opacity:0;
 }
-.checked.in{opacity:1; transition:opacity .38s var(--ease-out) .34s}
+.checked.in{opacity:1; transition:opacity var(--enter) var(--ease-out)}
 .tick{width:16px; height:16px; flex:none; color:var(--positive)}
 
 /* f. the memo drafting */
@@ -703,7 +713,7 @@ html.locked body>*:not(#gate){visibility:hidden}
 .secrow .sst{width:16px; height:16px; flex:none; position:relative}
 .secrow .sst>svg{position:absolute; inset:0; width:16px; height:16px}
 .secrow .sst .tk{opacity:0; transform:scale(.7); transform-origin:center;
-  transition:opacity .22s var(--ease-out), transform .34s var(--ease-settle); color:var(--positive)}
+  transition:opacity var(--enter) var(--ease-out), transform var(--enter) var(--ease-out); color:var(--positive)}
 .secrow.done .sst .tk{opacity:1; transform:none}
 .secrow.done{color:var(--sub)}
 .secrow.writing .sst .wr{color:var(--coral)}
@@ -751,6 +761,12 @@ html.locked body>*:not(#gate){visibility:hidden}
 
 /* the halo, the one piece of spectacle in the page */
 .halostage{position:relative; z-index:70}
+/* The bloom can only be painted where there is paper. Below the width at which
+   the light needs more room than the gutter leaves, the chapter's own stage
+   pulls in, the two cards narrow together, and the light gets its paper back.
+   Without this the canvas is wider than the phone and the glow is sliced flat
+   at both screen edges. */
+@media (max-width:1140px){ #ch-g .stage{padding-inline:clamp(26px,8.5vw,88px)} }
 /* The halo's box is written by JS off the dossier's measured rect, so its
    centre is the card's centre at every viewport. The values below are only
    what it wears before the first measurement. */
@@ -772,10 +788,10 @@ html.locked body>*:not(#gate){visibility:hidden}
 .dossier .dv{font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums}
 .execrow{display:flex; align-items:center; gap:12px; height:42px;
   border-bottom:1px solid var(--hair); font-size:13px; color:var(--sub);
-  opacity:0; transform:translateY(4px)}
+  opacity:0; transform:translateY(var(--lift))}
 .execrow:last-child{border-bottom:0}
 .execrow.in{opacity:1; transform:none;
-  transition:opacity .4s var(--ease-out), transform .42s var(--ease-settle)}
+  transition:opacity var(--enter) var(--ease-out), transform var(--enter) var(--ease-out)}
 .execrow .w{margin-left:auto; font-size:12px; color:var(--muted)}
 
 /* ============================================================
@@ -834,6 +850,16 @@ html.locked body>*:not(#gate){visibility:hidden}
   .memoctrl .btn{flex:1 1 auto; justify-content:center}
   .endrow{gap:14px; padding:18px 0 26px}
   .endrow .lg{height:15px}
+  /* chapter g's two cards narrow to give the bloom its paper, so their rows
+     have to be allowed to grow rather than hold a fixed height and overlap */
+  .dossier{padding:18px 18px}
+  .plan{padding:16px 18px}
+  .dossier .dh{flex-direction:column; align-items:flex-start; gap:3px}
+  .execrow{height:auto; min-height:38px; padding:9px 0; align-items:flex-start;
+    gap:10px; font-size:12.5px; line-height:1.4}
+  .execrow .tick{margin-top:1px}
+  .execrow .w{margin-top:0; white-space:nowrap; padding-left:10px; font-size:11.5px}
+  .planrow{align-items:flex-start}
 }
 
 .scrollx{overflow-x:auto}
@@ -841,7 +867,7 @@ html.locked body>*:not(#gate){visibility:hidden}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important; animation-iteration-count:1!important;
     transition-duration:.01ms!important}
-  .rise,.notthis,.onetab,.modcard,.checked,.nodechip,.execrow,.chipstrip .chip,.tilt{
+  .rise,.notthis,.onetab,.modcard,.checked,.nodechip,.execrow,.chipstrip .chip{
     opacity:1!important; transform:none!important}
   .breath > img{transform:none!important}
   .breath .caret{opacity:0!important}
@@ -996,7 +1022,7 @@ html.locked body>*:not(#gate){visibility:hidden}
         <span class="tab">Outlook</span><span class="tab">SharePoint</span><span class="tab">Teams</span>
         <span class="tab">Spreads.xlsx</span><span class="tab">DocMan</span>
       </div>
-      <div class="onetab tilt" id="onetab">
+      <div class="onetab" id="onetab">
         <div class="device">
           <div class="dev-top">
             <svg class="ic" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.2" y="2.4" width="13.6" height="11.2" rx="2.2"/><line x1="6.1" y1="2.4" x2="6.1" y2="13.6"/></svg>
@@ -1021,7 +1047,7 @@ html.locked body>*:not(#gate){visibility:hidden}
       <p class="sub">The book is read before you open it. Exposure, utilisation and the queue are already counted.</p>
     </div>
     <div class="stage">
-      <div class="device rise tilt" data-rise>
+      <div class="device rise" data-rise>
         <div class="dev-top">
           <svg class="ic" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.2" y="2.4" width="13.6" height="11.2" rx="2.2"/><line x1="6.1" y1="2.4" x2="6.1" y2="13.6"/></svg>
           <svg class="ic" width="17" height="17" viewBox="0 0 17 17" aria-hidden="true"><rect x="3.2" y="3.4" width="10.6" height="7.6" rx="1.4"/><path d="M1.6 14.2h13.8"/></svg>
@@ -1080,7 +1106,7 @@ html.locked body>*:not(#gate){visibility:hidden}
 <!-- breather 1 ................................................ -->
 <section class="breath" id="breath-1">
   <img src="assets/stills/breather-1.jpg" alt="" width="1760" height="1080"
-       loading="lazy" decoding="async" />
+       loading="lazy" decoding="async" fetchpriority="low" />
   <h2 class="sr">Every system, one screen.</h2>
   <p class="breath-type" aria-hidden="true" data-seg='[{"t":"Every system, one "},{"t":"screen","k":1},{"t":"."}]'><span class="t"></span><i class="caret"></i><span class="rest">Every system, one <span class="key">screen</span>.</span></p>
 </section>
@@ -1094,7 +1120,7 @@ html.locked body>*:not(#gate){visibility:hidden}
       <p class="sub">Six integrations resolve before the first question is asked. You never open one of them.</p>
     </div>
     <div class="stage">
-      <div class="device rise tilt" data-rise>
+      <div class="device rise" data-rise>
         <div class="dev-top">
           <svg class="ic" width="17" height="17" viewBox="0 0 17 17" aria-hidden="true"><rect x="3.2" y="3.4" width="10.6" height="7.6" rx="1.4"/><path d="M1.6 14.2h13.8"/></svg>
           <span class="dev-title">Credit 360 for my book</span>
@@ -1132,7 +1158,7 @@ html.locked body>*:not(#gate){visibility:hidden}
       <p class="sub">Owners, affiliates and the borrower, with the guaranty on the edge that carries it.</p>
     </div>
     <div class="stage">
-      <div class="device rise tilt" data-rise>
+      <div class="device rise" data-rise>
         <div class="dev-top">
           <svg class="ic" width="17" height="17" viewBox="0 0 17 17" aria-hidden="true"><circle cx="8.5" cy="8.5" r="7"/><path d="M1.5 8.5h14M8.5 1.5a11 11 0 0 1 0 14a11 11 0 0 1 0-14z"/></svg>
           <span class="dev-title">Hartwell Precision Manufacturing LLC &middot; Relationship Graph</span>
@@ -1195,7 +1221,7 @@ html.locked body>*:not(#gate){visibility:hidden}
       <p class="sub">No form, no screen to find. The facility changes in the window the question was asked in.</p>
     </div>
     <div class="stage">
-      <div class="device rise tilt" data-rise>
+      <div class="device rise" data-rise>
         <div class="dev-top">
           <svg class="ic" width="17" height="17" viewBox="0 0 17 17" aria-hidden="true"><rect x="3.2" y="3.4" width="10.6" height="7.6" rx="1.4"/><path d="M1.6 14.2h13.8"/></svg>
           <span class="dev-title">Hartwell Precision &middot; Working Capital Revolver</span>
@@ -1251,7 +1277,7 @@ html.locked body>*:not(#gate){visibility:hidden}
       <p class="sub">Not after the decision. During it, section by section, with every source on the record.</p>
     </div>
     <div class="stage">
-      <div class="device rise tilt" data-rise>
+      <div class="device rise" data-rise>
         <div class="dev-top">
           <svg class="ic" width="19" height="19" viewBox="0 0 19 19" aria-hidden="true"><use href="#g-memo"/></svg>
           <span class="dev-title">Credit Memo &middot; drafting</span>
@@ -1304,7 +1330,7 @@ html.locked body>*:not(#gate){visibility:hidden}
       <p class="sub">The plan is read back before anything moves. One control commits it, and the record closes behind it.</p>
     </div>
     <div class="stage">
-      <div class="plan rise tilt" data-rise id="planbox" style="max-width:720px;margin:0 auto">
+      <div class="plan rise" data-rise id="planbox" style="max-width:720px;margin:0 auto">
         <p class="ph">Review and execute</p>
         <div class="planrow"><span class="n">1</span><span>Increase the Working Capital Revolver commitment from $15.0M to $20.0M</span></div>
         <div class="planrow"><span class="n">2</span><span>Re-test the covenant package at the new commitment and record the result</span></div>
@@ -1316,7 +1342,7 @@ html.locked body>*:not(#gate){visibility:hidden}
         </div>
       </div>
 
-      <div class="halostage" id="halostage" style="margin-top:clamp(104px,17vh,196px)">
+      <div class="halostage" id="halostage" style="margin-top:clamp(132px,21vh,240px)">
         <canvas id="halo" width="2" height="2" aria-hidden="true"></canvas>
         <div class="dossier" id="dossier">
           <div class="dh">
@@ -1353,7 +1379,6 @@ html.locked body>*:not(#gate){visibility:hidden}
 
 <script src="assets/vendor/gsap-3.12.5.min.js" defer></script>
 <script src="assets/vendor/ScrollTrigger-3.12.5.min.js" defer></script>
-<script src="assets/vendor/lenis-1.1.20.min.js" defer></script>
 <script>
 (function () {
   'use strict';
@@ -1579,44 +1604,49 @@ html.locked body>*:not(#gate){visibility:hidden}
       if (pp && pp.catch) { pp.catch(function () {}); }
     }
     setTimeout(function () { $('#herochev').classList.add('struck'); }, RM ? 0 : 400);
+    var b1 = $('#breath-1 img');
+    if (b1) { b1.loading = 'eager'; b1.fetchPriority = 'high'; }
   }
   if (window.c360Gate) { window.c360Gate.whenOpen(afterGate); } else { afterGate(); }
 
   /* ==========================================================
-     THE SCROLL. Lenis for the feel, ScrollTrigger for the cues.
-     Every cue fires once. Nothing is scrubbed, nothing parallaxes:
-     a component enters, does its real thing, and stays done.
+     THE SCROLL. The browser's own, and ScrollTrigger for the cues.
+
+     This page used to run Lenis over the top of it. On a trackpad that is a
+     lerp fighting the pointer's own inertia: the page keeps moving after the
+     fingers stop, every cue lands a frame or two behind the scroll it belongs
+     to, and the whole thing reads as lag. Native scrolling is on the
+     compositor and is what the founder's hand already expects.
+
+     Every cue fires ONCE, at the same place: when the element is 20% into the
+     viewport. Nothing is scrubbed but the breathers' Ken Burns.
      ========================================================== */
+  var ENTER = 'top 80%';
   function once(el, fn, start) {
     if (!el) { return; }
     if (!window.ScrollTrigger) { fn(); return; }
-    ScrollTrigger.create({ trigger: el, start: start || 'top 82%', once: true, onEnter: fn });
+    ScrollTrigger.create({ trigger: el, start: start || ENTER, once: true, onEnter: fn });
   }
 
   function boot() {
     if (window.gsap && window.ScrollTrigger) { gsap.registerPlugin(ScrollTrigger); }
 
-    if (window.Lenis && !RM) {
-      var lenis = new Lenis({ duration: 1.05, smoothWheel: true, touchMultiplier: 1.6 });
-      function raf(t) { lenis.raf(t); requestAnimationFrame(raf); }
-      requestAnimationFrame(raf);
-      if (window.ScrollTrigger) { lenis.on('scroll', ScrollTrigger.update); }
-    }
-
     /* the generic lift: 8 px, 420 ms, the product's own arrive */
-    $$('[data-rise]').forEach(function (el, i) {
-      once(el, function () { setTimeout(function () { el.classList.add('in'); }, i % 4 * 45); }, 'top 88%');
+    $$('[data-rise]').forEach(function (el) {
+      once(el, function () { el.classList.add('in'); });
     });
 
     /* a. the tabs collapse, the one tab lands */
     var strip = $('#tabstrip');
     once(strip, function () {
       if (RM) { strip.classList.add('collapse'); $('#notthis').classList.add('in'); $('#onetab').classList.add('in'); return; }
-      $$('.tab', strip).forEach(function (t, i) { t.style.transitionDelay = (i * 34) + 'ms'; });
-      setTimeout(function () { strip.classList.add('collapse'); }, 520);
-      setTimeout(function () { $('#onetab').classList.add('in'); }, 760);
-      setTimeout(function () { $('#notthis').classList.add('in'); }, 1000);
-    }, 'top 74%');
+      /* the eleven leave and the one arrives OVER them, in the same cell: the
+         old sequence left 340 ms of empty band between the two */
+      $$('.tab', strip).forEach(function (t, i) { t.style.transitionDelay = (i * 20) + 'ms'; });
+      setTimeout(function () { strip.classList.add('collapse'); }, 200);
+      setTimeout(function () { $('#onetab').classList.add('in'); }, 400);
+      setTimeout(function () { $('#notthis').classList.add('in'); }, 560);
+    });
 
     /* b. the figures count up. The app rolls its numbers; this is that roll. */
     once($('#kpiband'), function () {
@@ -1624,7 +1654,7 @@ html.locked body>*:not(#gate){visibility:hidden}
         var to = parseFloat(el.dataset.count), dec = +el.dataset.dec || 0;
         var pre = el.dataset.pre || '', post = el.dataset.post || '';
         if (RM || !to) { el.textContent = pre + to.toFixed(dec) + post; return; }
-        var t0 = 0, dur = 620, delay = i * 70;
+        var t0 = 0, dur = 600, delay = i * 40;
         setTimeout(function () {
           requestAnimationFrame(function step(ts) {
             if (!t0) { t0 = ts; }
@@ -1635,23 +1665,23 @@ html.locked body>*:not(#gate){visibility:hidden}
           });
         }, delay);
       });
-    }, 'top 78%');
+    });
 
     /* c. the integrations resolve, then the plugin chips arrive */
     once($('#railrows'), function () {
       var rows = $$('#railrows .runrow');
-      rows.forEach(function (r, i) { setTimeout(function () { r.classList.add('done'); }, RM ? 0 : 160 + i * 190); });
-      setTimeout(function () { $('#chipstrip').classList.add('in'); }, RM ? 0 : 160 + rows.length * 190 + 220);
-    }, 'top 76%');
+      rows.forEach(function (r, i) { setTimeout(function () { r.classList.add('done'); }, RM ? 0 : 120 + i * 100); });
+      setTimeout(function () { $('#chipstrip').classList.add('in'); }, RM ? 0 : 120 + rows.length * 100 + 140);
+    });
 
     /* d. the edges draw from the owners down into the borrower */
     once($('#graph'), function () {
       $('#graph').classList.add('in');
       var fg = $('#ring .fg');
       /* grade 4 of 8: half the ring, drawn from 12 o'clock */
-      if (fg) { setTimeout(function () { fg.style.strokeDashoffset = (119.4 * (1 - 4 / 8)).toFixed(1); }, 120); }
-      setTimeout(function () { $('#nodechip').classList.add('in'); }, RM ? 0 : 1550);
-    }, 'top 74%');
+      if (fg) { setTimeout(function () { fg.style.strokeDashoffset = (119.4 * (1 - 4 / 8)).toFixed(1); }, 80); }
+      setTimeout(function () { $('#nodechip').classList.add('in'); }, RM ? 0 : 760);
+    });
 
     /* e. the sentence types, the card lands, the check follows */
     var ASK = 'increase to 20';
@@ -1659,27 +1689,28 @@ html.locked body>*:not(#gate){visibility:hidden}
       var el = $('#asktype');
       function land() {
         $('#asksend').classList.add('fire');
-        setTimeout(function () { $('#modcard').classList.add('in'); }, RM ? 0 : 180);
-        setTimeout(function () { $('#checked').classList.add('in'); }, RM ? 0 : 620);
+        setTimeout(function () { $('#modcard').classList.add('in'); }, RM ? 0 : 120);
+        setTimeout(function () { $('#checked').classList.add('in'); }, RM ? 0 : 320);
       }
       if (RM) { el.textContent = ASK; land(); return; }
+      /* 24 characters a second, the film's own rate and the page's only one */
       var i = 0, tick = setInterval(function () {
         el.textContent = ASK.slice(0, ++i);
-        if (i >= ASK.length) { clearInterval(tick); setTimeout(land, 300); }
-      }, 62);
-    }, 'top 72%');
+        if (i >= ASK.length) { clearInterval(tick); setTimeout(land, 200); }
+      }, 42);
+    });
 
     /* f. the memo ticks its way to 7 of 9 and holds on the eighth */
     once($('#seclist'), function () {
       var rows = $$('#seclist .secrow'), n = $('#secn'), done = 0;
       rows.forEach(function (r, i) {
-        if (i > 6) { if (i === 7) { setTimeout(function () { r.classList.add('writing'); }, RM ? 0 : 160 + 7 * 150); } return; }
+        if (i > 6) { if (i === 7) { setTimeout(function () { r.classList.add('writing'); }, RM ? 0 : 120 + 7 * 90); } return; }
         setTimeout(function () {
           r.classList.add('done');
           n.textContent = (++done) + ' of 9';
-        }, RM ? 0 : 160 + i * 150);
+        }, RM ? 0 : 120 + i * 90);
       });
-    }, 'top 76%');
+    });
 
     /* g. approve: the dim, the halo, the executed lines */
     var approve = $('#approve'), stage = $('#halostage'), dim = $('#dim'), fired = false;
@@ -1696,16 +1727,16 @@ html.locked body>*:not(#gate){visibility:hidden}
         stage.classList.add('lit');
         if (window.__halo) { window.__halo.bloom(); }
         $$('.execrow').forEach(function (r, i) {
-          setTimeout(function () { r.classList.add('in'); }, RM ? 0 : i * 130);
+          setTimeout(function () { r.classList.add('in'); }, RM ? 0 : i * 40);
         });
-      }, RM ? 0 : 420);
+      }, RM ? 0 : 300);
       /* the surface comes back up once the record has closed */
       setTimeout(function () { dim.classList.remove('on'); }, RM ? 0 : 3200);
     }
     approve.addEventListener('click', execute);
-    once($('#planbox'), function () { approve.classList.add('armed'); }, 'top 74%');
+    once($('#planbox'), function () { approve.classList.add('armed'); });
     /* the plan is read back, then the control commits it. Pressing it early runs it early. */
-    once(stage, execute, 'top 78%');
+    once(stage, execute);
 
     /* the breathers: the still holds a slow 1.04x as it passes, and the film's
        own headline types over the person at 24 characters a second */
@@ -1716,6 +1747,19 @@ html.locked body>*:not(#gate){visibility:hidden}
           scrollTrigger: { trigger: sec, start: 'top bottom', end: 'bottom top', scrub: true } });
       }
       once(sec, function () { speak(sec); }, 'top 34%');
+    });
+
+    /* the next breather's plate is decoded before it is scrolled to, so the
+       full-bleed frame is never the thing the scroll is waiting on */
+    var plates = $$('.breath > img');
+    plates.forEach(function (img, i) {
+      var next = plates[i + 1];
+      if (!next) { return; }
+      once(img.parentNode, function () {
+        next.loading = 'eager';
+        next.fetchPriority = 'high';
+        if (next.decode) { next.decode().catch(function () {}); }
+      }, 'top bottom');
     });
 
     if (window.__halo) { window.__halo.place(); }
@@ -1777,38 +1821,60 @@ html.locked body>*:not(#gate){visibility:hidden}
     var cv = $('#halo'); if (!cv) { return; }
     var stage = $('#halostage'), card = $('#dossier');
     var ctx = cv.getContext('2d');
+    /* the film's spectrum, taken one step off full saturation: the sweep is the
+       same, the light is a bloom on paper rather than a neon */
     var stops = [
-      [0.00, '#A100FF'], [0.17, '#C77DFF'], [0.34, '#FF50A0'],
-      [0.52, '#7500C0'], [0.70, '#224BFF'], [0.86, '#05F2DB'], [1.00, '#A100FF']
+      [0.00, '#B638FF'], [0.17, '#D39AFF'], [0.34, '#FF77B5'],
+      [0.52, '#9338CE'], [0.70, '#5373FF'], [0.86, '#3CF5E3'], [1.00, '#B638FF']
     ];
     /* the cap is what keeps the dossier's own type fully legible under the bloom */
-    var CAP = 0.56, RISE = 900, DPR = 0.5;
-    var W = 0, H = 0, P = 0, GLOW = 0, RAD = 6;
+    /* CAP is the peak the bloom is allowed to reach over the paper. MARGIN is
+       the dead band at the canvas's edge that the light never enters: the
+       falloff is arithmetically zero MARGIN pixels before the canvas ends, so
+       there is no edge for it to cut on. On a phone the pad itself is small,
+       so the band scales with it rather than eating the whole bloom. */
+    var CAP = 0.42, RISE = 900, DPR = 0.5, MARGIN = 44;
+    var W = 0, H = 0, PAD = 0, SUP = 0, RAD = 6;
     var have = 0, t0 = 0, lit = false, raf = 0;
+    var plan = $('#planbox'), endc = $('#end .endcentre');
 
     /* The halo hugs the CARD, measured, at every viewport: the canvas is the
-       dossier's own box inflated by one pad, so its centre IS the card's centre
-       by construction, and the ring it strokes is the card's own rounded edge.
-       That is the film's climax, where the bloom carries the card's shape and
-       not a circle behind it. */
+       dossier's own box inflated by one pad on every side, so its centre IS the
+       card's centre by construction, and the ring it strokes is the card's own
+       rounded edge. That is the film's climax, where the bloom carries the
+       card's shape and not a circle behind it.
+
+       THE PAD IS THE WHOLE FIX. The bloom wants a canvas 2.4x the card wide and
+       3x it tall, and it takes that much wherever the paper allows. It never
+       takes more than the paper allows: the pad is capped by the viewport on
+       the sides and by the plan card above and the endcard below, so the light
+       is always at true zero before it reaches anything that could cut it. The
+       light reaches 0.63 of the pad; the outer 0.37 of the pad is dead canvas,
+       which is the margin the falloff needs to land on zero rather than on an
+       edge. */
     function place() {
       if (!stage || !card) { return; }
       var s = stage.getBoundingClientRect(), d = card.getBoundingClientRect();
       if (!d.width) { return; }
-      /* G is how far the light reaches past the card. The canvas is inflated a
-         little further than that, so the bloom falls off inside its own bounds
-         and never cuts on a straight edge. */
-      var G = Math.min(146, Math.max(74, d.height * 0.42));
-      var out = Math.round(G * 1.15);
-      cv.style.width = (d.width + out * 2) + 'px';
-      cv.style.height = (d.height + out * 2) + 'px';
-      cv.style.left = ((d.left - s.left) - out).toFixed(2) + 'px';
-      cv.style.top = ((d.top - s.top) - out).toFixed(2) + 'px';
-      W = Math.max(2, Math.round((d.width + out * 2) * DPR));
-      H = Math.max(2, Math.round((d.height + out * 2) * DPR));
+      var vw = document.documentElement.clientWidth;
+      var above = plan ? d.top - plan.getBoundingClientRect().bottom : 260;
+      var below = endc ? endc.getBoundingClientRect().top - d.bottom : 260;
+      /* the bloom wants a canvas 2.4x the card wide and 3x it tall, and takes
+         as much of that as the paper allows: never past the viewport on the
+         sides, never as far as the plan card above or the endcard below. */
+      var want = Math.max(d.height, d.width * 0.7);
+      var pad = Math.min(want, d.left - 2, vw - d.right - 2, above + MARGIN, below + MARGIN);
+      pad = Math.max(24, Math.round(pad));
+      cv.style.width = (d.width + pad * 2) + 'px';
+      cv.style.height = (d.height + pad * 2) + 'px';
+      cv.style.left = ((d.left - s.left) - pad).toFixed(2) + 'px';
+      cv.style.top = ((d.top - s.top) - pad).toFixed(2) + 'px';
+      W = Math.max(2, Math.round((d.width + pad * 2) * DPR));
+      H = Math.max(2, Math.round((d.height + pad * 2) * DPR));
       if (cv.width !== W) { cv.width = W; }
       if (cv.height !== H) { cv.height = H; }
-      P = out * DPR; GLOW = G * DPR;
+      PAD = pad * DPR;
+      SUP = (pad - Math.min(MARGIN, pad * 0.28)) * DPR;
       RAD = 12 * DPR;
     }
 
@@ -1826,9 +1892,19 @@ html.locked body>*:not(#gate){visibility:hidden}
       if (lit) { var e = Math.min(1, (t - t0) / RISE); have = CAP * (1 - Math.pow(1 - e, 3)); }
       ctx.clearRect(0, 0, W, H);
       if (have > 0.004) {
-        /* the breath is 4 s, the film's own */
-        var breathe = RM ? 0 : Math.sin(t / 636.62) * 0.06;
-        var ins = P - GLOW * breathe;
+        /* The ring's centreline sits just outside the card's own edge and the
+           blur carries it out from there. Support is E + line/2 + 3 sigma =
+           0.63 of the pad, so the light is arithmetically zero with 0.37 of the
+           pad still to go before the canvas ends. The breath is 4 s, the film's
+           own, and it moves the ring by 3.5% of the pad: inside the margin. */
+        var breathe = RM ? 0 : Math.sin(t / 636.62) * 0.04;
+        /* E + line/2 + 3 sigma == SUP exactly, which is the pad less its dead
+           band. Line over sigma is held at 2.4 so the bloom keeps a body to it
+           at any size instead of thinning out into a smear. */
+        var E = SUP * (0.06 + breathe);
+        var LW = SUP * 0.537;
+        /* the stroke's centreline is the card's own edge pushed out by E */
+        var ins = PAD - E;
         var g;
         if (ctx.createConicGradient) { g = ctx.createConicGradient(RM ? 0.6 : t / 11000, W / 2, H / 2); }
         else { g = ctx.createLinearGradient(0, 0, W, H); }
@@ -1836,10 +1912,10 @@ html.locked body>*:not(#gate){visibility:hidden}
         ctx.save();
         ctx.globalAlpha = have;
         ctx.globalCompositeOperation = 'lighter';
-        ctx.filter = 'blur(' + (GLOW * 0.24).toFixed(1) + 'px)';
+        ctx.filter = 'blur(' + (SUP * 0.224).toFixed(1) + 'px)';
         ctx.strokeStyle = g;
-        ctx.lineWidth = GLOW * 0.62;
-        ring(ins, ins, W - ins * 2, H - ins * 2, RAD);
+        ctx.lineWidth = LW;
+        ring(ins, ins, W - ins * 2, H - ins * 2, RAD + E);
         ctx.stroke();
         ctx.restore();
       }
@@ -1864,6 +1940,21 @@ html.locked body>*:not(#gate){visibility:hidden}
       if (document.hidden && raf) { cancelAnimationFrame(raf); raf = 0; }
       else if (!document.hidden && !raf && lit) { raf = requestAnimationFrame(frame); }
     });
+  })();
+
+  /* one measurement per width. A height-only resize is the browser's chrome
+     collapsing, and a full-bleed section must not move when that happens. */
+  (function vph() {
+    var w = 0;
+    function set() {
+      if (window.innerWidth === w) { return; }
+      w = window.innerWidth;
+      root.style.setProperty('--vph', window.innerHeight + 'px');
+      if (window.ScrollTrigger) { ScrollTrigger.refresh(); }
+    }
+    set();
+    window.addEventListener('resize', set);
+    window.addEventListener('orientationchange', function () { setTimeout(function () { w = 0; set(); }, 260); });
   })();
 
   if (document.readyState === 'complete') { boot(); }

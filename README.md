@@ -17,7 +17,6 @@ surface and rebuilt as live HTML at its real scale:
 | The gate's right pane: the `Morning.` greeting, the 106 px composer with its 20 px radius, the `Chat \| Cowork` pillbed, the `Fable 5.1 · Medium` meta, the send control | `c360-film/door/index.html`, shots 8 and 9 (measured off the Cowork reference PNGs with PIL) |
 | The hero plate: the clean raw aerial the film's shot 1 was cut from, looping, under the page's own chevron at 70% | `c360-film/overture/assets/video/V1-aerial-push-film-1080p-cut.mp4` |
 | The breathers: three full-bleed people frames with the film's headline typed over them at 24 characters a second, white with one purple key word and the film's own drop | the reel's own frames at 17.967 s, 44.700 s and 50.000 s, plus `c360-film/type/OVERLAY.md` for the type's rate, colour and shadow |
-| The chapter cards' arrival: `perspective(1600px) rotateY(-6deg)` easing to flat | the film's `macro` register, whose rule is a tilted world at `transformPerspective: 1600` |
 | The connector rows: the 19 px slot, the coral dashed spinner resolving to the vendor glyph, the 1 px thread, the 14 px label | `c360-film/door/index.html` shot 11 and `c360-film-b/room/index.html` shot 34, including the `Credit Memo · drafting` row |
 | The Cowork window chrome and its title bar | the same two cells |
 | The context chips and the `>` skill mark | the door cell's rail |
@@ -68,10 +67,45 @@ has run) and the hero plate carries `preload="none"` until the same moment.
 The halo is the one piece of spectacle on the page and it has to sit exactly on the
 card. Its canvas is the dossier's own measured box inflated by one pad, so its centre
 IS the card's centre at every viewport, and what it strokes is the card's own rounded
-edge rather than a circle behind it. The canvas is inflated further than the light
-reaches, so the bloom falls off inside its own bounds and never cuts on a straight
-edge. The surface goes down one stop first, the bloom rises over 900 ms, then it
-breathes at 4 s, capped at 0.56 so the dossier's type stays fully legible.
+edge rather than a circle behind it.
+
+**The pad is the whole thing.** The bloom wants a canvas 2.4x the card wide and 3x it
+tall, and it takes as much of that as the paper allows. It never takes more: the pad
+is capped by the viewport on the sides and by the plan card above and the endcard
+below, so the light is always at true zero before it reaches anything that could cut
+it. The light's support is `E + line/2 + 3 sigma`, set equal to the pad less a dead
+band of 44 px (or 28% of the pad, whichever is smaller, so a phone still gets a
+bloom). Line over sigma is held at 2.4, which is what keeps the bloom a body of light
+rather than a smear as the pad changes size. Below 1140 px the chapter's stage pulls
+in and the two cards narrow together, because a bloom can only be painted where there
+is paper.
+
+Peak is capped at 0.42 so the dossier's type stays fully legible, and the sweep is
+the film's spectrum taken one step off full saturation. The surface goes down one
+stop first, the bloom rises over 900 ms, then it breathes at 4 s.
+
+Nothing on the page clips horizontally except `html, body`. A section carrying
+`overflow-x: clip` slices the bloom flat at its own left and right edges, and on a
+phone that is exactly what happened: the light read 102 of 255 at the screen's
+outermost column and stopped there.
+
+## The motion
+
+One language, and it is the product's own arrival: **240 ms of opacity over an 8 px
+rise on `cubic-bezier(.2,.7,.2,1)`**, members of one card 40 ms apart, every cue
+fired once when its element is 20% into the viewport. Typing is 24 characters a
+second everywhere: the gate's prompt, the ask, the three breather lines. Figures roll
+for 600 ms. Nothing runs longer than 900 ms except the halo's bloom, and no chapter's
+whole reveal runs past about a second, so a component is always finished before its
+section has left the screen. The cards used to arrive out of a `rotateY(-6deg)` tilt;
+against a still page that read as a hinge, not as the film, and it is gone.
+
+The scroll is the browser's own. This page used to run Lenis over the top of it; on a
+trackpad that is a lerp fighting the pointer's own inertia, and every cue lands
+behind the scroll it belongs to. Driven with identical wheel events, Lenis delivered
+13.4 px of each 54 px the wheel asked for and paid the rest back as a tail, over 21
+frames longer than 25 ms across the page. Native: 53.7 px delivered, one frame over
+25 ms, zero long tasks.
 
 ## Structure
 
@@ -82,7 +116,7 @@ assets/film/               the reel (1080p + 720p, fragmented), film.json, and t
                            hero plate: the looping aerial and its first frame
 assets/stills/             the three breather frames, cut from the reel
 assets/fonts/              Inter 400/500/600 and Newsreader, subset to Latin
-assets/vendor/             GSAP, ScrollTrigger, Lenis
+assets/vendor/             GSAP and ScrollTrigger. The scroll itself is the browser's.
 assets/logos/              the wordmark, recoloured to ink for the cream ground
 tools/sync-assets.sh       pull the delivered reel in and build the hero plate
 tools/prepare-film.sh      fragment it for MediaSource and write film.json
@@ -92,12 +126,16 @@ tools/prepare-film.sh      fragment it for MediaSource and write film.json
 
 At 1440x900, Chromium, over the local build:
 
-- first contentful paint **116 ms**, load **88 ms**, 10 requests, 533 KB at the gate
-- first film frame **8 to 14 ms** after the press (the stream is warmed on unlock)
-- cumulative layout shift **0.0000** over the whole scroll, at 1440x900, 1920x1080,
-  768x1024 and 390x844
-- the halo's centre sits on the dossier's centre to within 1 px at every viewport,
-  and its light falls off 25 px inside the canvas on all four sides
+- first contentful paint **116 ms**, load **140 ms**, first film frame **11 ms**
+  after the press (the stream is warmed on unlock)
+- cumulative layout shift **0.0000** over the whole scroll, at 1440x900, 1920x1080
+  and 390x844, and no horizontal overflow at 390
+- the halo's centre sits on the dossier's centre to within 1 px at every viewport.
+  Its light is at true zero **73 px** inside the canvas at 1440x900, 67 px at
+  1280x720, 77 px at 1920x1080 and 19 px at 390x844, on all four edges, worst
+  single-pixel step 4 of 255. At the viewport's own edge columns it reads 0 at
+  every width
+- one frame longer than 25 ms and zero long tasks over the full scroll
 - no request over 3 MB besides the reel; the hero plate is 1.19 MB
 - 0 console errors, 0 failed requests, no horizontal overflow
 
