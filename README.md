@@ -109,7 +109,12 @@ cells so the site and the reel resolve to the same seven marks:
   said: the gate's run, chapter 03's rail, the plugin chip and the tab
 - **IBISWorld** joins the run. It is the one raster mark on the page, because it
   has no path to lift: the cells' own 38 px favicon, carried as a data URI and
-  clipped to the 4 px radius the rows draw it with
+  clipped to the 4 px radius the rows draw it with. It stands in chapter 03's
+  plugin strip too, where it had been a grey bullet: the same clipped symbol the
+  rail uses, at the chip's own 15 px. The chip stays grey-ranked like AFS and
+  nCino, because the rank is carried by the label rather than by the mark, and the
+  strip's geometry is unchanged to the hundredth of a pixel at 1440 and at 390.
+  The bullet it replaced was 15 px wide as well, so nothing rewraps
 
 Being the one raster mark cost it its place at the door for one build. The rule
 that hides the page behind the gate, `html.locked body>*:not(#gate)`, was hiding
@@ -282,6 +287,31 @@ is the other half of the same device, **two frames to white and back**, hard sto
 the colour steps rather than fades. Verified off the animation's own timeline: white at
 0, 16 and 32 ms, `#A100FF` from 40 ms.
 
+**And the light comes back.** The endcard's one sweep is on the mark: a white band
+clipped to the glyph, blurred into a bloom and screened back, so the light can only
+ever touch the mark and never the plate around it. It is the same mechanism the page
+built for the `accenture` wordmark this mark replaced, unchanged except in its
+geometry, and it is a TRANSFORM rather than a moving mask, because `mask-position`
+does not interpolate in Chromium and the band jumps the frame in one step instead of
+crossing it. The wordmark took the sweep once and never again. A single mark that is
+the only thing on the pane is looked at for as long as the composer is open, so this
+one repeats: **1.2 s across the glyph at 950 ms, then every 7 s**, first pass at
+`opacity .62` and every repeat at **60% of it**, `.372`, stepped down at 2.15 s, the
+instant the first pass leaves the glyph, so the drop in strength is never seen to
+happen. That is what keeps it a living mark rather than a loop announcing itself:
+measured on the glyph's own box, the first pass lifts it by a peak of 136/255 and the
+repeat by 79, which is 0.58 of it.
+
+Between passes the band is parked off the glyph's left edge, where the clip removes it:
+the frame at the start of a cycle is within **2/255** of the mark at rest, which is
+nothing. Under `prefers-reduced-motion` the sweep is `display:none` and never runs, and
+on unlock it is gone from the frame the phrase is accepted, because the strike is the
+mark's own moment and nothing may cross it.
+
+The band and the mark share ONE grid cell and take their width from one rule, so the
+light can never become a second row and push the mark off the pane's centre. That was
+re-measured after the sweep landed and the centring is the figure it was.
+
 The scrim under it was the bottom 45% and was a floor for a wordmark set in the lower
 third. A floor cannot light a mark at the pane's centre whatever depth it is given, so
 it is **halved to 22.5%** (29% on the phone band) and does only what is left to do:
@@ -292,16 +322,31 @@ edge. The mark carries its own contrast instead, on the film's own drop from
 for the length of the settle; on the wrapper the two compose, and the shadow blurs in
 with the mark and breathes with it.
 
-The measurement that made this the right trade: the plate's centre is sky and lit
-towers, not the darkness the lower third resolved into. Sampled off the poster where
-the mark now sits, the ground is rgb(38,58,76) on the desktop crop and rgb(84,104,121)
-on the phone's, whose crop is deliberately biased up to keep a dark top for the
-eyebrow and therefore lands the brightest part of the plate behind a centred mark.
-Rendered, the mark reads at 1.67:1 against its own ground on the desktop and 1.16:1 on
-the phone. Those are luminance ratios and they understate a mark that is separated by
-hue and saturation as much as by lightness, which is how a brand mark on a
-photographic plate works; the mark is decorative and `aria-hidden`, so no text
-threshold applies to it. It reads clearly at all three viewports.
+**The drop is at half the alpha it was first given**, `.31` and `.275` where it was
+`.62` and `.55`, same offset and same blur. At full strength it was not lighting the
+mark so much as drawing a dark collar round it, and on a mark this size the collar was
+part of what was being read. Measured at 1440x900 on the plate's own first frame, with
+the mark's pixels found by colour and the plate read again with the mark hidden:
+
+| | before | after |
+|---|---|---|
+| the plate under the glyph | L 0.3510 | L 0.3509 |
+| the ring 3 to 5 px off the glyph, drop included | L 0.1257 | **L 0.2184** |
+| the mark on its own ground at 13 to 24 px | **1.678:1** | **1.810:1** |
+| the mark on the plate under it | 2.193:1 | 2.122:1 |
+
+The ratio the mark has on the picture is 2.1:1 and belongs to the plate and the mark;
+the shadow cannot move it, and the 0.07 between the two columns is the glyph's
+antialiased edge coming out from under a lighter shadow rather than the ratio itself
+changing. The figure that does move is the mark on its rendered ground, and halving
+the drop **raises** it, from 1.68:1 to 1.81:1, because the collar had been dragging the
+surround down THROUGH the mark's own luminance. It is comfortably the right side of
+1.6:1 either way.
+
+Those are luminance ratios and they understate a mark that is separated by hue and
+saturation as much as by lightness, which is how a brand mark on a photographic plate
+works; the mark is decorative and `aria-hidden`, so no text threshold applies to it. It
+reads clearly at all three viewports.
 
 Client-side only, and a courtesy lock rather than a security boundary: GitHub Pages
 serves static files and anyone with the bundle can read `assets/gate.js`. The phrase
@@ -549,7 +594,14 @@ At 1440x900, Chromium, over the local build:
   horizontally at 1920x1080 and **0.008 px** vertically at 390x844, measured border
   box against border box. The 0.008 is one 1/128 px, the browser's own layout-unit
   rounding, and the same figure holds mid-settle as at rest. Drawn at 133.05, 160.00
-  and 64.00 px
+  and 64.00 px, and the sweep's own box is the same three figures, because both take
+  their width from one rule
+- the gate's sweep runs **950 to 2150 ms**, then **7950 to 9150**, then every 7 s,
+  read off the animation's own timeline rather than off a screenshot: delay 950,
+  duration 7000, infinite, with the 1.2 s of travel being 17.143% of the cycle. Its
+  strength is `.62` on the first pass and `.372` on every repeat, stepped at 2150 ms.
+  On the glyph itself the first pass lifts a peak of 136/255 and the repeat 79, a
+  ratio of 0.58; parked between passes it is within 2/255 of the mark at rest
 - 0 console errors, 0 failed requests, no horizontal overflow
 
 The reel in `assets/film/` is the rev 6 master, the re-render whose door shows

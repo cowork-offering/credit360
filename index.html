@@ -423,19 +423,38 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
      mark its contrast now that the scrim is out from under it: the plate's
      centre is sky and lit towers, not the darkness the lower third resolved
      into, so the mark is lit at its own edge instead of standing on a floor.
+
+     It is HALF the alpha it was first given. Same offset, same blur, .31 and
+     .275 where it was .62 and .55. Measured at 1440x900 on the plate's own
+     first frame: at full strength the drop pulled the ring of plate three to
+     five px off the glyph from L 0.335 down to L 0.126, which is a dark collar
+     drawn round the mark rather than light put under it. Halved, that ring
+     lands at L 0.218, and the mark's reading on its own ground at 13 to 24 px
+     goes 1.68:1 to 1.81:1, comfortably the right side of 1.6. The plate under
+     the glyph reads 2.19:1 before and 2.12:1 after: that ratio belongs to the
+     plate and the mark, and the 0.07 is the glyph's antialiased edge coming out
+     from under a lighter shadow rather than the ratio itself moving.
+
      It sits on the WRAPPER rather than on the mark because `filter` is a
      single property: on the mark, the settle's blur keyframes would drop the
      shadow for the length of the settle. Here the two compose, and the shadow
      blurs in with the mark and breathes with it. */
-  filter:drop-shadow(0 2px 20px rgba(8,0,14,.62)) drop-shadow(0 0 7px rgba(8,0,14,.55));
+  filter:drop-shadow(0 2px 20px rgba(8,0,14,.31)) drop-shadow(0 0 7px rgba(8,0,14,.275));
 }
 /* The film's mark is 64 px on a 1080 frame, which is modest, and this pane is
    a tall portrait rather than a wide one. 22% of the pane's WIDTH lands it at
    the film's weight; the cap keeps a wide pane from turning the mark into a
    graphic. 133 px at 1440x900, 160 px (capped) at 1920x1080, 64 px on the
-   phone band. The height comes off the viewBox's own ratio. */
+   phone band. The height comes off the viewBox's own ratio.
+
+   BOTH children of the wrapper take that width from this ONE rule: the mark,
+   and the light that crosses it. They also share one grid cell, so the sweep
+   can never become a second row and push the mark off the pane's centre. The
+   row still stretches to the pane, so the centring is exactly the one that was
+   measured, and it was re-measured after: 0.000 px on both axes at 1440x900. */
+.gmark > *{grid-area:1/1; width:min(22%,160px)}
 .gmark-c{
-  width:min(22%,160px); height:auto; color:var(--brand);
+  height:auto; color:var(--brand);
   animation:gmsettle .9s cubic-bezier(.25,.46,.45,.94) both,
             gmbreath 4s ease-in-out .9s infinite;
 }
@@ -453,6 +472,45 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
    steps rather than fades, which is the endcard's point. */
 #gate.striking .gmark-c{animation:gmstrike 66ms linear 1 both}
 @keyframes gmstrike{0%,49.99%{color:#fff} 50%,100%{color:var(--brand)}}
+
+/* THE SWEEP. The endcard's one light sweep, and it is the mechanism this page
+   already had: a white band clipped to the glyph, blurred into a bloom and
+   screened back, so the light can only ever touch the mark. It was built for
+   the accenture wordmark this mark replaced and it is unchanged here except in
+   its geometry. It is a TRANSFORM and not a moving mask, because mask-position
+   does not interpolate in Chromium and the band would jump the frame in one
+   step instead of crossing it.
+
+   The wordmark took the sweep once and never again. A single mark that is the
+   only thing on the pane is looked at for as long as the composer is open, so
+   the light comes back: 1.2 s across the glyph at 950 ms, then every 7 s. The
+   repeats run at 60% of the first pass, which is what keeps it a living mark
+   rather than a loop announcing itself.
+
+   Between passes the band sits parked off the glyph's left edge, where the clip
+   removes it entirely: measured on the glyph's own box against the mark at rest,
+   the frame at the start of a cycle is within 2/255, which is nothing, while the
+   first pass peaks at 136 and the repeat at 79. */
+.gm-sweep{
+  z-index:1; mix-blend-mode:screen; opacity:.62; filter:blur(3px);
+  animation:gmsweepdim .2s linear 2.15s both;
+}
+.gm-sweep svg{display:block; width:100%; height:auto}
+/* the step to 60% is taken at 2.15 s, the instant the first pass leaves the
+   glyph, so the drop in strength is never seen to happen */
+@keyframes gmsweepdim{to{opacity:.372}}
+.gm-band{animation:gmsweep 7s linear .95s infinite both}
+/* 1.2 s of travel in a 7 s cycle is 17.143% of it; the rest of the cycle is the
+   band parked. The travel is in the symbol's own units: the band is 5.6 of the
+   glyph's 19.792 wide, and it goes from clear of the left edge to clear of the
+   right, skew included. */
+@keyframes gmsweep{
+  0%{transform:translateX(-5px) skewX(-12deg)}
+  17.143%{transform:translateX(24px) skewX(-12deg)}
+  17.144%,100%{transform:translateX(-5px) skewX(-12deg)}}
+/* the strike is the mark's own moment and nothing may cross it: the light is
+   gone from the frame the phrase is accepted, and the door is leaving anyway */
+#gate.striking .gm-sweep{animation:none; opacity:0}
 
 /* --- the right pane: the cream, the greeting, the composer --- */
 .gpane-form{
@@ -525,17 +583,21 @@ html.locked body>*:not(#gate):not(#sprite){visibility:hidden}
      begins immediately under it. */
   .gscrim{height:24%}
   /* the film's own 64 px, which is what the band has room for: 22% of a
-     390 px pane would draw the mark at 86 px in a 208 px band. */
-  .gmark-c{width:64px}
+     390 px pane would draw the mark at 86 px in a 208 px band. It overrides the
+     wrapper's rule rather than the mark's, so the light keeps the mark's box:
+     targeting .gmark-c alone left the sweep at 85.797 px over a 64 px glyph. */
+  .gmark > *{width:64px}
   .gpane-form{padding:28px var(--gutter) 40px}
 }
 @media (prefers-reduced-motion:reduce){
   #gate .composer.shake{animation:none; outline:1px solid var(--brand); outline-offset:2px}
   #gate.gone{transition-duration:.18s}
   /* the plate holds its poster and is never fetched; the mark is simply there,
-     with no pull, no breath and no strike. It keeps its drop, which is paint
-     rather than motion and is the only reason it reads on the sky. */
+     with no pull, no breath, no strike and no light crossing it. It keeps its
+     drop, which is paint rather than motion and is the only reason it reads on
+     the sky. */
   .gmark-c,#gate.striking .gmark-c{animation:none}
+  .gm-sweep{display:none}
 }
 
 /* ============================================================
@@ -1369,7 +1431,15 @@ html{scroll-snap-type:y proximity}
   <symbol id="g-ibis" viewBox="0 0 19 19"><image width="19" height="19" clip-path="url(#g-ibis-r)" href="data:image/png;base64,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"/></symbol>
   <symbol id="g-memo" viewBox="0 0 19 19"><rect x="1.7" y="1.7" width="15.6" height="15.6" rx="4" fill="none" stroke="#A100FF" stroke-width="1.5"/><g fill="none" stroke="#A100FF" stroke-width="1.5" stroke-linecap="round"><path d="M5.4 6.4h8.2M5.4 9.5h8.2M5.4 12.6h5.2"/></g></symbol>
   <symbol id="g-ast" viewBox="0 0 40 40"><g stroke="#D97757" stroke-width="2.6" stroke-linecap="round"><line x1="20.00" y1="17.80" x2="20.00" y2="1.40"/><line x1="21.19" y1="18.15" x2="28.87" y2="6.20"/><line x1="22.00" y1="19.09" x2="36.19" y2="12.61"/><line x1="22.18" y1="20.31" x2="35.84" y2="22.28"/><line x1="21.66" y1="21.44" x2="33.91" y2="32.05"/><line x1="20.62" y1="22.11" x2="24.73" y2="36.12"/><line x1="19.38" y1="22.11" x2="15.10" y2="36.70"/><line x1="18.34" y1="21.44" x2="7.76" y2="30.61"/><line x1="17.82" y1="20.31" x2="1.99" y2="22.59"/><line x1="18.00" y1="19.09" x2="4.90" y2="13.10"/><line x1="18.81" y1="18.15" x2="10.48" y2="5.19"/></g><circle cx="20" cy="20" r="4.2" fill="#D97757"/></symbol>
-  <symbol id="g-chev" viewBox="116.99973 0 19.792 20.93"><path fill="currentColor" d="m 116.99973,0 v 5.97866 l 11.556,4.516 -11.556,4.296 v 6.15467 l 19.792,-8.016 V 7.97066 Z"/></symbol>
+  <!-- the chevron is kept as addressable geometry rather than folded into its
+       symbol, for the same reason the accenture wordmark once was: a <clipPath>
+       may hold a <use> of a path but not of a symbol, and the gate's light
+       sweep needs the glyph as a clip. Every other user goes on referencing
+       #g-chev and is unaffected. -->
+  <path id="g-chev-p" fill="currentColor" d="m 116.99973,0 v 5.97866 l 11.556,4.516 -11.556,4.296 v 6.15467 l 19.792,-8.016 V 7.97066 Z"/>
+  <symbol id="g-chev" viewBox="116.99973 0 19.792 20.93"><use href="#g-chev-p"/></symbol>
+  <clipPath id="gm-clip"><use href="#g-chev-p"/></clipPath>
+  <linearGradient id="gm-g" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity="1"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
   <symbol id="g-tick" viewBox="0 0 16 16"><path d="M3.2 8.4 6.3 11.5 12.8 4.9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
 </defs></svg>
 
@@ -1394,7 +1464,7 @@ html{scroll-snap-type:y proximity}
            disablepictureinpicture disableremoteplayback></video>
     <span class="gscrim"></span>
     <p class="eyebrow gp-eyebrow">Dreamforce 2026<span class="dot">&middot;</span>A private screening</p>
-    <span class="gmark"><svg class="gmark-c" viewBox="0 0 19.792 20.93"><use href="#g-chev"/></svg></span>
+    <span class="gmark"><svg class="gmark-c" viewBox="0 0 19.792 20.93"><use href="#g-chev"/></svg><span class="gm-sweep"><svg viewBox="116.99973 0 19.792 20.93"><g clip-path="url(#gm-clip)"><rect class="gm-band" x="117" y="-8" width="5.6" height="37" fill="url(#gm-g)"/></g></svg></span></span>
   </div>
 
   <div class="gpane-form">
@@ -1689,7 +1759,7 @@ html{scroll-snap-type:y proximity}
               <span class="chip"><span class="mk">&gt;</span>Credit 360</span>
               <span class="chip"><svg aria-hidden="true"><use href="#g-memo"/></svg>Credit Memo</span>
               <span class="chip"><svg aria-hidden="true"><use href="#g-boom"/></svg>Boom Spreading</span>
-              <span class="chip"><span class="mk" style="color:var(--faint)">&bull;</span>IBISWorld</span>
+              <span class="chip"><svg aria-hidden="true"><use href="#g-ibis"/></svg>IBISWorld</span>
               <span class="chip"><span class="mk" style="color:var(--faint)">&bull;</span>AFS</span>
               <span class="chip"><span class="mk" style="color:var(--faint)">&bull;</span>nCino</span>
             </div>
