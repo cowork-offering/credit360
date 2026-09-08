@@ -770,25 +770,117 @@ html{scroll-snap-type:y proximity}
 /* the zero-size marker the caret follows; it paints nothing */
 .breath-type .mk{display:inline-block; width:0; height:0; overflow:hidden}
 
-/* a. the eleven tabs and the one they become, in one cell */
-.swap{display:grid; align-items:start; max-width:920px}
-.swap>*{grid-area:1/1}
-.tabs{display:flex; flex-wrap:wrap; gap:6px; align-content:start}
-.tab{
-  height:28px; padding:0 12px; border-radius:7px; background:var(--pillbg);
-  border:1px solid var(--hair); font-size:12px; line-height:26px; color:var(--muted);
-  white-space:nowrap; transition:opacity var(--enter) var(--ease-out), transform var(--enter) var(--ease-out);
+/* ------------------------------------------------------------
+   a. THE ELEVEN TABS.
+   A real browser window, in the same chrome language as the
+   Cowork window lifted from the door cell: the cream titlebar,
+   three lights, a tab strip, an address bar.
+
+   The eleven are crammed into one row the way a browser crams
+   them. Every tab is flex:1 1 0 with min-width:0, so each one
+   compresses to a 16 px favicon and a title clipped by the tab
+   itself, and the strip never wraps into a list of words. On a
+   phone the tabs hold 108 px and the strip scrolls instead, so
+   they visibly overflow rather than shrink to nothing.
+
+   The close is the browser's own. The closing tab animates its
+   OWN max-width to zero; flex re-solves while that width is
+   changing, so its siblings re-flow continuously rather than
+   jumping to their new size. The last tab left widens into the
+   Cowork tab and the address bar drops to one word.
+
+   The window's height is fixed from first paint and no close
+   touches it, so nothing here is on the layout-shift ledger.
+   ------------------------------------------------------------ */
+.bwin{
+  width:100%;
+  background:var(--surface); border:1px solid var(--edge); border-radius:var(--radius);
+  box-shadow:var(--shadow-card); overflow:hidden;
 }
-.tabs.collapse .tab{opacity:0; transform:translateY(calc(var(--lift) * -1))}
+.bwin-top{
+  height:44px; display:flex; align-items:flex-end; gap:10px;
+  padding:0 12px; background:var(--pillbg); border-bottom:1px solid var(--hair-warm);
+}
+.lights{display:flex; align-items:center; gap:7px; height:44px; flex:none}
+.lights i{width:11px; height:11px; border-radius:50%; background:#DCDCD7; display:block}
+.tabstrip{
+  flex:1 1 auto; min-width:0; display:flex; align-items:stretch;
+  height:44px; padding-top:7px;
+  scrollbar-width:none; -ms-overflow-style:none;
+}
+.tabstrip::-webkit-scrollbar{display:none}
+.btab{
+  position:relative; flex:1 1 0; min-width:0; max-width:186px;
+  display:flex; align-items:center; gap:6px;
+  height:37px; padding:0 9px; border-radius:8px 8px 0 0;
+  background:#EFEFEB; border:1px solid var(--hair-warm); border-bottom:0;
+  color:var(--faint); overflow:hidden;
+  /* the close is the browser's mechanic, not the page's entry gesture, so it
+     carries its own 260 ms rather than --enter */
+  transition:max-width .26s var(--ease-out), padding .26s var(--ease-out),
+             border-width .26s var(--ease-out), margin .26s var(--ease-out),
+             opacity .17s var(--ease-out),
+             background var(--enter) var(--ease-out), color var(--enter) var(--ease-out);
+}
+.btab + .btab{margin-left:2px}
+.btab .fav{width:16px; height:16px; flex:none}
+.btab .fav path,.btab .fav circle,.btab .fav rect{
+  fill:none; stroke:currentColor; stroke-width:1.4; stroke-linecap:round; stroke-linejoin:round}
+/* the title is a child of the tab and is clipped BY the tab, so the strip
+   cannot read as a row of loose words even if a rule above fails to land */
+.btab .tt{
+  font-size:12px; line-height:16px; letter-spacing:-.005em;
+  white-space:nowrap; overflow:hidden; text-overflow:clip; min-width:0; flex:1 1 auto;
+}
+.btab.gone{max-width:0; padding-left:0; padding-right:0; border-width:0; margin-left:0; opacity:0}
+/* the survivor becomes the Cowork tab: it widens, lifts to the raised ground,
+   and swaps its favicon and its title for the product's own */
+.btab.only{
+  max-width:none; background:var(--raised); color:var(--ink-max);
+  transition:max-width .42s var(--ease-settle), background .3s var(--ease-out),
+             color .3s var(--ease-out);
+}
+.btab .fav.b,.btab .tt.b{
+  position:absolute; top:50%; transform:translateY(-50%); opacity:0;
+  transition:opacity .2s var(--ease-out);
+}
+.btab .fav.b{left:9px; color:var(--brand)}
+.btab .tt.b{left:31px; right:9px; height:16px; font-weight:500}
+.btab.only .fav.a,.btab.only .tt.a{opacity:0; transition:opacity .2s var(--ease-out)}
+.btab.only .fav.b,.btab.only .tt.b{opacity:1}
+
+.bwin-url{
+  height:40px; display:flex; align-items:center; gap:9px; padding:0 14px;
+  background:var(--surface); border-bottom:1px solid var(--divider);
+}
+.bwin-url .lock{width:13px; height:13px; flex:none; color:var(--faint)}
+.bwin-url .lock path,.bwin-url .lock rect{fill:none; stroke:currentColor; stroke-width:1.3;
+  stroke-linecap:round; stroke-linejoin:round}
+.urlbox{position:relative; flex:1 1 auto; min-width:0; height:26px; display:flex;
+  align-items:center; background:var(--pillbg); border-radius:7px; padding:0 11px;
+  overflow:hidden}
+.urlbox span{font-size:12px; line-height:26px; color:var(--faint); white-space:nowrap;
+  overflow:hidden; text-overflow:ellipsis; transition:opacity var(--enter) var(--ease-out)}
+.urlbox .u2{position:absolute; left:11px; opacity:0; color:var(--sub)}
+.bwin.landed .urlbox .u1{opacity:0}
+.bwin.landed .urlbox .u2{opacity:1}
+/* the record the banker is reading, at rest under the chrome */
+.bwin-page{height:196px; background:var(--raised); padding:20px 22px; overflow:hidden}
+.sk{display:flex; flex-direction:column; gap:11px}
+.sk i{display:block; height:8px; border-radius:3px; background:var(--divider)}
+.sk i:nth-child(1){width:32%; background:#E4E4E9}
+.sk i:nth-child(2){width:64%}
+.sk i:nth-child(3){width:52%}
+.sk i:nth-child(4){width:58%}
+.sk i:nth-child(5){width:41%}
+.sk i:nth-child(6){width:47%}
+/* the payoff, in the landing headline style. Its box is reserved from first
+   paint and the line is short enough never to wrap at any width, so typing it
+   moves nothing. */
 .notthis{
   margin:30px 0 0; font-size:clamp(20px,2.4vw,28px); font-weight:600;
-  letter-spacing:-.022em; color:var(--ink-max); opacity:0; transform:translateY(6px);
+  letter-spacing:-.022em; color:var(--ink-max); min-height:1.24em;
 }
-.notthis.in{opacity:1; transform:none;
-  transition:opacity var(--enter) var(--ease-out), transform var(--enter) var(--ease-out)}
-.onetab{opacity:0; transform:translateY(var(--lift)); max-width:520px}
-.onetab.in{opacity:1; transform:none;
-  transition:opacity var(--enter) var(--ease-out), transform var(--enter) var(--ease-out)}
 
 /* c. the chip strip */
 .chipstrip{display:flex; flex-wrap:wrap; gap:8px; margin-top:26px}
@@ -1038,6 +1130,13 @@ html{scroll-snap-type:y proximity}
 }
 @media (max-width:640px){
   body{font-size:14px}
+  /* a phone does not have the paper to compress eleven tabs and still show a
+     favicon and a letter of each. So it does what a phone browser does: the
+     tabs hold their size and the strip scrolls, and they overflow in view.
+     This scroller is the one place on the page allowed to scroll sideways. */
+  .tabstrip{overflow-x:auto; overscroll-behavior-x:contain}
+  .btab{flex:0 0 108px; max-width:108px}
+  .bwin-page{height:132px; padding:16px 18px}
   /* the row reflows the way the artifact does: the monogram and the arrow
      drop out, the name and the exposure stack, the reason chips stay */
   .wlrow{flex-wrap:wrap; gap:10px 14px; padding:14px 16px}
@@ -1069,7 +1168,7 @@ html{scroll-snap-type:y proximity}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important; animation-iteration-count:1!important;
     transition-duration:.01ms!important}
-  .rise,.notthis,.onetab,.modcard,.checked,.nodechip,.execrow,.chipstrip .chip{
+  .rise,.modcard,.checked,.nodechip,.execrow,.chipstrip .chip{
     opacity:1!important; transform:none!important}
   .breath > img{transform:none!important}
   .breath .caret{opacity:0!important}
@@ -1248,25 +1347,35 @@ html{scroll-snap-type:y proximity}
     </div>
     <div class="stage">
       <div class="fit">
-        <div class="swap">
-        <div class="tabs" id="tabstrip" aria-hidden="true">
-          <span class="tab">nCino</span><span class="tab">Salesforce</span><span class="tab">Boom</span>
-          <span class="tab">AFS</span><span class="tab">IRIS</span><span class="tab">Snowflake</span>
-          <span class="tab">Outlook</span><span class="tab">SharePoint</span><span class="tab">Teams</span>
-          <span class="tab">Spreads.xlsx</span><span class="tab">DocMan</span>
-        </div>
-        <div class="onetab" id="onetab">
-          <div class="device">
-            <div class="dev-top">
-              <svg class="ic" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.2" y="2.4" width="13.6" height="11.2" rx="2.2"/><line x1="6.1" y1="2.4" x2="6.1" y2="13.6"/></svg>
-              <svg class="ic grey" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><line x1="13" y1="8" x2="3" y2="8"/><polyline points="7,4 3,8 7,12"/></svg>
-              <svg class="ic grey" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><line x1="3" y1="8" x2="13" y2="8"/><polyline points="9,4 13,8 9,12"/></svg>
-              <span class="dev-title" style="margin-left:14px">Credit 360 for my book</span>
+        <!-- the window is decorative: the caption above carries the meaning, so
+             the chrome is hidden rather than read out as a list of vendors -->
+        <div class="bwin rise" id="bwin" data-rise aria-hidden="true">
+          <div class="bwin-top">
+            <span class="lights"><i></i><i></i><i></i></span>
+            <div class="tabstrip" id="tabstrip">
+            <span class="btab"><svg class="fav a" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.4"/><path d="M5.7 10.6V6.9c1.5-1.2 3.1-1.2 4.6 0v3.7"/></svg><span class="tt a">nCino</span><svg class="fav b" viewBox="0 0 19.792 20.93"><use href="#g-chev"/></svg><span class="tt b">Credit 360 for my book</span></span>
+            <span class="btab"><svg class="fav a" viewBox="0 0 16 16"><path d="M4.5 11.6h6.7a2.2 2.2 0 0 0 .3-4.4 3.1 3.1 0 0 0-5.5-1.4 2.4 2.4 0 0 0-1.5 5.8Z"/></svg><span class="tt a">Salesforce</span></span>
+            <span class="btab"><svg class="fav a" viewBox="0 0 16 16"><rect x="1.9" y="1.9" width="12.2" height="12.2" rx="3"/><path d="M5.2 10.9V9.4M8 10.9V7.1M10.8 10.9V5.2"/></svg><span class="tt a">Boom</span></span>
+            <span class="btab"><svg class="fav a" viewBox="0 0 16 16"><path d="M2.2 6.4 8 3.1l5.8 3.3"/><path d="M4.2 6.9v4.6M8 6.9v4.6M11.8 6.9v4.6"/><path d="M2.6 12.9h10.8"/></svg><span class="tt a">AFS</span></span>
+            <span class="btab"><svg class="fav a" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.4"/><circle cx="8" cy="8" r="2.3"/></svg><span class="tt a">IRIS</span></span>
+            <span class="btab"><svg class="fav a" viewBox="0 0 16 16"><path d="M8 1.8v12.4M2.6 4.9l10.8 6.2M2.6 11.1l10.8-6.2"/></svg><span class="tt a">Snowflake</span></span>
+            <span class="btab"><svg class="fav a" viewBox="0 0 16 16"><rect x="1.9" y="3.6" width="12.2" height="8.8" rx="1.8"/><path d="m2.4 4.7 5.6 3.9 5.6-3.9"/></svg><span class="tt a">Outlook</span></span>
+            <span class="btab"><svg class="fav a" viewBox="0 0 16 16"><path d="M4 13.4V2.6h4.6l2.6 2.6v3"/><path d="M8.4 2.6v2.9h2.8"/><circle cx="11.4" cy="11.2" r="1.7"/><path d="M6.6 11.2h3.1"/></svg><span class="tt a">SharePoint</span></span>
+            <span class="btab"><svg class="fav a" viewBox="0 0 16 16"><circle cx="6.3" cy="5.6" r="2.3"/><path d="M2.4 13.2c0-2.2 1.7-3.7 3.9-3.7s3.9 1.5 3.9 3.7"/><circle cx="11.6" cy="6.6" r="1.6"/><path d="M11.2 9.7c1.5.1 2.5 1.4 2.5 3"/></svg><span class="tt a">Teams</span></span>
+            <span class="btab"><svg class="fav a" viewBox="0 0 16 16"><rect x="2.1" y="2.6" width="11.8" height="10.8" rx="1.6"/><path d="M2.1 6.2h11.8M2.1 9.8h11.8M6.6 6.2v7.2"/></svg><span class="tt a">Spreads.xlsx</span></span>
+            <span class="btab"><svg class="fav a" viewBox="0 0 16 16"><path d="M4 13.4V2.6h5l3 3v7.8Z"/><path d="M8.8 2.6v3.1h3.2"/><path d="M6.2 9h3.6M6.2 11.2h2.4"/></svg><span class="tt a">DocMan</span></span>
             </div>
           </div>
+          <div class="bwin-url">
+            <svg class="lock" viewBox="0 0 16 16"><rect x="3.4" y="7" width="9.2" height="6.6" rx="1.6"/><path d="M5.6 7V5.4a2.4 2.4 0 0 1 4.8 0V7"/></svg>
+            <div class="urlbox">
+              <span class="u1">ncino.lightning.force.com/lightning/r/LLC_BI__Loan__c/a0M8b00000JqR1xEAF/view?ws=%2Flightning%2Fr%2FAccount%2F0018b00002LmQ4z%2Fview</span>
+              <span class="u2">cowork</span>
+            </div>
+          </div>
+          <div class="bwin-page"><span class="sk"><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
         </div>
-        </div>
-        <p class="notthis" id="notthis">Not this one.</p>
+        <p class="notthis" id="notthis"></p>
       </div>
     </div>
   </div>
@@ -1999,16 +2108,34 @@ html{scroll-snap-type:y proximity}
       once(el, function () { el.classList.add('in'); });
     });
 
-    /* a. the tabs collapse, the one tab lands */
-    var strip = $('#tabstrip');
+    /* a. THE ELEVEN TABS close from the right, 90 ms apart, and the one that
+       is left widens into the Cowork tab. Each closing tab animates its OWN
+       max-width to zero; flex re-solves while that width is changing, so the
+       siblings re-flow continuously the way a real browser's do. The window's
+       height never moves. */
+    var strip = $('#tabstrip'), bwin = $('#bwin'), NOT = 'Not this one.';
     once(strip, function () {
-      if (RM) { strip.classList.add('collapse'); $('#notthis').classList.add('in'); $('#onetab').classList.add('in'); return; }
-      /* the eleven leave and the one arrives OVER them, in the same cell: the
-         old sequence left 340 ms of empty band between the two */
-      $$('.tab', strip).forEach(function (t, i) { t.style.transitionDelay = (i * 20) + 'ms'; });
-      setTimeout(function () { strip.classList.add('collapse'); }, 200);
-      setTimeout(function () { $('#onetab').classList.add('in'); }, 400);
-      setTimeout(function () { $('#notthis').classList.add('in'); }, 560);
+      var tabs = $$('.btab', strip), first = tabs[0], rest = tabs.slice(1);
+      function land() { first.classList.add('only'); bwin.classList.add('landed'); }
+      if (RM) {
+        rest.forEach(function (t) { t.classList.add('gone'); });
+        land(); $('#notthis').textContent = NOT; return;
+      }
+      var T0 = 380, GAP = 90, CLOSE = 260, N = rest.length;
+      rest.reverse().forEach(function (t, k) {
+        setTimeout(function () { t.classList.add('gone'); }, T0 + k * GAP);
+      });
+      /* the moment the last of the ten has finished closing */
+      var END = T0 + (N - 1) * GAP + CLOSE;
+      setTimeout(land, END);
+      /* the payoff types at the film's own 24 characters a second */
+      setTimeout(function () {
+        var el = $('#notthis'), n = 0;
+        var tick = setInterval(function () {
+          el.textContent = NOT.slice(0, ++n);
+          if (n >= NOT.length) { clearInterval(tick); }
+        }, 42);
+      }, END + 110);
     });
 
     /* b. the figures count up. The app rolls its numbers; this is that roll. */

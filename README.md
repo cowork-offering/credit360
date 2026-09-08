@@ -27,9 +27,42 @@ surface and rebuilt as live HTML at its real scale:
 | The halo | the film's climax at 61 s, where the bloom carries the CARD's own rounded shape rather than a circle behind it, swept through the product's spectrum |
 | The film player | the previous build's MediaSource path, unchanged |
 
-Drawn new, because no source existed: the eleven browser tabs, the modification
-card, the memo section list, and the plan read-back. All four are built out of the
-primitives above and carry no geometry of their own.
+Drawn new, because no source existed: the eleven browser tabs and their favicons,
+the modification card, the memo section list, and the plan read-back. All four are
+built out of the primitives above and carry no geometry of their own.
+
+## The eleven tabs
+
+Chapter 01 is a browser, not a caption about one. The window is the Cowork window's
+own chrome seen from outside: the cream titlebar, three lights, a tab strip, an
+address bar carrying a real internal Lightning record URL.
+
+The eleven are crammed into one row the way a browser crams them. Every tab is
+`flex:1 1 0` with `min-width:0` and a 186 px cap, so at 1440 each one is drawn at
+96 px and compresses to a 16 px favicon plus a title the tab itself clips: nCino,
+Salesforce, Boom, AFS, IRIS, Snowflake, Outlook, SharePoint, Teams, Spreads.xlsx,
+DocMan. The favicons are monochrome 16 px line marks in the product's grey, drawn
+for this page because no source existed. The strip never wraps, so it cannot read
+as a row of loose words, and the titles are children of the tabs rather than
+siblings of them, so it cannot read as a list even with the stylesheet gone.
+
+On a phone there is no paper to compress eleven tabs and still show a letter of
+each, so it does what a phone browser does: the tabs hold 108 px, the strip scrolls,
+and they overflow in view. That scroller is the one element on the page allowed to
+scroll sideways.
+
+The close is the browser's own. On enter, the tabs close from the right 90 ms apart,
+each over 260 ms: the closing tab animates its OWN `max-width` to zero, and because
+flex re-solves while that width is changing, its siblings re-flow continuously
+rather than jumping to their new size. Ten closes run from 380 ms to 1450 ms. The
+one tab left then widens over 420 ms into a full Cowork tab, swapping its favicon
+for the chevron and its title for `Credit 360 for my book`, the address bar drops
+from the Lightning URL to `cowork`, and `Not this one.` types under it at the film's
+own 24 characters a second.
+
+The window's height is fixed from first paint and no close touches it, so the whole
+chapter contributes nothing to the layout-shift ledger. Under reduced motion the
+ten are closed, the one has landed and the payoff is set, all without animation.
 
 ## The breathers
 
