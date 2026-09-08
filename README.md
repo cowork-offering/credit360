@@ -239,22 +239,44 @@ than the third of the screen a row would give it.
 
 ## The close
 
-One screen, and the only one on the page where the film's own picture carries the type
-instead of standing beside it. `assets/film/hero-aerial-day.mp4` is the reel's daylight
-return, cut at 68.75 to 69.79 s where the shot is at full brightness between its own
-two fades, interpolated to 72 fps, stretched 3x and mirrored into a 6.42 s ping-pong at
-1600 px, 1.20 MB. It carries the chevron at full strength dead centre, which is the mark
-the page opened on, so the close lands on the frame it started from. It drifts 1.03x
-over 28 s. The paper does not stop at the section's top edge, it dissolves into the
-picture over the top 52%, and the lockup stands in the cream where it is still paper,
-at the hero's own clamp. Under it: `Meet us at the booth.` in the landing headline, then
-the address at 15 px and the show in the eyebrow. The booth line is the one instruction
-the close carries, so it is read at a glance rather than squinted at; the eyebrow's
-tracking is eased off at that size, because letterspacing that flatters 10.5 px reads
-as a gap at 15. Below 430 px it sets at 14 px, which is the largest size that keeps
-`SPIN . 690 Folsom Street . San Francisco` on one line on a 390 px screen. The cream comes back up under the bottom 22%
-so the ink on the hairline row still reads, and that row keeps the bottom of the frame
-however tall the screen is. Nothing of it is fetched until the last chapter leaves.
+One screen, and the only one on the page where the picture carries the type instead of
+standing beside it. The picture is no longer the reel's London daylight return; it is
+the city they are being asked to come to. `assets/film/sf-plate.mp4` is San Francisco
+from altitude at golden hour, the Bay Bridge through the lower third and Salesforce
+Tower unmistakable at the centre of the skyline, generated for this page in the same
+register as the film's own aerials (from height, city and water, haze, a muted grade).
+It is a 5 s image-to-video drift mirrored into a 10.08 s ping-pong at 1600 px, crf 22,
+2.34 MB, with its own first frame as the poster. How it was made, which model, what it
+cost and what was rejected is in `../assets/end/README.md`.
+
+The picture is dressed with ONE scrim: a single bottom-up gradient, transparent at 45%
+of the height and `rgba(20,12,28,.72)` at the floor. No cream wash coming down from the
+page above, no top scrim, nothing stacked. Everything on it is white.
+
+The type stands in the lower third on the content margin: `DREAMFORCE 2026` in the
+eyebrow at 74% white, the lockup at the hero's own clamp with its purple chevron, then
+`Meet us at the booth.` in the landing headline.
+
+The place card is the other end of that row. It is the cockpit's own card, standing on
+the picture: white, 12 px, one hairline, the dossier's shadow, 420 px wide. Its map is
+not a screenshot of somebody's tiles. It is real OpenStreetMap geometry, projected and
+drawn as inline SVG in the product's language: cream paper, primary streets at 1.5 px
+and everything else at 1 px, FOLSOM, HOWARD, MISSION, 2ND, 3RD and 4TH set along their
+own centrelines in the eyebrow style, Moscone Center and Salesforce Tower as light
+outlines, north up, and one `--brand` pin on 690 Folsom whose halo opens once when the
+close arrives. Under it a single row: `SPIN`, the address, and a hairline `Open in Maps`
+that opens Apple Maps in a new tab.
+
+The row is one baseline: `align-items:flex-end` puts the card's bottom edge exactly on
+the bottom of the headline's line box. At 1440x900 both land on 792.91, at 1920x1080 on
+962.31, and both ends of the row sit on the content margin the film runs to, 48 px at
+1440. Under 1080 px there is no paper left for a 420 px card beside a 7vw lockup, so the
+card goes full width under the type; under 440 px the address takes its own line under
+the venue name rather than being clipped.
+
+The hairline row still keeps the floor of the frame, but it is on the picture now rather
+than on paper, so its rule is white at 24% and its ink, the wordmark included, is white
+at 70%. Nothing of the plate is fetched until the last chapter leaves.
 
 ## The motion
 
@@ -282,12 +304,12 @@ assets/gate.js             the door, loaded synchronously in <head>
 assets/film/               the reel (1080p + 720p, fragmented), film.json, the hero
                            plate (the looping pre-dawn aerial and its first frame),
                            the gate plate (the same aerial turned tall for the door's
-                           left pane) and the close's daylight aerial, each with its
-                           own first frame
+                           left pane) and the close's San Francisco plate, each with
+                           its own first frame
 assets/stills/             the three breather frames, cut from the reel
 assets/fonts/              Inter 400/500/600 and Newsreader, subset to Latin
 assets/vendor/             GSAP and ScrollTrigger. The scroll itself is the browser's.
-assets/logos/              the wordmark, recoloured to ink for the cream ground
+assets/logos/              the wordmark in white, for the hairline row on the picture
 tools/sync-assets.sh       pull the delivered reel in and build the hero plate
 tools/prepare-film.sh      fragment it for MediaSource and write film.json
 ```
@@ -346,4 +368,4 @@ spinners stop, the cards arrive flat, the plate holds its first frame, the lines
 are set rather than typed, and the halo is lit without breathing.
 
 ## Build log
-- 2026-09-08: passes landed in order: bloom and native scroll, one-screen chapters and facts, gate skyline plate, eleven tabs, two-column chapter grid. Next: the San Francisco close with the place card.
+- 2026-09-08: passes landed in order: bloom and native scroll, one-screen chapters and facts, gate skyline plate, eleven tabs, two-column chapter grid, the San Francisco close with the place card.

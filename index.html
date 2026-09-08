@@ -1107,68 +1107,108 @@ html{scroll-snap-type:y proximity}
 /* ============================================================
    6. THE END
    ============================================================ */
-/* THE CLOSE. One screen, and the only one on the page where the film's own
-   picture carries the type instead of standing beside it: the reel's daylight
-   return, full bleed, with the chevron it already holds dead centre. The
-   paper does not stop at the section's top edge, it dissolves into the
-   picture, and the lockup stands in the cream where it is still paper.
-   The hairline row keeps the bottom of the frame. */
+/* THE CLOSE. One screen, and the only place on the page where the picture
+   carries the type instead of standing beside it. The picture is now the city
+   they are being asked to come to, full bleed and drifting, and it is dressed
+   with ONE scrim: a single bottom-up gradient, transparent at 45% of the height
+   and rgba(20,12,28,.72) at the floor. No cream wash, no top scrim, nothing
+   stacked. The type sits in the lower third on the film's own left margin, the
+   place card is right-aligned with its bottom edge on the headline's, and the
+   hairline row keeps the floor. */
 #end{
-  position:relative; overflow:hidden; background:var(--paper);
+  position:relative; overflow:hidden; background:#171021;
   height:var(--vph,100svh); min-height:var(--vph,100svh); display:flex;
 }
 .endplate{
-  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
-  z-index:0; transform-origin:50% 44%;
-  animation:enddrift 28s ease-in-out infinite alternate;
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;
 }
-@keyframes enddrift{from{transform:scale(1)}to{transform:scale(1.03)}}
-/* the cream comes down from the page above and runs out over the city */
 .endscrim{
-  position:absolute; left:0; right:0; top:0; height:52%; z-index:1;
-  pointer-events:none;
-  background:linear-gradient(180deg, var(--paper) 0%, rgba(247,245,240,.98) 34%,
-    rgba(247,245,240,.82) 58%, rgba(247,245,240,.42) 80%, rgba(247,245,240,0) 100%);
-}
-/* and comes back up under the hairline row, so the ink on it still reads */
-.endscrim.foot{top:auto; bottom:0; height:22%;
-  background:linear-gradient(0deg, rgba(247,245,240,.95) 0%, rgba(247,245,240,.74) 46%,
-    rgba(247,245,240,0) 100%);
+  position:absolute; inset:0; z-index:1; pointer-events:none;
+  background:linear-gradient(180deg, rgba(20,12,28,0) 45%, rgba(20,12,28,.72) 100%);
 }
 #end > .wrap-w{
   position:relative; z-index:2; flex:1 1 auto; min-height:0;
-  display:flex; flex-direction:column;
-  padding-top:clamp(34px,8vh,104px);
+  display:flex; flex-direction:column; padding-top:clamp(28px,6vh,72px);
 }
-.endcentre{text-align:center; flex:none}
+/* the type and the card are one baseline row: align-items:flex-end puts the
+   card's bottom edge exactly on the bottom of the headline's line box, and
+   both ends of the row sit on the content margin the film runs to. */
+.endgrid{
+  margin-top:auto; display:flex; align-items:flex-end;
+  justify-content:space-between; gap:clamp(24px,5vw,72px);
+}
+.endcentre{flex:0 1 auto; min-width:0}
+.endbrow{color:rgba(255,255,255,.74)}
 .endlock{
-  display:flex; align-items:baseline; justify-content:center; gap:.24em;
-  font-size:clamp(46px,7vw,120px); font-weight:600; line-height:.96;
-  letter-spacing:-.036em; color:var(--ink-max);
+  display:flex; align-items:baseline; gap:.24em; margin-top:16px;
+  font-size:clamp(56px,7vw,120px); font-weight:600; line-height:.96;
+  letter-spacing:-.036em; color:#fff;
 }
 .endhead{
-  margin-top:clamp(18px,3vh,32px);
-  font-size:clamp(24px,3.6vw,40px); font-weight:600; line-height:1.12;
-  letter-spacing:-.025em; color:var(--ink-max);
+  margin-top:clamp(14px,2.4vh,26px);
+  font-size:clamp(26px,3.6vw,40px); font-weight:600; line-height:1.12;
+  letter-spacing:-.025em; color:#fff; text-wrap:balance;
 }
-/* the booth line is the one instruction the close carries, so it is read at a
-   glance rather than squinted at: 15 px, and the eyebrow's tracking eased off
-   because letterspacing that flatters 10.5 px reads as a gap at 15 */
-.endwhere{margin-top:clamp(14px,2.2vh,24px); color:var(--muted);
-  font-size:15px; letter-spacing:.045em; line-height:1.35}
-.endwhen{margin-top:9px}
-@media (max-width:430px){ .endwhere{font-size:14px; letter-spacing:.03em} }
-/* the endcard row runs the full content width, the hero's own margins, and it
-   holds the bottom of the frame however tall the screen is */
+/* THE PLACE. The cockpit's own card, standing on the picture: white, 12 px,
+   one hairline, the dossier's shadow. The map is real OpenStreetMap geometry
+   drawn in the product's language rather than a screenshot of somebody's tiles,
+   and the pin at 690 Folsom opens once when the close arrives. */
+.place{
+  flex:none; width:420px; background:var(--raised); border:1px solid var(--hair);
+  border-radius:12px; box-shadow:0 1px 2px rgba(0,0,0,.03); overflow:hidden;
+}
+.place-map{display:block; aspect-ratio:800 / 520}
+.place-map svg{display:block; width:100%; height:100%}
+.place-row{
+  display:flex; align-items:baseline; gap:9px;
+  padding:13px 16px 14px; border-top:1px solid var(--hair);
+}
+.place-name{flex:none; font-size:15px; font-weight:600; color:var(--ink-max)}
+.place-addr{font-size:15px; color:var(--sub); min-width:0;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.place-link{
+  flex:none; margin-left:auto; font-size:13px; color:var(--sub);
+  border-bottom:1px solid var(--edge); padding-bottom:1px;
+  transition:color var(--dur-mid) var(--ease-out),
+             border-color var(--dur-mid) var(--ease-out);
+}
+.place-link:hover{color:var(--ink-max); border-bottom-color:var(--ink-max)}
+#end .pin-halo{transform-box:fill-box; transform-origin:50% 50%; opacity:0}
+#end.lit .pin-halo{animation:pinland 1.25s var(--ease-spring) .3s both}
+@keyframes pinland{
+  0%{transform:scale(.25); opacity:0}
+  56%{transform:scale(1.22); opacity:1}
+  100%{transform:scale(1); opacity:1}
+}
+/* the hairline row keeps the floor of the frame, on the picture now rather
+   than on paper, so its ink is white at 70% and its rule is white at 24% */
 .endrow{
   display:flex; align-items:center; justify-content:space-between; gap:20px;
-  flex-wrap:nowrap; margin-top:auto; padding:22px 0 clamp(20px,3.4vh,34px);
-  border-top:1px solid rgba(0,0,0,.10);
+  flex-wrap:nowrap; margin-top:clamp(22px,4vh,44px);
+  padding:20px 0 clamp(20px,3.4vh,34px);
+  border-top:1px solid rgba(255,255,255,.24);
 }
-.endrow .lg{height:17px; width:auto; opacity:.85}
-.again{font-size:13px; color:var(--sub); display:inline-flex; align-items:center; gap:7px;
-  transition:color .18s var(--ease-out)}
-.again:hover{color:var(--ink-max)}
+.endrow .lg{height:17px; width:auto; opacity:.7}
+.again{font-size:13px; color:rgba(255,255,255,.7); display:inline-flex;
+  align-items:center; gap:7px; transition:color .18s var(--ease-out)}
+.again:hover{color:#fff}
+/* under 1080 the row has no paper left for a 420 px card beside a 7vw lockup,
+   so the card goes full width under the type, which is what it does on a
+   phone anyway */
+@media (max-width:1080px){
+  .endgrid{flex-direction:column; align-items:stretch; gap:clamp(20px,3.2vh,30px)}
+  .place{width:100%}
+}
+/* on a phone the card is 350 px wide and the three things in its row want 374,
+   so the address takes its own line under the name rather than being clipped */
+@media (max-width:440px){
+  .place-row{flex-wrap:wrap; row-gap:2px}
+  .place-link{order:2}
+  .place-addr{order:3; flex:1 0 100%; white-space:normal}
+}
+@media (prefers-reduced-motion:reduce){
+  #end .pin-halo{opacity:1; animation:none}
+}
 
 /* ============================================================
    7. NARROW. The components reflow the way the artifact does.
@@ -1875,24 +1915,75 @@ html{scroll-snap-type:y proximity}
      3. THE END
      ============================================================ -->
 <footer id="end">
-  <!-- the reel's own daylight return, 68.75 to 69.79 s, slowed and mirrored into
-       a loop. It carries the chevron at full strength dead centre, which is the
-       mark the page opened on, so the close lands on the frame it started from. -->
-  <video class="endplate" id="endplate" src="assets/film/hero-aerial-day.mp4"
-         poster="assets/film/hero-aerial-day.jpg" width="1600" height="900"
+  <!-- San Francisco from altitude, the same lens and the same weather as the
+       reel's London aerials, generated for this page and drifting over ten
+       seconds. Nothing of it is fetched until the last chapter leaves. -->
+  <video class="endplate" id="endplate" src="assets/film/sf-plate.mp4"
+         poster="assets/film/sf-plate-poster.jpg" width="1600" height="890"
          muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"
          disablepictureinpicture disableremoteplayback></video>
   <span class="endscrim" aria-hidden="true"></span>
-  <span class="endscrim foot" aria-hidden="true"></span>
   <div class="wrap-w">
-    <div class="endcentre">
-      <p class="endlock"><svg class="chev" viewBox="0 0 19.792 20.93" aria-hidden="true"><use href="#g-chev"/></svg><span>Credit 360</span></p>
-      <p class="endhead">Meet us at the booth.</p>
-      <p class="eyebrow endwhere">SPIN<span class="dot">&middot;</span>690 Folsom Street<span class="dot">&middot;</span>San Francisco</p>
-      <p class="eyebrow endwhen">Dreamforce 2026</p>
+    <div class="endgrid">
+      <div class="endcentre">
+        <p class="eyebrow endbrow">Dreamforce 2026</p>
+        <p class="endlock"><svg class="chev" viewBox="0 0 19.792 20.93" aria-hidden="true"><use href="#g-chev"/></svg><span>Credit 360</span></p>
+        <p class="endhead">Meet us at the booth.</p>
+      </div>
+      <!-- the place, drawn from OpenStreetMap geometry around the venue: the
+           blocks of SoMa, Moscone and Salesforce Tower for orientation, and
+           the pin on 690 Folsom -->
+      <aside class="place">
+        <div class="place-map">
+        <svg xmlns="http://www.w3.org/2000/svg" id="sfmap" viewBox="0 0 800 520" role="img" aria-label="Street map of the blocks around SPIN, 690 Folsom Street, San Francisco, with Moscone Center and Salesforce Tower">
+        <title>690 Folsom Street, San Francisco</title>
+        <defs>
+        <radialGradient id="c360halo"><stop offset="0" stop-color="#A100FF" stop-opacity=".30"/><stop offset=".55" stop-color="#A100FF" stop-opacity=".13"/><stop offset="1" stop-color="#A100FF" stop-opacity="0"/></radialGradient>
+        <clipPath id="c360clip"><rect width="800" height="520"/></clipPath>
+        </defs>
+        <style>
+        #sfmap .rd{fill:none;stroke-linecap:round;stroke-linejoin:round}
+        #sfmap .r1{stroke:#6F707A;stroke-width:1.5;opacity:.70}
+        #sfmap .r2{stroke:#8A8B94;stroke-width:1;opacity:.26}
+        #sfmap .lm{fill:#EEEAE1;stroke:#DAD5CA;stroke-width:1}
+        #sfmap .sl,#sfmap .ll{font-family:Inter,system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+         font-weight:500;letter-spacing:.16em;text-anchor:middle;
+         paint-order:stroke;stroke:#F7F5F0;stroke-width:5;stroke-linejoin:round}
+        #sfmap .sl{font-size:16px;fill:#7E7F8A}
+        #sfmap .ll{font-size:15px;fill:#9C9789;letter-spacing:.14em}
+        #sfmap .nn{font-family:Inter,system-ui,sans-serif;font-size:13px;font-weight:500;letter-spacing:.14em;fill:#B7B3A8;text-anchor:middle}
+        #sfmap .na{fill:none;stroke:#B7B3A8;stroke-width:1.2;stroke-linecap:round}
+        </style>
+        <rect width="800" height="520" fill="#F7F5F0"/>
+        <g clip-path="url(#c360clip)">
+        <g><path class="lm" d="M132.8 401.5L137.6 404.3L140.5 401.4L156 416.5L163.6 422.4L171.2 428.8L174.4 431.7L175.2 432.6L175.5 433.8L175.5 434.8L175.4 435.6L171.2 443L167 450.7L164.8 448.6L160.1 453.5L160.3 454.1L156.2 461L154.3 459.1L149.5 464L149.5 464.6L145.5 471.6L143.5 469.7L138.8 474.6L139 475.3L135 482.2L132.9 480.2L128.2 485.1L128.2 485.7L124.2 492.8L122.2 490.7L116.2 496.7L113.1 499.8L102.1 488.7L99.2 485.8L73.5 460.1L132.8 401.5Z"/><path class="lm" d="M219.6 388.4L220.3 387.8L227.4 380.8L230.3 383.7L245.9 368.3L243.3 365.7L245.2 363.6L247.7 360.8L248.8 359.6L246.3 357.2L244 355L215 383.8L219.6 388.4Z"/><path class="lm" d="M235.9 406.8L262.1 380.6L267.5 375.3L286.9 394.5L278.7 402.6L278.7 402.7L271.4 409.9L255.3 426L251.8 422.5L235.9 406.8Z"/><path class="lm" d="M323.1 385.7L323.7 385.1L324.3 384.5L323.2 383.5L324.5 383.4L325.7 383.6L327.3 383.8L328.7 384.2L330.2 384.7L331.4 385.3L332.7 386L334.3 387.3L335.6 388.5L337 390.1L337.9 391.8L338.7 393.7L339.3 395.8L339.6 398.1L339.6 399.8L338.7 398.9L338.1 399.5L337.5 400L352.6 414.8L341.1 426.2L341 426.3L340.6 426.8L339.9 427.4L331.5 435.6L331.6 435.7L331.5 436.2L331.2 436.3L328.7 438.8L328.6 439.1L328.1 439.2L322.1 432.5L288.8 400.2L298.8 390.3L298.4 389.9L300.6 387.7L311.6 376.8L313 375.5L323.1 385.7Z"/><path class="lm" d="M298.2 344.3L317.8 363.6L308.2 373.2L297.2 384.2L286.9 394.5L267.5 375.3L298.2 344.3Z"/><path class="lm" d="M452.4 42.6L452.5 42.8L452.5 43L452.7 43.4L452.9 43.9L453.2 44.4L453.6 45L454.1 46L454.5 46.7L455.2 47.5L456.3 49L457.5 50.5L458.5 51.6L459.5 52.6L459.9 53L461.4 54.5L462.5 55.4L463.8 56.4L465 57.3L467.4 58.9L468.3 59.4L469 59.6L469.8 59.8L470.5 59.7L471.2 59.6L471.7 59.4L473.3 58.4L475.1 57.3L477.3 55.6L479.8 53.5L480.8 52.5L482.1 51.1L482.9 50.2L483.7 49.2L484.3 48.5L484.9 47.7L485.3 47.1L486.3 48L489.1 45.1L487.2 43.1L487.4 42.6L487.5 42.1L487.4 41.6L487.3 41L487.2 40.6L487 40L486.4 39.1L485.3 37.6L484.2 36.1L483.2 34.9L480.4 31.6L479.2 30.4L478.6 29.8L478.1 29.4L475.8 27.5L473 25.9L471.5 25.1L470.9 24.9L470.4 24.9L469.9 24.8L469.5 24.8L469.1 24.9L468.5 25L467.7 25.3L467.6 25.4L466.8 25.9L465.8 26.6L462.4 29.3L461.2 30.2L459.4 31.9L458.6 32.6L457.6 33.7L456.9 34.5L456.3 35.2L455.5 36.3L454.7 37.3L453.2 39.5L452.7 40.3L452.6 40.8L452.5 41.1L452.4 41.6L452.4 41.9L452.4 42.6Z"/></g>
+        <g class="rd r2"><path d="M593.3 286.3L595.6 284L629.2 250.3L633 246.5L634.8 244.6"/><path d="M665.7 485.2L661.1 489.5L645.6 505.1"/><path d="M645.6 505.1L644.4 504.4L641.9 503.8L640.8 503.7L638.3 504.1L635.9 504.7L633.6 505.7L631.5 507.1L605.9 532.3L603.1 535.2L580.1 558.5L578.8 560.7L578.3 562.9L578.2 565.2L578.4 567.3L578.9 570L579.5 571.4L581 572.1L583.1 572.4L586 572.7L588.6 572.4L591 571.7L593.1 570.6L597.7 566.7L616.3 547.8L618.9 545.3L621.4 542.8L643.4 520.5L645.6 517.6L646.4 515L647.1 511.9L647 509.3L646.5 507.1L645.6 505.1"/><path d="M-25.1 435.3L-29.7 439.5L-58.5 468.1"/><path d="M324.5 100.1L344.5 80.3L374.1 50.4"/><path d="M271.5 156.6L274.8 153.4L301.2 127.3L302.2 126.5L305.2 123.2"/><path d="M308.9 521.7L320.5 533.3L331.4 544.3"/><path d="M282 99.9L284.5 97.4L286 96L303.9 78.1L352.8 29.5L355.1 27.2L385.2 -2.7L389.9 -7.4"/><path d="M176.2 208.7L180.2 204.6L199.7 184.9L211.4 173.1"/><path d="M69.3 460L75.8 453.5L93.5 436L109.6 420L136.3 393.4L141.7 388.1"/><path d="M249.1 281.3L253.4 277.1L256.7 273.9L264.3 266.3L277 253.6L296 234.8L297.6 233.2L318.5 212.4L322.1 208.9"/><path d="M326.6 4.3L327.8 5.4L330.1 7.4L341.1 18.1L350 26.8L350.7 27.5"/><path d="M-265.3 838.1L-260.8 833.8L-162.4 735.4L-158 731L-154.9 727.9L-153.8 726.9L-119.5 692.6L-108.5 681.6L-105.5 678.6L-104.2 677.3L-102.3 675.5L-55 628.5L-54.1 627.6L-50.7 624.2L-46.8 620.4L-16 590.4L12.2 562.8L17.7 557.4L18.3 556.8L19.7 555.5L20.9 554.3L31.4 543.8L51.9 523.4L53.1 522.2L57.5 517.9"/><path d="M309.6 267.1L321.4 255.3L324.1 252.6L339.6 237.4L341.6 235.5L345.1 232.1L348.3 228.8L374.7 201.4L378.8 197.2"/><path d="M380.7 345.9L357.1 322"/><path d="M353 478L329.9 500.9L327.1 503.7L316.5 514.3L308.9 521.7"/><path d="M58.7 70.3L44.4 72.6L45.2 77.1"/><path d="M712.2 462.2L697.1 477.5L681.9 492.8L678.2 496.6"/><path d="M525.4 454.2L512.4 466.9L500 479L477.2 501.4L472.8 505.7"/><path d="M689.7 439.1L685.1 443.7L659.1 469.3L654.7 473.9"/><path d="M762.2 366.9L757.7 371.5L742.7 386.6L726.7 402.8L710.4 419.2"/><path d="M528.7 399.2L532.6 403.1L554.6 425.3"/><path d="M614.6 218.7L609.9 223.4L579.6 253.7L577.4 258.3L576.6 264L577.4 269.7"/><path d="M544.9 258L569.2 281.8"/><path d="M603.2 421.5L598.5 426.2L588.8 435.8L501.2 522.8L499.7 524.2L495.5 528.4"/><path d="M201.1 163.1L211.4 173.1"/><path d="M183.9 540.7L182.4 539.2L181.5 538.3L165.8 522.7L163 519.6L161 517.3"/><path d="M178 499.4L177.4 500.1L175.8 501.8L161 517.3"/><path d="M539.2 142.9L534.3 147.8L503.9 178.1L470.2 211.6L469.9 212L447.4 234.4L435.8 246L430.9 250.8"/><path d="M618.9 545.3L621.1 547.5L621.7 548.1L634.4 560.6L645.4 571.4L649.9 575.8"/><path d="M575.2 501.5L579.5 505.9L590.4 516.8L603.4 529.9L605.9 532.3"/><path d="M95.4 16L91.4 -8.2"/><path d="M752.3 623.4L747.7 618.8L724.7 595.6L718.6 589.4L683 553.7L681.8 552.5L677.6 548.1"/><path d="M148.6 123.5L144.8 124.1L142.2 124.6L78.9 134.7L77.7 134.9L73.2 135.6"/><path d="M645.2 463.2L639.7 467.7L592.5 514.8L590.4 516.8L588.5 518.8L541.2 566L537.2 570.2"/><path d="M324.5 100.1L348.1 123.3L352.4 127.8"/><path d="M353 478L374.7 499.9L396 521.5L400.8 526.4"/><path d="M291.9 539.2L287.8 543.3L236 594.8L206.3 624.2L188.5 641.2L184.1 645.3"/><path d="M380.7 345.9L351 375L346.8 379.2"/><path d="M453.3 273.3L458.3 268.5L493.3 235.8"/><path d="M741 485.3L745.3 489.5L746.3 490.4L811.3 554.7L812.1 555.5L816.1 559.5"/><path d="M726.7 402.8L723.5 399.8L705.7 381.8L705 381.2L704.7 381L703.5 380.2L701.1 379.5"/><path d="M302 472.8L307.4 478.3L325.5 496.5L326.6 497.6L327.1 498.1L329.9 500.9"/><path d="M34.4 495.2L29.8 499.7L28 501.3"/><path d="M327.2 351.2L351.4 327.6"/><path d="M76.7 248.3L77.5 249.1L79.8 251.5L82.9 254.6L127.4 299.6L149.4 321.6L152.1 324.3"/><path d="M671.4 108L674.8 112.2L699.8 137.2L704.7 142.1L709.1 146.5L711.4 148.8L723.3 160.8L725.4 162.8L735.3 172.8L771.9 207.1L789.8 224.9L801.6 237.5"/><path d="M-21.9 5.9L-25 1.5L-27.4 -14.1L-32.5 -45.8L-33.2 -50.3L-34.1 -55.9L-36.8 -72.4L-39.2 -87.4L-41.5 -101.8L-42.4 -107.2L-42.5 -108.2"/><path d="M59.6 50.8L58.9 46.3L55.1 22.5"/><path d="M191.1 291.8L193.4 294L199.4 300.2L213.9 315L225 326.1L230.5 329.3"/><path d="M792.7 291.2L819.2 264.5L819.5 264.2L821.3 257.1"/><path d="M747.3 347L747.4 348.6L748 351.5L749.3 354.3L762.2 366.9L776.2 380.4L780.5 384.6L805.9 410.2L806.6 410.9L811.5 416"/><path d="M211.4 173.1L230.2 192L231.5 193.3L233.8 194.1L236.3 195"/><path d="M176.2 208.7L171.8 212.4L145.6 238L144.6 239.1L139.2 244.5L132.7 251.3"/><path d="M282 99.9L279.6 102.3L277.5 104.3L251.6 129.8L248.3 133"/><path d="M356.5 174.8L360.6 170.7L401.5 130.3L416.5 115.4L459.9 72.6L464.6 68"/><path d="M430.9 250.8L427.6 253.8L412.8 268.7L408.3 273.1"/><path d="M391.4 632.3L392.5 631.1L429.8 593.8L434.6 589.1L490.3 533.6L490.9 532.8L495.5 528.4"/><path d="M68.7 107.3L68 102.9L65.7 88.6L64.4 80.4L63.7 76.5L62.6 69.5"/><path d="M374.7 499.9L371.6 503L360 514.9L331.4 544.3"/><path d="M-50.8 475.9L-29.6 497L-28.9 497.7L-24.5 502.2"/><path d="M701.1 379.5L699.3 378.7L697.9 377.7L695.1 374.9L681.1 360.9L677 355.1"/><path d="M378.8 197.2L382.7 192.8L400.1 175.7"/><path d="M577.4 269.7L580.9 274.3L593.3 286.3"/><path d="M643.6 136.3L648 140.7L666.6 159.2"/><path d="M271.5 156.6L268.3 159.8L235.8 192.1L233.8 194.1L231 196.9L220.8 207.1L201.9 225.9L197.7 230"/><path d="M31.2 48L28.8 33.1"/><path d="M236.3 195L245.5 204.4L256.2 214.8L260.5 219.1"/><path d="M611.2 167.6L614.2 171.1L615.7 172.7L641.7 199.1"/><path d="M593.8 305.5L601.4 312.6L604 315L609.2 319.4"/><path d="M821.3 257.1L825.3 262.2L826 262.8L856.1 292.6L873.8 310.1"/><path d="M801.6 237.5L810.3 246.1"/><path d="M747.3 347L747.4 343.8L748.1 340.8L749.7 337.9L750.6 336.1L751.7 334.7L753.1 332.6L756.4 328.8L765.7 317.8L768.9 314.7L786.2 297.2L792.7 291.2"/><path d="M230.5 329.3L235.1 334.1L237.8 336.8L242.9 341.7L249.6 348.5L251.5 350.4L258.3 357.2"/><path d="M183.9 540.7L214.2 510.6L217.9 507.5L231.9 493.1L234.3 491.4L234.8 490.8L235 490.5L239.3 486.3"/><path d="M356.5 174.8L352.3 178.9L325.3 205.7L322.1 208.9"/><path d="M374.1 50.4L398.2 73.7L402.5 78"/><path d="M810.3 246.1L816.2 252L816.8 252.6L821.3 257.1"/><path d="M811.5 416L815 420L815.8 420.8L826.1 431.1L839 443.9L855.6 460.5"/><path d="M464.6 514.1L468.3 510.4L472.8 505.7"/><path d="M380 599.6L464.6 514.1"/><path d="M5.6 524L-3 532.6L-5.6 535.2L-16.9 546.4L-39 568.1L-68.9 597.7L-73.1 601.8L-77.2 605.9L-126.4 655.1L-150.6 679.4L-176 704.8L-177 705.8L-180.1 708.9L-184.4 713.3L-211.2 740.2L-216.9 745.6L-244.2 772.9L-250.9 779.6L-282 810.6L-282.9 811.4L-287.4 816"/><path d="M28 501.3L5.6 524"/><path d="M55.1 22.5L54.7 19.6L51.4 -0.7L51.4 -1.3L51.3 -3.3L51.7 -5.9"/><path d="M62.6 69.5L60.4 55.8L59.6 50.8"/><path d="M493.3 235.8L496 233.1L499.5 229.7L524.9 204.5L558.1 171.5L562.9 166.8"/><path d="M400.1 175.7L401.4 174.4L411.3 164.7L440.8 135.6L448.8 127.8L452.8 123.9"/><path d="M3.4 146.9L3.9 146.8L66.4 136.7L68 136.4L73.2 135.6"/><path d="M414.7 113.6L394.6 93.8"/><path d="M131.7 592.9L136 588.5L180.2 544.4L180.9 543.7L183.9 540.7"/><path d="M34.4 495.2L38.2 490.9L38.8 490.3L60.9 468.3L69.3 460"/><path d="M51.7 -5.9L52.1 -8.6L52.1 -11.1L52.1 -11.7L51.9 -13L48.4 -35.4"/><path d="M161 517.3L113.9 564.8L113 565.6L108.5 569.5"/><path d="M535.7 249L536.9 250.2L544.4 257.5L544.9 258"/><path d="M374.1 50.4L385.6 38.8"/><path d="M354.3 31L372.4 48.7L374.1 50.4"/><path d="M587.4 299.5L593.8 305.5"/><path d="M575.9 288.4L587.4 299.5"/><path d="M569.2 281.8L575.9 288.4"/><path d="M139.9 -40.6L139.1 -38.6L141.4 -24.2"/></g>
+        <g class="rd r1"><path d="M225.9 100.4L225.9 101.9L225.8 105.3L225.8 107.3L226.3 109.8L227.9 111.9L248.3 133L271.5 156.6"/><path d="M386.7 -10.5L389.9 -7.4L396.4 -0.8L398.3 1.2L411.2 14.2L426.7 29.7"/><path d="M351.8 278.1L355 281.3L374.3 300.7L391.6 318.1L393 319.5L408.3 334.9"/><path d="M-23.1 11.5L-21.4 22.3L-20 30.8"/><path d="M1900.3 -1067.8L785.1 241L769.2 258.9"/><path d="M678.5 198.1L655.2 174.7"/><path d="M447.3 480.1L442.7 484.7L434.4 493L433 494.4"/><path d="M788.9 140.8L784 135.8L758.9 110.5"/><path d="M-6 119.6L-5 124.7L-2.4 139.1"/><path d="M59.6 50.8L55.6 51.4L32.3 55.2"/><path d="M-15 62.9L-20.6 63.8L-32.1 65.6L-89.9 74.8L-93.1 75.3L-93.9 75.4"/><path d="M68.7 107.3L74.2 106.5L110.8 100.6L122.9 98.7"/><path d="M-15 62.9L-14.3 67.3L-10.5 91.1"/><path d="M598.2 405.6L621.3 383.8"/><path d="M736.5 192.5L726.2 202.8L719.8 209.2L708.7 220.2L704.2 224.5"/><path d="M756.9 172.3L736.5 192.5"/><path d="M777.3 294.6L798.7 273.6L814.2 259.9L814.6 259.5L821.3 257.1"/><path d="M555.9 75.4L550.8 80.4L545 86.1L529.1 101.7"/><path d="M760.9 270.2L770.9 260.2L786.5 242.3"/><path d="M30.3 448L18.4 459.8"/><path d="M86.9 392.6L64.3 414.8L59.5 419.5L39.1 439.4"/><path d="M-46.7 413.1L-39.1 420.9L-25.1 435.3"/><path d="M116.5 363.2L121.9 360.7L145.6 337L152.9 330.1L155.4 327.7L167.6 315.6L191.1 291.8L220.6 262L223.4 255.4"/><path d="M797.3 -16.7L802 -12L809.1 -5.2L840.9 26.4L861.7 47.3L865.5 51.8L866.7 53.2L871.1 59.3"/><path d="M797.3 -16.7L800 -19.3L801 -20.2L804 -23.1L805 -24.1L808.2 -27.1"/><path d="M808.2 -27.1L804 -33L798.8 -40.1L798.1 -41.4L793.8 -48.3L789.7 -56.4L785.6 -65.6L782.1 -74.9L780.9 -78.2"/><path d="M830 100.2L827.5 102.7L809.7 120.2L793 136.8L788.9 140.8"/><path d="M629.8 447.7L633.4 443.9L661.3 416.4L664.2 413.8L668.8 409.5"/><path d="M568.1 386.8L570.4 389.1L576.6 395.3L600 418.3L603.2 421.5"/><path d="M297.3 183L300.1 180.3L312.9 167.4L324.6 155.9L326.7 153.6L327.7 152.6L330.9 149.3"/><path d="M646.1 464.1L654.7 473.9L663.1 483L665.7 485.2L671.4 489.6L678.2 496.6L689.4 507.8"/><path d="M554.6 373.6L550.4 377.8L541.3 386.7L540.7 387.4"/><path d="M403.5 77L402.5 78L390.6 89.9L352.4 127.8L335.1 145.1L333.4 146.8L330.9 149.3"/><path d="M481 -0L477 -4.1L466.9 -14.2L453.9 -27.2L445.3 -35.8L440.8 -40.2"/><path d="M8.8 469.2L12.8 472.4L23 482.5"/><path d="M444.1 47.3L453.7 56.9L458.2 61.4L458.5 61.7L461.1 64.2L464.6 68"/><path d="M8.8 469.2L3.9 474.1L1.3 476.7L-15.1 492.8L-24.5 502.2L-29 506.6L-30.3 507.9L-64.8 542L-85.5 562.5L-95 571.9L-99 575.9"/><path d="M297.3 183L301.1 186.9L322.1 208.9L345.1 232.1L366.1 253.8L370.9 258.7"/><path d="M223.4 255.4L227.4 251.6L238.1 240.8L243.8 235.3"/><path d="M481 -0L476.5 4.4L475.5 5.4L450 30.8"/><path d="M156 169.6L155.9 168.3L155.7 166.4L154.7 160.6L154.1 157.4"/><path d="M330.9 149.3L326.2 144.5L305.2 123.2L292.8 110.7L282 99.9"/><path d="M20.4 285L22.2 287.5L24.6 289.2L26.2 289.2L34.9 288.6L36.4 288.6"/><path d="M513.6 117.1L517.5 121.1L539.2 142.9L543.1 146.8L562.9 166.8"/><path d="M788.9 140.8L793.4 145.2L806.3 158"/><path d="M788.9 140.8L785 144.7L776.1 153.4L774.5 154.9L756.9 172.3"/><path d="M640.1 -8.6L635.9 -4.4L632.4 -1"/><path d="M894.6 527.9L889.2 527.2L885.4 526.7L880.1 526L874.5 525.2L873.3 525.3L869 525.5L863.7 526.3L857.9 527.9L851.7 530.2L846.2 533L840.8 536.5L835.5 540.7L830.7 545.1L826 549.7"/><path d="M223.4 255.4L219.1 251.2L208.8 241L197.7 230L176.2 208.7"/><path d="M223.4 255.4L218 259.2L211.6 265.5L201.5 275.6L198.9 278.2L159.3 317.2L154.6 321.8L152.1 324.3L136.7 339.7L118.8 357.6L116.5 363.2"/><path d="M111.3 368.3L106 373.6L86.9 392.6"/><path d="M-6 119.6L-0.7 118.7L32 113.3L64.3 108L68.7 107.3"/><path d="M683.4 -49.8L686.3 -47L704.4 -28.9L717.3 -15.9L727.5 -5.8L731.5 -1.7L733.2 -0.1L739.5 6.1L740.8 7.4"/><path d="M670.1 341.4L728.2 296.6"/><path d="M214.7 26L210.4 26.7L198.7 28.6L175.6 32.3L140.8 37.9L135 38.8"/><path d="M317.2 9.7L315.3 10L306.9 11.4"/><path d="M701.1 379.5L718.4 363L725.6 355.3L734.7 345.2"/><path d="M153.1 152.1L147.7 152.9L135.3 154.9L82.2 163.3L77.9 164L72.8 164.8L24.7 172.4"/><path d="M87.6 220.6L90.6 221.9L98.6 225.4L99.6 225.8"/><path d="M87.6 220.6L86.7 215.8L81.5 186.7"/><path d="M505.6 24.6L500.5 19.7L498.5 17.7"/><path d="M486.8 90.3L495 98.4"/><path d="M464.6 68L466.3 69.6L466.7 70.1L485 88.5L485.6 89.1"/><path d="M668.8 409.5L674.2 404.8L688.3 391.2L694.5 385.4L701.1 379.5"/><path d="M747.4 329.4L757.2 316.2L765.4 306.2L777.3 294.6"/><path d="M77.9 164L77.2 159.4L73.8 139"/><path d="M715.2 303.9L675.5 329.9L665.2 336.4L655.2 343.2L645.1 350.7L635.6 357.9L626.3 365.4L616.5 373.9L545.8 442.7"/><path d="M362.3 -35.1L354.9 -27.7L351.7 -24.6L341.4 -14.6"/><path d="M225.9 100.4L219.1 107.1L215.9 110.2L207.3 118.9"/><path d="M156 169.6L146.1 179.5L142.1 183.6L99.6 225.8"/><path d="M305.5 21.2L317.2 9.7"/><path d="M126 -17.8L131.9 -18.7L142.1 -20.4L143.4 -20.6L185.8 -27.5"/><path d="M144.1 95.3L143.4 91.1L139.7 68.1L138.6 60.9"/><path d="M144.1 95.3L149.6 94.4L184.5 89L185.6 88.9L194.8 87.4L200.7 86.5"/><path d="M291.2 35.5L301.5 25.3L305.5 21.2"/><path d="M254.4 72.1L252.1 74.5L249.6 76.8L231.9 94.3L225.9 100.4"/><path d="M596.4 34.6L600.5 39.1L616.5 54.4L621.2 56.7"/><path d="M596.4 34.6L593.3 37.6L574.4 56.9"/><path d="M538.3 357.2L527.5 347.5L523.9 343.9L517.6 337.6L495.2 314.3"/><path d="M341.4 -14.6L337 -10.2L317.2 9.7"/><path d="M26.4 298.5L21.6 303.3L19.9 304.9L-12.7 337.3"/><path d="M74.9 321.6L90.1 336.7"/><path d="M42.8 289.4L44.4 290.4L45.6 291.5L46.7 292.5L59.9 306.3L68.2 314.8"/><path d="M177.9 148.1L166 159.8L162.7 163L159.8 166L156 169.6"/><path d="M99.6 225.8L89.6 235.7L84.4 240.7L76.7 248.3L75.2 249.7L69.4 255.6"/><path d="M135 38.8L134.3 34.2L130.7 11.5L129.6 4.9"/><path d="M135 38.8L129.9 39.6L117.6 41.5L86.8 46.5"/><path d="M571.2 505.4L575.2 501.5L600.1 476.6"/><path d="M447.3 480.1L442.2 475L438.6 471.4L425 457.7L419.7 452.3L410.2 442.9"/><path d="M662.8 -30.2L644.5 -12.8L640.1 -8.6"/><path d="M372 404.5L376.6 400.5L393 384.5L397 379.1"/><path d="M263.8 511.1L268.3 506.6L275.8 499.1L299.2 475.5L302 472.8L304.6 470.4L347.3 428.3"/><path d="M811.5 416L815.3 412L816.3 411L842.8 384.6L846.4 381.1L855.4 372.1L858 369.4L877.6 349.9L879.3 348.5L881.2 347.4L883.2 346.9L884.1 346.9L885.6 346.9L891.4 347.2"/><path d="M176.2 208.7L161.9 193.6L159.8 191L158.7 189L157.9 186.8L157.5 184.8L157.1 181.1L156.2 171L156 169.6"/><path d="M523.3 -41.7L527.9 -37.1L547.7 -17.3"/><path d="M523.3 -41.7L518.2 -37L504.8 -23.7L485 -4L481 -0"/><path d="M116.5 363.2L120.7 367.5L135.9 382.4L138.8 385.2L141.7 388.1"/><path d="M609.2 319.4L591.4 336.6"/><path d="M-21.9 5.9L-18.6 5.3L-7.3 3.5L15 -0L25.2 -1.7L47.6 -5.2L51.7 -5.9L55 -6.4L90.8 -12.1"/><path d="M-27.2 238.7L7.4 233.2L12.5 232.4"/><path d="M3.8 175.5L4.6 180.4L6.4 192.7L11.8 227.2L12.5 232.4"/><path d="M271.5 156.6L282.3 167.9"/><path d="M525.5 253.3L527.4 253L529.3 252.1L531.8 252.4L533.5 253.6L534.3 254.5"/><path d="M629.2 150.1L624.3 145.2L606.4 127.2"/><path d="M3.9 291.6L-8.8 293.7L-25.9 296.5"/><path d="M277.6 741.5L289.9 731.2L301.6 720.4L313.9 708.4L325.4 696.5L337.6 683.1L354.3 665.4L413.8 602.4L483.5 527.3L518.4 489.5"/><path d="M518.4 489.5L563 440"/><path d="M554.6 373.6L558.3 377.3L568.1 386.8"/><path d="M521.7 554.7L525.8 550.6L553.2 523.8"/><path d="M600.1 476.6L624.6 452.5L629.8 447.7"/><path d="M553.2 523.8L571.2 505.4"/><path d="M573.8 354.6L572.2 356.1L570.6 357.8L569.1 359.3L567 361.3L558.8 369.4L554.6 373.6"/><path d="M645.3 80.8L667.8 103.5L671.4 108"/><path d="M606.4 127.2L602.2 122.7L593.9 113.7"/><path d="M758.9 110.5L754.3 105.8L750.7 102.1L748.4 99.9L742 93.3L734.8 86.1L719 70.2L714.6 65.7"/><path d="M83.4 544.6L86.9 548.1L98.1 559.3"/><path d="M756.7 23.2L761.2 27.8L792.1 59.7L825.9 94.5L830 100.2"/><path d="M239.6 271.7L227.5 259.6L223.4 255.4"/><path d="M329 361.4L328.4 360.8L303.5 335.7L298.8 331"/><path d="M298.8 331L293.2 325.4L263.5 295.9"/><path d="M249.9 497L255.8 503L260.3 507.5L263.8 511.1"/><path d="M159.8 406.4L185.6 432.3L191.2 438"/><path d="M191.2 438L194.5 441.5L223.8 470.7L228.6 475.5"/><path d="M95.5 -12.9L108.4 -15"/><path d="M-10.5 91.1L-7.7 108.6L-6.8 114.3L-6 119.6"/><path d="M487.3 6.4L485.5 4.5L481 -0"/><path d="M590.3 109.9L582.8 102.3L559.6 79.1L555.9 75.4"/><path d="M620 11.3L608.2 23.2"/><path d="M608.2 23.2L602 29L596.4 34.6"/><path d="M668.2 19.4L663.7 14.2L661.5 11.6"/><path d="M126 -17.8L125.2 -22.9L123.7 -33.1L120.9 -52.4"/><path d="M704.2 224.5L699.3 229.1L678.9 249.6"/><path d="M580.6 347.6L576.4 352L573.8 354.6"/><path d="M513.6 117.1L508.6 122L491.5 139.1L480.1 150.6L459.6 171.1L443.2 187.5L439.2 191.4L437 193.7L431.7 198.9"/><path d="M215.9 413.3L203.8 425.5L196 433.3L193.7 435.6L191.2 438"/><path d="M293.7 335.5L289.2 340L268.5 360.7"/><path d="M268.5 360.7L244.7 384.5L223.7 405.5L215.9 413.3"/><path d="M138.6 60.9L136.5 48L135.8 43.4L135 38.8"/><path d="M185.8 -27.5L189.3 -28.1L201.5 -30L205.6 -30.7"/><path d="M81.5 186.7L78.5 168.1L77.9 164"/><path d="M562.9 166.8L582.9 186.9L587.2 191.2"/><path d="M576.4 12.6L592.4 30.1L596.4 34.6"/><path d="M661.5 11.6L657.5 7.1L646.9 -3.5L645 -5.3L640.1 -8.6"/><path d="M-17.6 46.2L-15.8 58L-15 62.9"/><path d="M-23.1 11.5L-39.1 -87.8L-47.2 -138.1"/><path d="M500.9 104.4L508.6 112.3L513.6 117.1"/><path d="M426.7 29.7L434.4 37.5L438.8 41.9"/><path d="M282 99.9L262.3 80L259.7 77.4L255.1 72.8L254.4 72.1"/><path d="M438.8 41.9L434.2 46.5L403.5 77"/><path d="M-28.4 123.2L-11 120.4L-6 119.6"/><path d="M740.8 7.4L752.3 18.6L756.7 23.2"/><path d="M171.6 149.1L160.3 150.9L153.1 152.1"/><path d="M153.1 152.1L152.5 147.9L148.9 125.6L148.6 123.5"/><path d="M607.4 425.7L625.2 443.1L629.8 447.7"/><path d="M470.5 503.4L462.2 495L456.8 489.3L451.3 483.9L447.3 480.1"/><path d="M521.7 554.7L517 550.1L502.4 535.3L495.5 528.4"/><path d="M70.5 530.5L78.5 538.2L80.7 540.8"/><path d="M405.9 224.4L401.7 228.6L393.8 236.2L390.6 239.4"/><path d="M351.8 278.1L348.7 281.3L327.5 302.9L327.4 303"/><path d="M116.2 510.8L115.1 514.6L107.1 522.1L87.8 540.3L83.4 544.6"/><path d="M-0.9 147.5L1.4 161.1L3 170.8L3.8 175.5"/><path d="M-37.3 124.6L-28.4 123.2"/><path d="M241.2 533.2L259.5 515.4L263.8 511.1"/><path d="M73.2 135.6L69.4 112.2L68.7 107.3"/><path d="M475.4 294.5L453.3 273.3"/><path d="M614.6 218.7L629.8 230.7L635.9 236.8L640.6 241.3L642.9 243.3L647.4 247.6L653 253.2L659.3 259.8L664.2 264.4"/><path d="M659.5 269.1L655.8 272.4L653.7 274.9"/><path d="M541.5 236.5L556.3 221.8"/><path d="M611.2 167.6L624.7 154.1L629.2 150.1"/><path d="M629.2 150.1L634.4 145.5L643.6 136.3"/><path d="M685 94.5L676.2 103.1"/><path d="M685 94.5L701.8 77.7L706.2 73.5L710.2 69.9L714.6 65.7"/><path d="M714.6 65.7L710.2 61.3L703.2 54.4L693.6 44.7L688.9 40L677 28.2L668.2 19.4"/><path d="M462.5 525.2L449.5 536.8L422.1 562L406.7 576.1L359.4 622.4L334 646.3L319.8 659.9L306.1 673.1L227.6 750.7"/><path d="M205.6 -30.7L206.3 -26.1L207.6 -18"/><path d="M-42.7 241.1L-27.2 238.7"/><path d="M-1.9 176.3L-2.8 176.4L-18.9 178.6L-32.5 180.8"/><path d="M347.3 428.3L366.5 409.1"/><path d="M564.9 213.3L582.4 195.9L587.2 191.2"/><path d="M556.3 221.8L564.9 213.3"/><path d="M525.5 253.3L526 251.6L532.2 245.6"/><path d="M478.7 297.6L483.3 293.6L525.5 253.3"/><path d="M456.3 319.5L464.1 315.2L475.8 303.5L476.7 299.4"/><path d="M643.6 136.3L648.3 130.6L648.8 130.1L667.5 111.9L671.4 108"/><path d="M639.1 289.4L635.9 292.6L631.7 296.8L629.1 299.4L617.1 311.3L609.2 319.4"/><path d="M563 440L598.2 405.6"/><path d="M587.2 191.2L592 196L614.6 218.7"/><path d="M653.7 274.9L650.1 278.5L646.2 282.3L639.1 289.4"/><path d="M370.4 403L374.2 398.2L379.6 392.9L381.4 391.1L391.8 382.8L397 379.1"/><path d="M759.7 467.7L765.9 461.6L801.4 426.3L805.9 421.9L806.9 420.8L811.5 416"/><path d="M587.2 191.2L591.1 187.3L608.5 170.2L611.2 167.6"/><path d="M532.2 455.9L462.5 525.2"/><path d="M734.7 345.2L747.4 329.4"/><path d="M156.3 617.7L160.8 613.1L164.9 608.8L232.2 542.1"/><path d="M397 379.1L413.7 362.6"/><path d="M552.3 -12.6L564.9 0.3L569.2 4.7"/><path d="M521.2 40.4L517.9 37.2L514.5 33.8"/><path d="M171.6 149.1L161.9 158.8L157.6 166.6L156 169.6"/><path d="M-12.7 337.3L-16.6 341.3L-30.5 355L-33.2 357.6"/><path d="M254.4 72.1L256.7 69.8L258.2 68.3L260.1 66.4L291.2 35.5"/><path d="M-12.7 337.3L-6.7 332.7L10.5 319.6L24.4 306L33.5 292.8L36.4 288.6"/><path d="M69.4 255.6L46 279L44.2 280.8L36.4 288.6"/><path d="M69.4 255.6L66.1 257.7L56.4 263.7L39.7 280.1L37.2 286.3L36.4 288.6"/><path d="M99.6 225.8L106 220.9L124.8 206.2L147 184.2L153.9 173.2L156 169.6"/><path d="M207.3 118.9L177.9 148.1"/><path d="M207.3 118.9L204.3 121.2L199.3 125L183.2 137.4L171.6 149.1"/><path d="M177.9 148.1L182.8 144.2L184.9 142.6L202.3 129L219.9 111.8L224.3 103.6L225.9 100.4"/><path d="M291.2 35.5L285.1 39.9L280.9 42.9L275.2 47L263.2 57.7L255.6 65.7L254.8 70L254.4 72.1"/><path d="M317.2 9.7L319.3 9.1L322.2 8.2L326.6 4.3L331.5 -0.1L342.4 -9.8L357.8 -24.7L361.2 -32.6L362.3 -35.1"/><path d="M20.4 285L19 287.7L18 288.6L16.9 289.2L15.1 289.7L13.6 290.1"/><path d="M-25.9 296.5L-34.3 297.8"/><path d="M621.2 56.7L639.2 74.9"/><path d="M596.4 34.6L604.6 35L617.5 48.4"/><path d="M356.5 174.8L348.9 167.2"/><path d="M728.2 296.6L734.2 292.6L740.1 288.4"/><path d="M786.5 242.3L1901.7 -1066.6"/><path d="M821.3 257.1L825.2 253.2L826.1 252.3L839.5 238.7L842.6 235.7"/><path d="M756.7 23.2L760.8 19.4L786.1 -5.8L793.3 -13"/><path d="M714.6 65.7L718.7 62.1L726.5 54"/><path d="M806.3 158L848.7 200.6"/><path d="M293.5 13.5L288.8 14.2L253.5 19.8"/><path d="M7.7 59.2L-6.7 61.6L-12.1 62.5L-15 62.9"/><path d="M-20 30.8L-17.6 46.2"/><path d="M617.5 48.4L620.3 51.8L621.2 56.7"/><path d="M498.5 17.7L487.3 6.4"/><path d="M826 549.7L816.1 559.5L806.8 568.8"/><path d="M774.9 -41.3L779.6 -35.2L782.7 -31.8L789.7 -24.1L792.2 -21.6L797.3 -16.7"/><path d="M718.3 537L763.9 583.2"/><path d="M741 485.3L747.1 479.1"/><path d="M715.6 510.5L723.7 502.8L741 485.3"/><path d="M694.6 214.7L678.5 198.1"/><path d="M704.2 224.5L699.4 220.1L694.6 214.7"/><path d="M655.2 174.7L634 154.6L629.2 150.1"/><path d="M444.8 36L442.2 38.5L438.8 41.9"/><path d="M639.2 74.9L645.3 80.8"/><path d="M327.4 303L303 326.9L298.8 331"/><path d="M370.9 258.7L367.6 262.1L354.5 275.3L351.8 278.1"/><path d="M214.7 26L215.4 30.3L220.3 60.9"/><path d="M32.3 55.2L7.7 59.2"/><path d="M86.8 46.5L81.8 47.3L65.1 49.9L59.6 50.8"/><path d="M-25.1 435.3L-18.2 442.4L-0.4 460.5L3.6 464.7L8.8 469.2"/><path d="M342.7 161L335.2 153.6L330.9 149.3"/><path d="M348.9 167.2L342.7 161"/><path d="M424.6 351.5L429.8 356.7L443.8 370.8L460.7 387.7L466.1 393L472.1 399L477 404L487.9 414.9"/><path d="M424.6 351.5L427.6 348L456.3 319.5"/><path d="M408.3 334.9L421.1 348.2L424.6 351.5"/><path d="M282.3 167.9L292.5 178.1L297.3 183"/><path d="M740.1 288.4L745.6 284L750.9 279.5L760.9 270.2"/><path d="M206.9 85.5L218.8 83.7L223.8 82.9"/><path d="M225 88.7L225.3 90.3L225.7 91.8L226 95.6L226 98.7L225.9 100.4"/><path d="M220.9 64.7L223.1 78.4L223.8 82.9"/><path d="M649.9 575.8L677.6 548.1L687.9 537.9"/><path d="M148.6 123.5L144.9 100.2L144.1 95.3"/><path d="M39.1 439.4L30.3 448"/><path d="M207.6 -18L210.4 -0.6"/><path d="M253.5 19.8L219.5 25.3L214.7 26"/><path d="M36.4 288.6L26.4 298.5"/><path d="M13.6 290.1L3.9 291.6"/><path d="M68.2 314.8L71.4 318L74.9 321.6"/><path d="M210.4 -0.6L213.9 21.2L214.7 26"/><path d="M621.3 383.8L628.7 376.4L640.9 365.4L654.1 354.1L670.1 341.4"/><path d="M390.6 239.4L374.7 255L370.9 258.7"/><path d="M540.7 387.4L528.7 399.2L519.7 408.2L517.4 410.4L515 412.8L513.2 414.6L503.8 424L500.3 427.4L497.9 429.8L477.3 450.4L466.1 461.4L451.8 475.7L447.3 480.1"/><path d="M433 494.4L415.4 511.9L400.8 526.4L373.8 553.4"/><path d="M90.1 336.7L95.3 341.9L111.2 357.9L116.5 363.2"/><path d="M228.6 475.5L239.3 486.3L249.9 497"/><path d="M290.6 -4.8L285.2 -39.3L284.6 -43"/><path d="M292.4 6.6L291 -2L290.6 -4.8"/><path d="M703.6 522.2L707 518.9L715.6 510.5"/><path d="M23 482.5L30.2 490.5L34.4 495.2"/><path d="M832.4 -1.8L814.1 -20.3L812.5 -22L808.2 -27.1"/><path d="M12.5 232.4L13.2 236.9L20.2 283L20.4 285"/><path d="M12.5 232.4L16.5 231.8L49.5 226.6L63 224.5L84.1 221.1L87.6 220.6"/><path d="M410.2 442.9L394 426.7L376.8 409.6L372 404.5"/><path d="M249.1 281.3L244.3 276.5L239.6 271.7"/><path d="M-2.4 139.1L-0.9 147.5"/><path d="M24.7 172.4L12 174.4L7.9 175L3.8 175.5"/><path d="M191.2 438L186.6 442.6L162.7 466.8L139.9 488.4"/><path d="M112.1 -15.7L121.1 -17L126 -17.8"/><path d="M431.7 198.9L421.4 209"/><path d="M487.9 414.9L495.3 422.3L500.3 427.4"/><path d="M232.2 542.1L241.2 533.2"/><path d="M141.7 388.1L157.5 404.1L159.8 406.4"/><path d="M495.5 528.4L478.1 511"/><path d="M34.4 495.2L44.8 505.8L46.7 507.2L49.7 510"/><path d="M49.7 510L51.1 511.4L57.5 517.9L62.1 522.4"/><path d="M362.3 -35.1L363 -34.4L368 -29.3L386.7 -10.5"/><path d="M139.9 488.4L123.5 504.2L116.2 510.8"/><path d="M83.4 544.6L79 549L78.3 549.8L77 551.2"/><path d="M62.1 522.4L70.5 530.5"/><path d="M18.4 459.8L12.6 465.4L8.8 469.2"/><path d="M726.5 54L734.2 45.6L751.8 27.9L756.7 23.2"/><path d="M495.2 314.3L483.9 302.7L478.7 297.6"/><path d="M554.6 373.6L549.4 368.4L538.3 357.2"/><path d="M263.5 295.9L249.1 281.3"/><path d="M129.6 4.9L126.8 -12.8L126 -17.8"/><path d="M122.9 98.7L139.2 96.1L144.1 95.3"/><path d="M495 98.4L500.9 104.4"/><path d="M413.7 362.6L422.4 353.9L424.6 351.5"/><path d="M532.2 245.6L535.4 242.4L541.5 236.5"/><path d="M260.5 219.1L293.6 186.6L297.3 183"/><path d="M243.8 235.3L260.5 219.1"/><path d="M574.4 56.9L562.3 68.9L559.8 71.4L555.9 75.4"/><path d="M687.9 537.9L699.2 526.6L703.6 522.2"/><path d="M747.1 479.1L759.7 467.7"/><path d="M629.8 447.7L633.6 451.6L645.2 463.2L646.1 464.1"/><path d="M689.4 507.8L698.4 516.9L699.1 517.7L703.6 522.2"/><path d="M703.6 522.2L707.9 526.6L709.5 528.2L718.3 537"/><path d="M370.4 403L368.3 400.9L356.8 389.2L352 384.4L346.8 379.2L339 371.4L334 366.4L329 361.4"/><path d="M545.8 442.7L532.2 455.9"/><path d="M769.2 258.9L745.1 281.5L716.1 303.2"/><path d="M555.9 75.4L551.5 70.7L534.3 53.6L532.5 51.8L530.5 49.8L527.8 47.1"/><path d="M627.3 4.1L620 11.3"/><path d="M637.6 -11.1L635.5 -13.3L609.7 -39.2L608.2 -40.7"/><path d="M403.1 221.6L400.5 219L389.4 207.8L378.8 197.2L376.1 194.5L356.5 174.8"/><path d="M414.1 232.6L409.9 228.4L405.9 224.4"/><path d="M421.4 209L410.1 220.2L405.9 224.4"/><path d="M268.2 515.4L269.3 516.5L274.6 521.8L280.3 527.6L291.9 539.2L303.6 551L312 559.5L314.2 561.7"/><path d="M550.3 270.6L584 304.6L600.2 318.7L609.2 319.4"/><path d="M534.3 254.5L550.3 270.6"/><path d="M591.4 336.6L580.6 347.6"/><path d="M453.3 273.3L430.9 250.8L417.7 236.2L414.1 232.6"/><path d="M529.1 101.7L517.6 113L513.6 117.1"/><path d="M678.9 249.6L666.5 262L664.2 264.4"/><path d="M-100.9 18.5L-98.4 18.1L-64.2 12.6L-58.9 11.8L-41.4 9L-26.7 6.7L-21.9 5.9"/></g>
+        <text class="ll" x="213.2" y="414.2">MOSCONE CENTER</text>
+        <text class="ll" x="468.6" y="72">SALESFORCE TOWER</text>
+        <g transform="translate(300.8 165.1) rotate(-44.8)"><text class="sl" y="0">MISSION</text></g><g transform="translate(289 326.4) rotate(-44.8)"><text class="sl" y="0">HOWARD</text></g><g transform="translate(453.4 309.3) rotate(-44.6)"><text class="sl" y="0">FOLSOM</text></g><g transform="translate(435.2 239.6) rotate(45.0)"><text class="sl" y="0">2ND</text></g><g transform="translate(264.2 280.5) rotate(45.4)"><text class="sl" y="0">3RD</text></g><g transform="translate(117.8 350.2) rotate(45.1)"><text class="sl" y="0">4TH</text></g>
+        <g id="c360-pin" transform="translate(360 380.8)">
+        <circle class="pin-halo" r="22" fill="url(#c360halo)"/>
+        <circle r="9" fill="#F7F5F0"/>
+        <circle r="6.5" fill="#A100FF"/>
+        </g>
+        <g transform="translate(756 40)">
+        <path class="na" d="M0 16L0 -10"/><path class="na" d="M-4.5 -5L0 -11L4.5 -5"/>
+        <text class="nn" y="32">N</text>
+        </g>
+        </g>
+        </svg>
+        </div>
+        <div class="place-row">
+          <span class="place-name">SPIN</span>
+          <span class="place-addr">690 Folsom Street, San Francisco</span>
+          <a class="place-link" href="https://maps.apple.com/?q=690+Folsom+St,+San+Francisco"
+             target="_blank" rel="noopener noreferrer">Open in Maps</a>
+        </div>
+      </aside>
     </div>
     <div class="endrow">
-      <img class="lg" src="assets/logos/accenture-logo-ink.svg" alt="Accenture" width="124" height="17" loading="lazy" />
+      <img class="lg" src="assets/logos/accenture-logo-white.svg" alt="Accenture" width="124" height="17" loading="lazy" />
       <button class="again" id="again" type="button">Watch again<svg width="14" height="14" aria-hidden="true"><use href="#g-arrow"/></svg></button>
     </div>
   </div>
@@ -2343,17 +2434,20 @@ html{scroll-snap-type:y proximity}
       }, 'top bottom');
     });
 
-    /* the close: the reel's daylight return starts drifting as the last
-       chapter leaves, so the picture is already alive when the type lands
-       on it. Nothing about it is fetched before then. */
-    var endp = $('#endplate');
+    /* the close: the city starts drifting as the last chapter leaves, so the
+       picture is already alive when the type lands on it. Nothing about it is
+       fetched before then. */
+    var endp = $('#endplate'), endsec = $('#end');
     if (endp && !RM) {
-      once($('#end'), function () {
+      once(endsec, function () {
         endp.preload = 'auto';
         var p = endp.play();
         if (p && p.catch) { p.catch(function () {}); }
       }, 'top bottom');
     }
+    /* and the pin opens once, when the close is actually on the screen rather
+       than when it starts arriving */
+    once(endsec, function () { endsec.classList.add('lit'); }, 'top 55%');
 
     if (window.__fit) { window.__fit.run(); }
     if (window.__halo) { window.__halo.place(); }
