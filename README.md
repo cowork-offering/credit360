@@ -55,8 +55,8 @@ tools/prepare-film.sh      fragment it for MediaSource and write film.json
 
 At 1440x900, Chromium, over the local build:
 
-- first contentful paint **104 ms**, load **105 ms**, 9 requests, 445 KB
-- first film frame **8 ms** after the press (the stream is warmed on unlock)
+- first contentful paint **76 ms**, load **72 ms**, 9 requests, 445 KB
+- first film frame **17 ms** after the press (the stream is warmed on unlock)
 - cumulative layout shift **0.0000** over the whole scroll
 - 0 console errors, 0 failed requests, at 1440x900 and 390x844
 

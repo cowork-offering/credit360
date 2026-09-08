@@ -455,8 +455,10 @@ html.locked body>*:not(#gate){visibility:hidden}
 .rise.in{opacity:1; transform:none;
   transition:opacity .42s var(--ease-out), transform .46s var(--ease-settle)}
 
-/* a. the eleven tabs */
-.tabs{display:flex; flex-wrap:wrap; gap:6px; max-width:920px}
+/* a. the eleven tabs and the one they become, in one cell */
+.swap{display:grid; align-items:start; max-width:920px}
+.swap>*{grid-area:1/1}
+.tabs{display:flex; flex-wrap:wrap; gap:6px; align-content:start}
 .tab{
   height:28px; padding:0 12px; border-radius:7px; background:var(--pillbg);
   border:1px solid var(--hair); font-size:12px; line-height:26px; color:var(--muted);
@@ -465,14 +467,14 @@ html.locked body>*:not(#gate){visibility:hidden}
 }
 .tabs.collapse .tab{opacity:0; transform:translateY(-4px) scale(.97); filter:blur(1px)}
 .notthis{
-  margin:26px 0 22px; font-size:clamp(20px,2.4vw,28px); font-weight:600;
+  margin:30px 0 0; font-size:clamp(20px,2.4vw,28px); font-weight:600;
   letter-spacing:-.022em; color:var(--ink-max); opacity:0; transform:translateY(6px);
 }
 .notthis.in{opacity:1; transform:none;
   transition:opacity .4s var(--ease-out) .1s, transform .46s var(--ease-settle) .1s}
-.onetab{opacity:0; transform:translateY(6px); max-width:520px}
+.onetab{opacity:0; transform:scale(.985); max-width:520px}
 .onetab.in{opacity:1; transform:none;
-  transition:opacity .44s var(--ease-out) .18s, transform .5s var(--ease-settle) .18s}
+  transition:opacity .4s var(--ease-out), transform .5s var(--ease-settle)}
 
 /* c. the chip strip */
 .chipstrip{display:flex; flex-wrap:wrap; gap:8px; margin-top:26px}
@@ -591,7 +593,7 @@ html.locked body>*:not(#gate){visibility:hidden}
 
 /* the dim: one stop, the whole page, once */
 #dim{
-  position:fixed; inset:0; z-index:60; background:rgba(14,14,12,.30);
+  position:fixed; inset:0; z-index:60; background:rgba(44,38,28,.26);
   opacity:0; pointer-events:none; transition:opacity .7s var(--ease-out);
 }
 #dim.on{opacity:1}
@@ -792,13 +794,13 @@ html.locked body>*:not(#gate){visibility:hidden}
       <p class="sub">Eleven systems, one relationship, and a morning spent reconciling them by hand.</p>
     </div>
     <div class="stage">
+      <div class="swap">
       <div class="tabs" id="tabstrip" aria-hidden="true">
         <span class="tab">nCino</span><span class="tab">Salesforce</span><span class="tab">Boom</span>
         <span class="tab">AFS</span><span class="tab">IRIS</span><span class="tab">Snowflake</span>
         <span class="tab">Outlook</span><span class="tab">SharePoint</span><span class="tab">Teams</span>
         <span class="tab">Spreads.xlsx</span><span class="tab">DocMan</span>
       </div>
-      <p class="notthis" id="notthis">Not this one.</p>
       <div class="onetab" id="onetab">
         <div class="device">
           <div class="dev-top">
@@ -809,6 +811,8 @@ html.locked body>*:not(#gate){visibility:hidden}
           </div>
         </div>
       </div>
+      </div>
+      <p class="notthis" id="notthis">Not this one.</p>
     </div>
   </div>
 </section>
@@ -1311,8 +1315,8 @@ html.locked body>*:not(#gate){visibility:hidden}
       if (RM) { strip.classList.add('collapse'); $('#notthis').classList.add('in'); $('#onetab').classList.add('in'); return; }
       $$('.tab', strip).forEach(function (t, i) { t.style.transitionDelay = (i * 34) + 'ms'; });
       setTimeout(function () { strip.classList.add('collapse'); }, 520);
-      setTimeout(function () { $('#notthis').classList.add('in'); }, 900);
-      setTimeout(function () { $('#onetab').classList.add('in'); }, 1120);
+      setTimeout(function () { $('#onetab').classList.add('in'); }, 760);
+      setTimeout(function () { $('#notthis').classList.add('in'); }, 1000);
     }, 'top 74%');
 
     /* b. the figures count up. The app rolls its numbers; this is that roll. */
