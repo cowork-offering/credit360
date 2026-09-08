@@ -13,7 +13,7 @@ surface and rebuilt as live HTML at its real scale:
 
 | On the page | Lifted from |
 |---|---|
-| The gate's left pane: the `>` set large in `#A100FF` on a near-black plum field, the pre-dawn aerial ghosted behind it, the `accenture` wordmark bottom-left, and the two-frame strike to full purple on unlock | `c360-film/mark/index.html`, the endcard cell (the wordmark's own letter paths and its strike), over the overture's plate P1 |
+| The gate's left pane: the pre-dawn aerial full bleed and running, the `accenture` wordmark centred in the lower third at 35% of the pane, its focus-pull arrival, its one light sweep, and the two-frame strike to full purple on its own chevron | `c360-film/overture/assets/video/V1-aerial-push-film-1080p.mp4` (the uncut plate) and `c360-film/mark/index.html`, the endcard cell: the wordmark's own letter paths, its rack-in, its specular sweep and its strike |
 | The gate's right pane: the `Morning.` greeting, the 106 px composer with its 20 px radius, the `Chat \| Cowork` pillbed, the `Fable 5.1 · Medium` meta, the send control | `c360-film/door/index.html`, shots 8 and 9 (measured off the Cowork reference PNGs with PIL) |
 | The hero plate: the clean raw aerial the film's shot 1 was cut from, looping, under the page's own chevron at 70% | `c360-film/overture/assets/video/V1-aerial-push-film-1080p-cut.mp4` |
 | The breathers: three full-bleed people frames with the film's headline typed over them at 24 characters a second, white with one purple key word and the film's own drop | the reel's own frames at 17.967 s, 44.700 s and 50.000 s, plus `c360-film/type/OVERLAY.md` for the type's rate, colour and shadow |
@@ -45,8 +45,8 @@ transform alone, so a line that is typing costs nothing in layout.
 
 ## The gate
 
-Two panes, because the gate is an entry and should say so: the mark on the film's own
-deep field on the left, the Cowork greeting and the composer on the right. The
+Two panes, because the gate is an entry and should say so: the film's own sky on the
+left, the Cowork greeting and the composer on the right. The
 greeting is the product's, addressed to the room it opens in: `Morning, San
 Francisco.` The composer asks for the passcode by name, and one muted line under it
 says who the page is for and where the phrase is: `Invited guests only. The passcode
@@ -54,8 +54,29 @@ is on your invitation.` On the right phrase the chevron strikes to full purple i
 frames, the dark pane leaves the frame, and only then does the composer type itself
 out and run the connectors.
 Both pane moves are transforms, so the composer's own box never reflows while the
-visitor is looking at it. On a phone the panes stack and the mark takes a short band
+visitor is looking at it. On a phone the panes stack and the plate takes a short band
 at the top. Wrong phrase: the composer moves 2 px, once, and says `Not on the list.`
+
+The left pane is now a plate rather than a field with a mark on it. It carries 3.5 s
+of the UNCUT aerial the overture opens on, cropped 756x1080 out of the centre of the
+frame to 672x960 for the pane's own portrait, lifted plum in the shadows (a black
+point of +4/255 on red and +8/255 on blue, one step on green, then saturation 0.94
+and contrast 1.03), slowed 1.6x with motion interpolation and mirrored into an
+11.0 s ping-pong. Both joins are single-frame steps, at the turnaround and at the
+restart, so neither is visible. The scrim under the wordmark is CSS, not baked, so it
+tracks the pane at every aspect including the phone's band; the plate itself stays
+photographic. It ships `preload="none"` behind its own first frame as a poster, so
+the pane is painted before a byte of the loop is asked for.
+
+The mark on it is the full `accenture` with its own chevron, at 35% of the pane width
+and centred at 79% of its height. It arrives on the endcard's focus pull, 6 px of
+blur and 1.04x of scale resolving over 900 ms, then takes the endcard's one light
+sweep across the glyphs over 1.2 s and never again. On unlock the strike lands on
+that chevron, two frames to full purple, and the pane leaves as before. The sweep is
+the endcard's mechanism exactly: a white band clipped to the glyph outlines, blurred
+into a bloom and screened back. It is driven by a transform rather than a moving
+mask, because `mask-position` does not interpolate in Chromium and the band would
+jump the frame instead of crossing it.
 
 Client-side only, and a courtesy lock rather than a security boundary: GitHub Pages
 serves static files and anyone with the bundle can read `assets/gate.js`. The phrase
@@ -192,8 +213,10 @@ frames longer than 25 ms across the page. Native: 53.7 px delivered, one frame o
 index.html                 the page: one file, one <style>, one <script>
 assets/gate.js             the door, loaded synchronously in <head>
 assets/film/               the reel (1080p + 720p, fragmented), film.json, the hero
-                           plate (the looping pre-dawn aerial and its first frame)
-                           and the close's daylight aerial and its first frame
+                           plate (the looping pre-dawn aerial and its first frame),
+                           the gate plate (the same aerial turned tall for the door's
+                           left pane) and the close's daylight aerial, each with its
+                           own first frame
 assets/stills/             the three breather frames, cut from the reel
 assets/fonts/              Inter 400/500/600 and Newsreader, subset to Latin
 assets/vendor/             GSAP and ScrollTrigger. The scroll itself is the browser's.
@@ -223,7 +246,11 @@ At 1440x900, Chromium, over the local build:
   single-pixel step 4 of 255. At the viewport's own edge columns it reads 0 at
   every width
 - one frame longer than 25 ms and zero long tasks over the full scroll
-- no request over 3 MB besides the reel; the hero plate is 1.19 MB
+- no request over 3 MB besides the reel; the hero plate is 1.19 MB and the gate
+  plate is 1.01 MB
+- the gate paints on 12 requests and 686 KB, none of it the pane's loop: the loop
+  follows as a 13th request and under `prefers-reduced-motion` it is never asked for
+  at all, the poster standing in as the whole plate
 - 0 console errors, 0 failed requests, no horizontal overflow
 
 The reel in `assets/film/` is the rev 4 master. Its FILE md5 does not match the
