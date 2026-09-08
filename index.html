@@ -613,11 +613,21 @@ html.locked body>*:not(#gate){visibility:hidden}
    Caption in the landing headline style, one muted sub, then the
    component at its real scale.
    ============================================================ */
-/* ONE SCREEN PER CHAPTER. A chapter is exactly one viewport and is read
-   without being scrolled inside. The caption takes the top-left, the facts sit
-   on the paper it leaves to its right, and the component takes everything
-   below and centres in it. Nothing clips here: the halo's bloom is allowed to
-   bleed past this section's edges and behind its neighbours. */
+/* ONE SCREEN PER CHAPTER, AND AT 1080 AND UP IT IS A SPREAD. A chapter is
+   exactly one viewport and is read without being scrolled inside. The reading
+   column takes 38% of the paper: the chapter counter, the caption in the
+   landing headline, one muted sub, then the three facts STACKED and set at the
+   size a figure deserves. The lifted component takes the other 62% and centres
+   against it, with its outer edge on the content margin.
+
+   The chapter used to put the caption and a thin row of small facts across the
+   top and stand the component under them on the left, which left a wide field
+   of bare cream down the right of every screen. Two columns spend that paper on
+   the figures instead, and the columns alternate down the page so the scroll
+   has a rhythm rather than a margin.
+
+   Nothing clips here: the halo's bloom is allowed to bleed past this section's
+   edges and behind its neighbours. */
 .chapter{
   height:var(--vph,100svh); min-height:var(--vph,100svh);
   padding:clamp(26px,5vh,60px) 0; position:relative;
@@ -625,16 +635,33 @@ html.locked body>*:not(#gate){visibility:hidden}
 .chapter + .chapter{border-top:1px solid var(--hair)}
 .chapter > .wrap{
   height:100%; display:grid;
-  /* the facts column is held at the width three of the product's own figures
-     need at 28 px; the caption takes whatever paper is left */
-  grid-template-columns:minmax(0,1fr) minmax(0,462px);
-  grid-template-rows:auto minmax(0,1fr);
-  grid-template-areas:"cap facts" "stage stage";
-  column-gap:clamp(28px,4vw,64px); row-gap:clamp(18px,3.2vh,38px);
+  grid-template-columns:minmax(0,38fr) minmax(0,62fr);
+  /* the flexible rows above and below centre the reading column against the
+     component, while the stage keeps the whole height of the band. row-gap is
+     0 so those two spacers stay symmetrical; the one gap that carries meaning,
+     between the caption and the facts, is the facts' own margin. */
+  grid-template-rows:minmax(0,1fr) auto auto minmax(0,1fr);
+  grid-template-areas:".     stage"
+                      "cap   stage"
+                      "facts stage"
+                      ".     stage";
+  column-gap:clamp(32px,4.4vw,72px); row-gap:0;
 }
-.cap{grid-area:cap; max-width:640px; align-self:end}
-.facts{grid-area:facts; align-self:end}
+.cap{grid-area:cap; align-self:end}
+.facts{grid-area:facts; align-self:start; margin-top:clamp(22px,3.6vh,40px)}
 .stage{grid-area:stage; position:relative; min-height:0}
+
+/* THE RHYTHM. 02 reads left, 03 reads right, 04 left, 05 right, 06 left. 01
+   keeps the browser window on the right the eleven-tabs pass built it in, and
+   07 keeps its card on the right so the halo's bloom has the whole reading
+   column of paper to open into. */
+.chapter.flip > .wrap{
+  grid-template-columns:minmax(0,62fr) minmax(0,38fr);
+  grid-template-areas:"stage .    "
+                      "stage cap  "
+                      "stage facts"
+                      "stage .    ";
+}
 
 /* THE FIT RULE. A lifted component is the size it is in the product, and some
    of them are taller than the band a full-screen chapter leaves. The component
@@ -646,42 +673,56 @@ html.locked body>*:not(#gate){visibility:hidden}
   transform:translateY(-50%); transform-origin:center center;
 }
 
-/* THE FACTS. The product's own stat tile, one line of them beside the caption:
-   the small-caps label, then either the figure at 28 px or one 15 px line.
-   Hairlines divide them, the way the cockpit's metric strip divides its own. */
-.facts{display:flex; align-items:stretch; gap:0; width:100%}
+/* THE FACTS. The product's own stat tile, stacked down the reading column and
+   set large: the small-caps label, the figure at 40 px in tabular ink, the
+   qualifier at 15 px muted under it, a hairline between one fact and the next.
+   The figures were 28 px in a 462 px strip across the top and read as a
+   caption's footnote; at 40 px down the column they are the second thing on
+   the screen, which is what they are. */
+.facts{display:block}
 .fact{
-  flex:1 1 0; min-width:0; padding:2px 0 2px 15px; margin-left:15px;
-  border-left:1px solid var(--hair);
+  padding:clamp(13px,2.1vh,22px) 0;
+  border-top:1px solid var(--hair);
 }
-.fact:first-child{padding-left:0; margin-left:0; border-left:0}
+.fact:first-child{border-top:0; padding-top:0}
+.fact:last-child{padding-bottom:0}
 .fact .fl{
   display:block; font-size:10.5px; font-weight:600; letter-spacing:.09em;
   text-transform:uppercase; color:var(--faint); line-height:1.2;
 }
 .fact .fv{
-  display:block; margin-top:9px; font-size:28px; font-weight:600;
-  letter-spacing:-.024em; line-height:1.05; color:var(--ink-max);
+  display:block; margin-top:8px; font-size:40px; font-weight:600;
+  letter-spacing:-.028em; line-height:1; color:var(--ink-max);
   font-variant-numeric:tabular-nums;
 }
-.fact .fs{display:block; margin-top:5px; font-size:11.5px; color:var(--muted)}
-.fact .fp{display:block; margin-top:9px; font-size:15px; line-height:1.36;
-  color:var(--sub); text-wrap:pretty}
+.fact .fs{display:block; margin-top:8px; font-size:15px; line-height:1.4;
+  color:var(--muted); text-wrap:pretty}
+/* a fact the product states in words rather than a figure takes the row it is
+   given, set one step under the figure so the column keeps its beat */
+.fact .fp{display:block; margin-top:8px; font-size:19px; line-height:1.32;
+  font-weight:500; letter-spacing:-.014em; color:var(--sub); text-wrap:pretty}
 
-/* Below the width at which the caption and the facts can stand side by side,
-   the facts go under the component rather than under the caption: the caption
-   keeps the top of the screen and the component keeps the middle of it. */
-@media (max-width:1080px){
-  .chapter > .wrap{
+/* Below the width at which the reading column and the component can stand side
+   by side, the spread closes: the text block goes above, the facts become one
+   row of the SAME large figures under it, and the component takes the band
+   below. The chapter is still exactly one screen. */
+@media (max-width:1079.98px){
+  .chapter > .wrap,.chapter.flip > .wrap{
     grid-template-columns:minmax(0,1fr);
-    grid-template-rows:auto minmax(0,1fr) auto;
-    grid-template-areas:"cap" "stage" "facts";
+    grid-template-rows:auto auto minmax(0,1fr);
+    grid-template-areas:"cap" "facts" "stage";
     row-gap:clamp(14px,2.4vh,28px);
   }
-  .cap{align-self:start; max-width:none}
-  .facts{align-self:start}
-  .fact .fv{font-size:24px}
-  .fact .fp{font-size:14px}
+  .cap{align-self:start}
+  .facts{align-self:start; margin-top:0; display:flex; align-items:stretch; gap:0}
+  .fact{
+    flex:1 1 0; min-width:0; padding:2px 0 2px 18px; margin-left:18px;
+    border-top:0; border-left:1px solid var(--hair);
+  }
+  .fact:first-child{padding-left:0; margin-left:0; border-left:0}
+  .fact .fv{margin-top:9px}
+  .fact .fs{font-size:13px; margin-top:6px}
+  .fact .fp{font-size:16px; margin-top:9px; line-height:1.34}
 }
 /* A PHONE IS NOT A SCREENING ROOM. Below the width at which a lifted component
    still reflows into something a hand can read, the chapter stops being exactly
@@ -699,13 +740,23 @@ html.locked body>*:not(#gate){visibility:hidden}
   #hero > .wrap-w{justify-content:center}
   #film{container-type:normal; display:block; flex:0 0 auto}
   #film .player{height:auto; width:100%}
+  .fact .fv{font-size:32px}
 }
-@media (max-width:640px){
-  .fact{padding-left:12px; margin-left:12px}
-  .fact .fv{font-size:20px; margin-top:6px}
-  .fact .fp{font-size:12.5px; margin-top:6px; line-height:1.34}
-  .fact .fl{font-size:9.5px; letter-spacing:.08em}
-  .fact .fs{font-size:10.5px}
+/* Three 32 px figures cannot stand across a phone: $66.50M alone is wider than
+   the third of the screen a row would give it. Below this the facts stack again
+   and keep their size, which is the one thing worth keeping. The chapter is
+   already free to grow here, so the column costs nothing. */
+@media (max-width:559.98px){
+  .facts{display:block}
+  .fact{
+    flex:none; padding:clamp(11px,1.8vh,16px) 0; margin-left:0;
+    border-left:0; border-top:1px solid var(--hair);
+  }
+  .fact:first-child{border-top:0; padding-top:0}
+  .fact .fl{font-size:10px; letter-spacing:.085em}
+  .fact .fv{font-size:32px; margin-top:7px}
+  .fact .fs{font-size:14px; margin-top:6px}
+  .fact .fp{font-size:17px; margin-top:7px}
 }
 
 /* THE SNAP. Proximity, never mandatory: a section settles into the frame when
@@ -1019,8 +1070,13 @@ html{scroll-snap-type:y proximity}
    the light needs more room than the gutter leaves, the chapter's own stage
    pulls in, the two cards narrow together, and the light gets its paper back.
    Without this the canvas is wider than the phone and the glow is sliced flat
-   at both screen edges. */
-@media (max-width:1140px){ #ch-g .stage{padding-inline:clamp(26px,8.5vw,88px)} }
+   at both screen edges.
+
+   Only once the spread has closed. Above 1080 the stage is already 62% of the
+   paper and the card is drawn inside it, so the pad has the whole reading
+   column to open into on the inner side and the page's own gutter on the
+   outer, and the light lands on zero well before either. */
+@media (max-width:1079.98px){ #ch-g .stage{padding-inline:clamp(26px,8.5vw,88px)} }
 /* The halo's box is written by JS off the dossier's measured rect, so its
    centre is the card's centre at every viewport. The values below are only
    what it wears before the first measurement. */
@@ -1095,9 +1151,13 @@ html{scroll-snap-type:y proximity}
   font-size:clamp(24px,3.6vw,40px); font-weight:600; line-height:1.12;
   letter-spacing:-.025em; color:var(--ink-max);
 }
-.endwhere{margin-top:clamp(14px,2.2vh,24px); color:var(--muted)}
-.endwhen{margin-top:7px}
-@media (max-width:430px){ .endwhere{font-size:9.5px; letter-spacing:.07em} }
+/* the booth line is the one instruction the close carries, so it is read at a
+   glance rather than squinted at: 15 px, and the eyebrow's tracking eased off
+   because letterspacing that flatters 10.5 px reads as a gap at 15 */
+.endwhere{margin-top:clamp(14px,2.2vh,24px); color:var(--muted);
+  font-size:15px; letter-spacing:.045em; line-height:1.35}
+.endwhen{margin-top:9px}
+@media (max-width:430px){ .endwhere{font-size:14px; letter-spacing:.03em} }
 /* the endcard row runs the full content width, the hero's own margins, and it
    holds the bottom of the frame however tall the screen is */
 .endrow{
@@ -1333,17 +1393,17 @@ html{scroll-snap-type:y proximity}
       <p class="sub">Eleven systems, one relationship, and a morning spent reconciling them by hand.</p>
     </div>
     <div class="facts">
-      <div class="fact">
+      <div class="fact rise">
         <span class="fl">Systems of record</span>
         <span class="fv num">11</span>
         <span class="fs">open at once</span>
       </div>
-      <div class="fact">
+      <div class="fact rise">
         <span class="fl">The relationship</span>
         <span class="fv num">1</span>
         <span class="fs">the same borrower in all of them</span>
       </div>
-      <div class="fact">
+      <div class="fact rise">
         <span class="fl">The screen</span>
         <span class="fp">Credit 360 for my book</span>
       </div>
@@ -1393,17 +1453,17 @@ html{scroll-snap-type:y proximity}
       <p class="sub">The book is read before you open it. Exposure, utilisation and the queue are already counted.</p>
     </div>
     <div class="facts">
-      <div class="fact">
+      <div class="fact rise">
         <span class="fl">Needs action</span>
         <span class="fv num">9</span>
         <span class="fs">relationships</span>
       </div>
-      <div class="fact">
+      <div class="fact rise">
         <span class="fl">Managed exposure</span>
         <span class="fv num">$66.50M</span>
         <span class="fs">committed across the book</span>
       </div>
-      <div class="fact">
+      <div class="fact rise">
         <span class="fl">Reviews due</span>
         <span class="fv num">25</span>
         <span class="fs">3 overdue</span>
@@ -1477,7 +1537,7 @@ html{scroll-snap-type:y proximity}
 </section>
 
 <!-- c ....................................................... -->
-<section class="chapter" id="ch-c">
+<section class="chapter flip" id="ch-c">
   <div class="wrap">
     <div class="cap">
       <p class="eyebrow chno"><b>03</b><i>/</i>07</p>
@@ -1485,16 +1545,16 @@ html{scroll-snap-type:y proximity}
       <p class="sub">Six integrations resolve before the first question is asked. You never open one of them.</p>
     </div>
     <div class="facts">
-      <div class="fact">
+      <div class="fact rise">
         <span class="fl">Integrations</span>
         <span class="fv num">6</span>
         <span class="fs">resolve before the first question</span>
       </div>
-      <div class="fact">
+      <div class="fact rise">
         <span class="fl">Resolved</span>
         <span class="fp">Salesforce, Customer 360, Microsoft 365, IDB, Boom, Credit Memo</span>
       </div>
-      <div class="fact">
+      <div class="fact rise">
         <span class="fl">The surface</span>
         <span class="fp">One brain of plugins, one screen</span>
       </div>
@@ -1540,16 +1600,16 @@ html{scroll-snap-type:y proximity}
       <p class="sub">Owners, affiliates and the borrower, with the guaranty on the edge that carries it.</p>
     </div>
     <div class="facts">
-      <div class="fact">
+      <div class="fact rise">
         <span class="fl">On the graph</span>
         <span class="fv num">4</span>
         <span class="fs">parties, one guaranty</span>
       </div>
-      <div class="fact">
+      <div class="fact rise">
         <span class="fl">The guaranty</span>
         <span class="fp">Owner &middot; personal guaranty &middot; limited &middot; $5M</span>
       </div>
-      <div class="fact">
+      <div class="fact rise">
         <span class="fl">What it holds</span>
         <span class="fp">Ownership, affiliates and guarantors on one graph</span>
       </div>
@@ -1612,7 +1672,7 @@ html{scroll-snap-type:y proximity}
 </section>
 
 <!-- e ....................................................... -->
-<section class="chapter" id="ch-e">
+<section class="chapter flip" id="ch-e">
   <div class="wrap">
     <div class="cap">
       <p class="eyebrow chno"><b>05</b><i>/</i>07</p>
@@ -1620,16 +1680,16 @@ html{scroll-snap-type:y proximity}
       <p class="sub">No form, no screen to find. The facility changes in the window the question was asked in.</p>
     </div>
     <div class="facts">
-      <div class="fact">
+      <div class="fact rise">
         <span class="fl">The change</span>
         <span class="fv num">$20.0M</span>
         <span class="fs">from $15.0M, in one sentence</span>
       </div>
-      <div class="fact">
+      <div class="fact rise">
         <span class="fl">Checked as you type</span>
         <span class="fp">Policy, covenant headroom, collateral coverage</span>
       </div>
-      <div class="fact">
+      <div class="fact rise">
         <span class="fl">The path</span>
         <span class="fp">No form, no screen to find</span>
       </div>
@@ -1693,16 +1753,16 @@ html{scroll-snap-type:y proximity}
       <p class="sub">Not after the decision. During it, section by section, with every source on the record.</p>
     </div>
     <div class="facts">
-      <div class="fact">
+      <div class="fact rise">
         <span class="fl">Drafted alongside</span>
         <span class="fv num">7 of 9</span>
         <span class="fs">sections</span>
       </div>
-      <div class="fact">
+      <div class="fact rise">
         <span class="fl">Every figure</span>
         <span class="fp">Traced to its source</span>
       </div>
-      <div class="fact">
+      <div class="fact rise">
         <span class="fl">Verification</span>
         <span class="fp">Pending reviewer verification, always</span>
       </div>
@@ -1763,16 +1823,16 @@ html{scroll-snap-type:y proximity}
       <p class="sub">The plan is read back before anything moves. One control commits it, and the record closes behind it.</p>
     </div>
     <div class="facts">
-      <div class="fact">
+      <div class="fact rise">
         <span class="fl">On the record</span>
         <span class="fv num">5</span>
         <span class="fs">writes</span>
       </div>
-      <div class="fact">
+      <div class="fact rise">
         <span class="fl">Written to</span>
         <span class="fp">nCino, Customer 360, DocMan, AFS, audit trail</span>
       </div>
-      <div class="fact">
+      <div class="fact rise">
         <span class="fl">The control</span>
         <span class="fp">One control commits it, the record closes behind it</span>
       </div>
@@ -2109,6 +2169,20 @@ html{scroll-snap-type:y proximity}
     /* the generic lift: 8 px, 420 ms, the product's own arrive */
     $$('[data-rise]').forEach(function (el) {
       once(el, function () { el.classList.add('in'); });
+    });
+
+    /* the facts arrive in the page's one language and in their own order:
+       the caption is already set when the column enters, so they follow it by
+       80 ms and each other by 40, the same stagger the cockpit's metric strip
+       and the chip strip use. Reduced motion resolves them instantly. */
+    $$('.facts').forEach(function (g) {
+      var kids = $$('.fact', g);
+      once(g, function () {
+        kids.forEach(function (k, i) {
+          k.style.transitionDelay = (80 + i * 40) + 'ms';
+          k.classList.add('in');
+        });
+      });
     });
 
     /* a. THE ELEVEN TABS close from the right, 90 ms apart, and the one that
@@ -2504,16 +2578,18 @@ html{scroll-snap-type:y proximity}
      carries no layout height and scaling it can move nothing else on
      the page. That is what keeps the fit off the layout-shift ledger.
 
-     The cap is the founder's: no card is drawn taller than 62% of the
-     viewport on a desktop, 72% on a phone, whatever room the band has,
-     so every chapter's card lands at the same weight in the frame.
+     The cap is the founder's: no card is drawn taller than 72% of the
+     viewport, whatever room the band has, so every chapter's card lands
+     at the same weight in the frame. It was 62% while the component ran
+     the full width of the page under its caption; in the spread it has
+     only 62% of the width, so it is allowed the taller band.
      ========================================================== */
   var fitLog = [];
   (function fit() {
     var items = $$('.stage > .fit');
     function run() {
       var vh = window.innerHeight;
-      var cap = 0.62 * vh;
+      var cap = 0.72 * vh;
       /* under 900 the chapter is at least one screen rather than exactly one,
          and the component stands at its own size: nothing to fit */
       var flow = window.innerWidth < 900;
@@ -2533,7 +2609,8 @@ html{scroll-snap-type:y proximity}
           ? 'translateY(-50%) scale(' + s.toFixed(4) + ')'
           : 'translateY(-50%)';
         fitLog.push({ id: (el.closest('section') || {}).id, band: band,
-          natural: nat, scale: +s.toFixed(3), drawn: Math.round(nat * s) });
+          col: el.parentNode.clientWidth, natural: nat,
+          scale: +s.toFixed(3), drawn: Math.round(nat * s) });
       });
       if (window.__halo) { window.__halo.place(); }
       if (window.ScrollTrigger) { ScrollTrigger.refresh(); }

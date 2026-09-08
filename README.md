@@ -164,32 +164,40 @@ only elastic member of the column: `#film` is a size container and the player ta
 `min(100cqh, 100cqw * 9 / 16)`, so it comes down in SIZE to fit the band the head
 leaves it and never in shape. At 1440x900 it lands at 1166 x 656.
 
-A lifted component is whatever size the product makes it, and three of them are
-taller than the band a chapter leaves under its caption. Those are scaled, never
+A lifted component is whatever size the product makes it, and two of them are
+taller than the band the spread leaves beside its reading column. Those are scaled, never
 cropped and never given a scrollbar of their own. **The fit rule**: the component is
 taken out of flow, centred in the band, and drawn at
-`min(1, band / natural, 0.62 * viewport / natural)`, so no card is ever taller than
-62% of the screen and every chapter's card lands at the same weight in the frame.
+`min(1, band / natural, 0.72 * viewport / natural)`, so no card is ever taller than
+72% of the screen and every chapter's card lands at the same weight in the frame. The
+cap was 62% while the component ran the full width of the page under its caption; in
+the spread it has only 62% of the width, so it is allowed the taller band.
 Because the component carries no layout height of its own, scaling it can move
 nothing else on the page, which is what keeps the fit off the layout-shift ledger.
 
 At 1440x900, natural height, scale, drawn height:
 
-| chapter | band | natural | scale | drawn |
-|---|---|---|---|---|
-| a the eleven tabs | 609 | 114 | 1.000 | 114 |
-| b the book | 653 | 658 | 0.848 | 558 |
-| c the integrations | 564 | 435 | 1.000 | 435 |
-| d the relationship | 653 | 484 | 1.000 | 484 |
-| e the sentence | 653 | 318 | 1.000 | 318 |
-| f the memo | 654 | 633 | 0.882 | 558 |
-| g the approve | 654 | 698 | 0.799 | 558 |
+| chapter | column | band | natural | scale | drawn |
+|---|---|---|---|---|---|
+| a the eleven tabs | 675 | 810 | 354 | 1.000 | 354 |
+| b the book | 675 | 809 | 791 | 0.819 | 648 |
+| c the integrations | 675 | 810 | 435 | 1.000 | 435 |
+| d the relationship | 675 | 809 | 368 | 1.000 | 368 |
+| e the sentence | 675 | 809 | 375 | 1.000 | 375 |
+| f the memo | 675 | 810 | 633 | 1.000 | 633 |
+| g the approve | 675 | 810 | 698 | 0.928 | 648 |
 
 The halo is measured off the dossier's screen rect, so it divides that scale back out
 and writes its canvas in the card's own units: the bloom comes out of the transform at
 exactly the size it was designed for. The chapter's fit is a transform and a transform
 is a stacking context, so the fit itself is what stands above the page dim, and the
 plan card goes down with the page by its own hand rather than by the overlay's.
+
+The fit measures HEIGHT only. It was briefly given a width guard as well, in case a
+component's own minimum were wider than the 62% column; nothing on the page is, and
+the one element that overflows the fit box is the halo's canvas, which is meant to.
+The guard was measuring the bloom and pulling chapter 07's card down to 0.80 for it.
+It is gone.
 
 The scroller snaps `y proximity`, with `scroll-snap-align: start` on every section: a
 section settles into the frame when a gesture ends near one, and a flick still travels
@@ -202,14 +210,32 @@ the section grows under it. Scaling the cockpit to 45% to make it fit a 390 px f
 would fit it and lose it. The hero, the breathers and the close stay exactly one
 screen everywhere, because what they carry is pictures and type, which do scale.
 
-## The facts
+## The spread, and the facts
 
-Each chapter carries a second layer beside its caption, on the paper the caption
-leaves to its right: three of the product's own stat tiles, a small-caps label over
-either a 28 px figure or one 15 px line, divided by hairlines. They are the cockpit's
-own figures and nothing else. Under 1080 px they move below the component; under
-900 px they set smaller. The column is held at 462 px, the width three of the
-product's figures need at 28 px.
+At 1080 px and up a chapter is two columns. The reading column takes 38% of the
+paper: the chapter counter, the caption in the landing headline, one muted sub, then
+the three facts STACKED, a small-caps label over a 40 px figure in tabular ink with
+its qualifier at 15 px under it, a hairline between one fact and the next. The lifted
+component takes the other 62% and centres against the reading column, its outer edge
+on the content margin. At 1440x900 that is 414 px of reading and 675 px of component
+with a 63 px gutter between them.
+
+The columns alternate down the page, so the scroll has a rhythm rather than a margin:
+01 and 02 read left, 03 reads right, 04 left, 05 right, 06 left. 01 keeps the browser
+window on the right it was built in, and 07 keeps its card there too, so the halo's
+bloom has the whole reading column of paper to open into.
+
+The facts used to be a thin row of 28 px figures across the top of the chapter, in a
+462 px strip beside the caption, with the component standing under them on the left.
+That left a wide field of bare cream down the right of every screen and made the
+figures read as a footnote to the caption. Two columns spend that paper on the
+figures instead. They are the cockpit's own numbers and nothing else.
+
+Under 1080 px the spread closes: the text block goes above, the facts become one row
+of the same large figures under it, and the component takes the band below. Under
+900 px the figures set at 32 px. Under 560 px they stack again and keep that size,
+because three 32 px figures cannot stand across a phone: `$66.50M` alone is wider
+than the third of the screen a row would give it.
 
 ## The close
 
@@ -222,7 +248,11 @@ the page opened on, so the close lands on the frame it started from. It drifts 1
 over 28 s. The paper does not stop at the section's top edge, it dissolves into the
 picture over the top 52%, and the lockup stands in the cream where it is still paper,
 at the hero's own clamp. Under it: `Meet us at the booth.` in the landing headline, then
-the address and the show in the eyebrow. The cream comes back up under the bottom 22%
+the address at 15 px and the show in the eyebrow. The booth line is the one instruction
+the close carries, so it is read at a glance rather than squinted at; the eyebrow's
+tracking is eased off at that size, because letterspacing that flatters 10.5 px reads
+as a gap at 15. Below 430 px it sets at 14 px, which is the largest size that keeps
+`SPIN . 690 Folsom Street . San Francisco` on one line on a 390 px screen. The cream comes back up under the bottom 22%
 so the ink on the hairline row still reads, and that row keeps the bottom of the frame
 however tall the screen is. Nothing of it is fetched until the last chapter leaves.
 
@@ -268,20 +298,30 @@ At 1440x900, Chromium, over the local build:
 
 - first contentful paint **116 ms**, load **140 ms**, first film frame **11 ms**
   after the press (the stream is warmed on unlock)
-- cumulative layout shift **0.0000** over the whole scroll, at 1440x900, 1920x1080
-  and 390x844, and no horizontal overflow at 390. The fit runs at load and again on
-  `document.fonts.ready`, while the page is still at the top, and the components it
-  scales carry no layout height, so neither pass shifts anything
+- cumulative layout shift **0.0000** over chapters 02 to the close, at 1440x900,
+  1280x800 and 390x844, and no horizontal overflow at any of them. The fit runs at
+  load and again on `document.fonts.ready`, while the page is still at the top, and
+  the components it scales carry no layout height, so neither pass shifts anything.
+  The spread is a grid whose one flexible member is the stage, and the facts arrive
+  by opacity and transform, so neither is on the ledger either
+- chapter 01 is the exception and is **0.005** at 1440x900, 0.008 at 1280x800. The
+  eleven tabs close by animating their own `max-width` to zero so their siblings
+  re-flow continuously rather than jumping, which is the browser's own mechanic and
+  is the point of the shot, but a width animation IS layout and Chrome counts every
+  frame of it. Nothing else on the page shifts. Making it zero means giving up the
+  continuous re-flow for a transform, which is a different shot
 - every section is exactly 900 px at 1440x900: the document is 11 x 900 = 9900 px of
   scroll and every section's top sits on an exact multiple of it
 - a 34-burst trackpad walk over the whole page produced **zero** scroll jumps over
   420 px, and a 12000 px flick travelled its full distance to the end without the
   snap shortening it
 - the halo's centre sits on the dossier's centre to within 1 px at every viewport.
-  Its light is at true zero **73 px** inside the canvas at 1440x900, 67 px at
-  1280x720, 77 px at 1920x1080 and 19 px at 390x844, on all four edges, worst
-  single-pixel step 4 of 255. At the viewport's own edge columns it reads 0 at
-  every width
+  Its light is at true zero **59 px** inside the canvas on all four edges at
+  1440x900, 1280x720, 1920x1080 and 390x844 alike. In the spread the card is drawn
+  at 0.928 rather than 0.799, so the bloom is bigger than it was and still lands on
+  zero with room to spare: at 1440x900 the canvas reaches within 4 px of the frame
+  and the light has been out for 55 of them. At the viewport's own edge columns it
+  reads 0 at every width
 - one frame longer than 25 ms and zero long tasks over the full scroll
 - no request over 3 MB besides the reel; the hero plate is 1.19 MB and the gate
   plate is 1.01 MB
