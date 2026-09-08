@@ -46,9 +46,13 @@ transform alone, so a line that is typing costs nothing in layout.
 ## The gate
 
 Two panes, because the gate is an entry and should say so: the mark on the film's own
-deep field on the left, the Cowork greeting and the composer on the right. On the
-right phrase the chevron strikes to full purple in two frames, the dark pane leaves
-the frame, and only then does the composer type itself out and run the connectors.
+deep field on the left, the Cowork greeting and the composer on the right. The
+greeting is the product's, addressed to the room it opens in: `Morning, San
+Francisco.` The composer asks for the passcode by name, and one muted line under it
+says who the page is for and where the phrase is: `Invited guests only. The passcode
+is on your invitation.` On the right phrase the chevron strikes to full purple in two
+frames, the dark pane leaves the frame, and only then does the composer type itself
+out and run the connectors.
 Both pane moves are transforms, so the composer's own box never reflows while the
 visitor is looking at it. On a phone the panes stack and the mark takes a short band
 at the top. Wrong phrase: the composer moves 2 px, once, and says `Not on the list.`
@@ -89,6 +93,81 @@ Nothing on the page clips horizontally except `html, body`. A section carrying
 phone that is exactly what happened: the light read 102 of 255 at the screen's
 outermost column and stopped there.
 
+## One screen
+
+Every section on the page is exactly one viewport: the hero, the seven chapters, the
+three breathers and the close. Nothing bleeds into the next thing and nothing has to
+be scrolled inside itself to be read. The height is `--vph`, measured once per WIDTH
+and never touched again, because `100vh` is not stable on a phone: the browser chrome
+collapses on the first gesture and every full-height section would reflow mid-scroll.
+
+The hero holds the lockup, the line and the film in that one screen. The film is the
+only elastic member of the column: `#film` is a size container and the player takes
+`min(100cqh, 100cqw * 9 / 16)`, so it comes down in SIZE to fit the band the head
+leaves it and never in shape. At 1440x900 it lands at 1166 x 656.
+
+A lifted component is whatever size the product makes it, and three of them are
+taller than the band a chapter leaves under its caption. Those are scaled, never
+cropped and never given a scrollbar of their own. **The fit rule**: the component is
+taken out of flow, centred in the band, and drawn at
+`min(1, band / natural, 0.62 * viewport / natural)`, so no card is ever taller than
+62% of the screen and every chapter's card lands at the same weight in the frame.
+Because the component carries no layout height of its own, scaling it can move
+nothing else on the page, which is what keeps the fit off the layout-shift ledger.
+
+At 1440x900, natural height, scale, drawn height:
+
+| chapter | band | natural | scale | drawn |
+|---|---|---|---|---|
+| a the eleven tabs | 609 | 114 | 1.000 | 114 |
+| b the book | 653 | 658 | 0.848 | 558 |
+| c the integrations | 564 | 435 | 1.000 | 435 |
+| d the relationship | 653 | 484 | 1.000 | 484 |
+| e the sentence | 653 | 318 | 1.000 | 318 |
+| f the memo | 654 | 633 | 0.882 | 558 |
+| g the approve | 654 | 698 | 0.799 | 558 |
+
+The halo is measured off the dossier's screen rect, so it divides that scale back out
+and writes its canvas in the card's own units: the bloom comes out of the transform at
+exactly the size it was designed for. The chapter's fit is a transform and a transform
+is a stacking context, so the fit itself is what stands above the page dim, and the
+plan card goes down with the page by its own hand rather than by the overlay's.
+
+The scroller snaps `y proximity`, with `scroll-snap-align: start` on every section: a
+section settles into the frame when a gesture ends near one, and a flick still travels
+as far as the hand asked. It is proximity and never mandatory. Below 900 px the snap
+is off, because below 900 px a chapter is no longer one screen.
+
+**A phone is not a screening room.** Below 900 px the chapters stop being exactly one
+screen and become at least one: the component goes back into flow at its own size and
+the section grows under it. Scaling the cockpit to 45% to make it fit a 390 px frame
+would fit it and lose it. The hero, the breathers and the close stay exactly one
+screen everywhere, because what they carry is pictures and type, which do scale.
+
+## The facts
+
+Each chapter carries a second layer beside its caption, on the paper the caption
+leaves to its right: three of the product's own stat tiles, a small-caps label over
+either a 28 px figure or one 15 px line, divided by hairlines. They are the cockpit's
+own figures and nothing else. Under 1080 px they move below the component; under
+900 px they set smaller. The column is held at 462 px, the width three of the
+product's figures need at 28 px.
+
+## The close
+
+One screen, and the only one on the page where the film's own picture carries the type
+instead of standing beside it. `assets/film/hero-aerial-day.mp4` is the reel's daylight
+return, cut at 68.75 to 69.79 s where the shot is at full brightness between its own
+two fades, interpolated to 72 fps, stretched 3x and mirrored into a 6.42 s ping-pong at
+1600 px, 1.20 MB. It carries the chevron at full strength dead centre, which is the mark
+the page opened on, so the close lands on the frame it started from. It drifts 1.03x
+over 28 s. The paper does not stop at the section's top edge, it dissolves into the
+picture over the top 52%, and the lockup stands in the cream where it is still paper,
+at the hero's own clamp. Under it: `Meet us at the booth.` in the landing headline, then
+the address and the show in the eyebrow. The cream comes back up under the bottom 22%
+so the ink on the hairline row still reads, and that row keeps the bottom of the frame
+however tall the screen is. Nothing of it is fetched until the last chapter leaves.
+
 ## The motion
 
 One language, and it is the product's own arrival: **240 ms of opacity over an 8 px
@@ -112,8 +191,9 @@ frames longer than 25 ms across the page. Native: 53.7 px delivered, one frame o
 ```
 index.html                 the page: one file, one <style>, one <script>
 assets/gate.js             the door, loaded synchronously in <head>
-assets/film/               the reel (1080p + 720p, fragmented), film.json, and the
-                           hero plate: the looping aerial and its first frame
+assets/film/               the reel (1080p + 720p, fragmented), film.json, the hero
+                           plate (the looping pre-dawn aerial and its first frame)
+                           and the close's daylight aerial and its first frame
 assets/stills/             the three breather frames, cut from the reel
 assets/fonts/              Inter 400/500/600 and Newsreader, subset to Latin
 assets/vendor/             GSAP and ScrollTrigger. The scroll itself is the browser's.
@@ -129,7 +209,14 @@ At 1440x900, Chromium, over the local build:
 - first contentful paint **116 ms**, load **140 ms**, first film frame **11 ms**
   after the press (the stream is warmed on unlock)
 - cumulative layout shift **0.0000** over the whole scroll, at 1440x900, 1920x1080
-  and 390x844, and no horizontal overflow at 390
+  and 390x844, and no horizontal overflow at 390. The fit runs at load and again on
+  `document.fonts.ready`, while the page is still at the top, and the components it
+  scales carry no layout height, so neither pass shifts anything
+- every section is exactly 900 px at 1440x900: the document is 11 x 900 = 9900 px of
+  scroll and every section's top sits on an exact multiple of it
+- a 34-burst trackpad walk over the whole page produced **zero** scroll jumps over
+  420 px, and a 12000 px flick travelled its full distance to the end without the
+  snap shortening it
 - the halo's centre sits on the dossier's centre to within 1 px at every viewport.
   Its light is at true zero **73 px** inside the canvas at 1440x900, 67 px at
   1280x720, 77 px at 1920x1080 and 19 px at 390x844, on all four edges, worst
