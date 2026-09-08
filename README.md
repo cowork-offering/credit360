@@ -344,3 +344,6 @@ ffmpeg -v error -i <file> -map 0:a -c copy -f md5 -   # a8b9262c929aa8462d0ab4b0
 Reduced motion is respected throughout: every entrance resolves instantly, the
 spinners stop, the cards arrive flat, the plate holds its first frame, the lines
 are set rather than typed, and the halo is lit without breathing.
+
+## Build log
+- 2026-09-08: passes landed in order: bloom and native scroll, one-screen chapters and facts, gate skyline plate, eleven tabs, two-column chapter grid. Next: the San Francisco close with the place card.
