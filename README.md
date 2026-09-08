@@ -52,9 +52,14 @@ There is only ever one on the screen at a time, and that is now true THROUGH the
 unlock as well as at rest: the gate's mark is the lockup's, carried onto its box by a
 FLIP and handed over on a single frame.
 
-The lockup's mark is the one moment, so it is the one thing that strikes: ink to purple
-in the hero, white to purple on the close, two frames each, and nothing else on either
-screen is purple except the pin on the map card and, on the gate, the send control.
+The lockup's mark is the one moment, so it is the one thing that strikes, and in the
+hero it strikes the gate's way: **the mark is purple for the whole of the opening and
+at rest**, and its closing beat is two frames of white and back, the same device the
+visitor struck to get in. It used to land in ink and go ink to purple, which read as a
+purple mark turning black and purple again. On the close it still goes white to purple,
+because there it starts white on the picture and has never been anything else. Two
+frames each, and nothing else on either screen is purple except the pin on the map card
+and, on the gate, the send control.
 
 ## The eleven tabs
 
@@ -386,7 +391,7 @@ connector tick, measured at 1440x900 off the page's own clock:
 | 2163 | 1663 | the wipe is done and the eyebrow fades up over 200 ms |
 | 2243 | 1743 | the line rises 8 px into place over 240 ms |
 | 2683 | 2183 | the Watch control fades in over 200 ms |
-| 2883 | **2383** | the Watch control is visible and the mark strikes: two frames of ink to purple, the closing beat |
+| 2883 | **2383** | the Watch control is visible and the mark takes its beat: two frames of white and back, the gate's own device |
 | 2966 | 2466 | rest. The page is scrollable and the hero is at scrollY 0 |
 
 From the form's own submit that is **7018 ms** to the Watch control at 1440x900 and
@@ -415,12 +420,15 @@ would span both; none would be an empty frame. Neither happens. The box travels
 56.45 x 59.47 on the content margin, and the mark is at rest on the lockup for four
 frames before the wipe starts.
 
-**And the flight leaves in the brand and arrives in the ink.** The gate's mark is at
-full purple, and a mark that lands purple has nothing left to strike; the lockup's own
-device is that it lands in ink and strikes to purple. So the colour crosses in the
-flight's last third, which puts ink onto ink at the swap and gives the sequence its
-closing beat. It is the one property in the opening that is not a transform, an
-opacity or a clip, and it is the lockup's own two colours.
+**And the flight carries no colour at all.** It used to cross brand to ink over the
+last third, so that the mark landed in ink and the lockup could strike ink to purple as
+the closing beat. Read frame by frame that is a purple chevron going black and then
+purple again inside two seconds, which is the one thing the sequence should never do to
+the mark it just carried. The flight is brand at the pane, brand in the air and brand on
+the box, sampled at every frame from the veil to the strike, and the closing beat is the
+gate's instead: two frames to white and back on the lockup's own chevron, at the same
+moment the strike used to fire. The opening is now transforms, opacities and one
+`clip-path`, and nothing else.
 
 **Nothing in the hero moves in layout.** `html` goes `.opening` while the gate is still
 standing and still cream, so the page is painted underneath with every member of the
@@ -583,10 +591,11 @@ page above, no top scrim, nothing stacked. Everything on it is white.
 
 The type stands in the lower third on the content margin: `DREAMFORCE 2026` in the
 eyebrow at 74% white, the lockup at the hero's own clamp, then `Meet us at the booth.`
-in the landing headline. The lockup's chevron strikes here the way it strikes in the
-hero: it lands in the type's own white and goes to full purple in two frames, 240 ms
-after the close is 55% into the viewport, so the last thing that moves on the page is
-the mark.
+in the landing headline. The lockup's chevron strikes here, and it is the only lockup
+on the page that changes colour: it lands in the type's own white and goes to full
+purple in two frames, 240 ms after the close is 55% into the viewport, so the last thing
+that moves on the page is the mark. There is no wobble in it because the mark has never
+been purple before that frame, unlike the hero's, which arrives purple and stays.
 
 The place card is the other end of that row. It is the cockpit's own card, standing on
 the picture: white, 12 px, one hairline, the dossier's shadow, 420 px wide. Its map is
@@ -712,6 +721,14 @@ At 1440x900, Chromium, over the local build:
 - the flying mark lands on the lockup chevron's border box to **0.000 px** on all four
   figures at both viewports, and over 66 consecutive screencast frames from the veil
   to the wipe the mark is on the screen exactly once in every one
+- the mark is **#A100FF in every frame of the opening**, sampled two ways. On the
+  page's own animation frames, whichever element is carrying the mark at that instant:
+  131 frames of `rgb(161,0,255)` across the handover, the flight and the landing, then
+  exactly **two frames of white** for the closing beat, then brand again to rest. **No
+  ink frame anywhere.** Off a calibrated screencast, sampling the mark's opaque core
+  per frame: 104 frames from the veil to rest, 103 brand, 1 white, 0 ink. A plain
+  reload with the unlock already held holds `rgb(161,0,255)` for every one of 151
+  frames and takes no beat at all
 - cumulative layout shift over the WHOLE unlock, first paint to rest, is **0.0000098**
   at 1440x900 and **0.0000285** at 390x844, of which the opening's own share is
   **0.0000000** at both. The last shift on the page is the composer typing, at 3.1 s
@@ -743,6 +760,13 @@ because the drop is paint rather than motion and is the only reason it reads on 
 sky.
 
 ## Build log
+- 2026-09-09: the mark stays purple through the whole opening. The flight used to cross
+  brand to ink over its last third so the lockup could strike ink to purple at the end,
+  which reads as one purple chevron turning black and purple again inside two seconds.
+  The flight carries no colour at all now and the lockup's chevron is brand at rest, so
+  the closing beat is the gate's own device instead: two frames to white and back on the
+  same frame the strike used to fire. Verified per frame both ways, 0 ink frames, and
+  the close's own white-to-purple strike is untouched.
 - 2026-09-08: the door hands the page its mark. The gate no longer cuts itself away: the pane veils to cream, the mark it leaves standing flies onto the lockup's chevron on a 700 ms FLIP, the name wipes in beside it, the plate arrives out of a focus pull already running, and the mark strikes ink to purple as the closing beat. 2383 ms from the handover to the Watch control, the landing on the box to 0.000 px, and 0.0000000 of layout shift for the sequence. The pane's slide and the composer's glide are gone with it.
 - 2026-09-08: the gate's IBISWorld row resolves to its mark. The rule that hides the page behind the gate was hiding the sprite sheet, and Chromium will not paint a raster `<image>` cloned out of a `visibility:hidden` subtree, so the page's one raster mark went to an empty slot at the door and nowhere else. The sheet is `#sprite` and the rule exempts it.
 - 2026-09-08: the door is paced to be read and runs in the film's order. The unlock spends 4627 ms from the send rather than 2976: 300 ms to the rows, 350 ms of the first row spinning, 320 ms between ticks, 500 ms to the page. The run resolves Salesforce, Customer 360, Microsoft 365, IBISWorld, Boom Spreading, IDB gateway, which is the reel's own door with the gateway last. The reel is re-rendered to match (rev 6); the picture changed and the audio did not.

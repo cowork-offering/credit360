@@ -718,18 +718,23 @@ html.opening #hero .pl-watch.op-in{opacity:1; transition:opacity .2s var(--ease-
   font-size:clamp(56px,7vw,120px); font-weight:600; line-height:.96;
   letter-spacing:-.036em; color:var(--ink-max);
 }
-/* the mark is the wordmark's own chevron path, not a greater-than sign.
-   In the hero it lands in ink and STRIKES to purple, the endcard's own device:
-   two frames, no fade. */
+/* the mark is the wordmark's own chevron path, not a greater-than sign, and in
+   the hero it is PURPLE for the whole of the opening and at rest. It used to
+   land in ink so the lockup could strike ink to purple at the end, which put a
+   black chevron on the screen between two purple ones. */
 .lockup .chev,.endlock .chev{
   width:.56em; height:.59em; flex:none; align-self:center; color:var(--brand);
   position:relative; top:.02em;
 }
-.lockup .chev{color:var(--ink-max); transition:color 83ms steps(2,end)}
+/* so the hero's closing beat is the GATE'S own device instead, because a mark
+   already at brand has nothing left to strike TO: two frames to white and
+   back, hard stops, the same 66 ms as #gate.striking. */
+.lockup .chev.struck{animation:lkstrike 66ms linear 1 both}
+@keyframes lkstrike{0%,49.99%{color:#fff} 50%,100%{color:var(--brand)}}
 /* on the close the lockup stands on the picture, so the mark starts in the
-   type's own white and strikes from there. Same two frames, same device. */
+   type's own white and strikes to purple. Two frames, no fade. */
 .endlock .chev{color:#fff; transition:color 83ms steps(2,end)}
-.lockup .chev.struck,.endlock .chev.struck{color:var(--brand)}
+.endlock .chev.struck{color:var(--brand)}
 .hero-line{
   margin-bottom:.22em; font-size:clamp(22px,2.6vw,34px); font-weight:600;
   line-height:1.14; letter-spacing:-.024em; color:var(--ink-max); max-width:20ch;
@@ -2487,7 +2492,7 @@ html{scroll-snap-type:y proximity}
       1660     the eyebrow fades up (200 ms)
       1740     the line rises 8 px (240 ms)
       2180     the Watch control fades in (200 ms)
-      2380     the strike, two frames of ink to purple, the closing beat
+      2380     the closing beat: two frames of white and back on the mark
 
      THE SWAPS ARE FRAMES, NOT TIMERS. The flight, the clone's last frame and
      the lockup's first are three animations sharing one startTime on one
@@ -2501,12 +2506,11 @@ html{scroll-snap-type:y proximity}
      reduced motion the gate does not offer it; and if the hero is not the
      current viewport the offer is declined and the door cross-fades as before.
      ========================================================== */
-  var cine = false;                        /* is the opening driving the page? */
   (function () {
     var EASE = 'cubic-bezier(.2,.7,.2,1)';
-    /* --ink-max and --brand as literals: a keyframe takes a computed value and
-       var() does not resolve inside Element.animate */
-    var INK = '#050503', BRAND = '#A100FF';
+    /* --brand as a literal: a keyframe takes a computed value and var() does
+       not resolve inside Element.animate */
+    var BRAND = '#A100FF';
 
     window.addEventListener('gate:opening', function (ev) {
       if (RM) { return; }
@@ -2522,7 +2526,6 @@ html{scroll-snap-type:y proximity}
           hb.top < 0 || hb.bottom > window.innerHeight) { return; }
 
       ev.preventDefault();
-      cine = true;
       var t0 = performance.now(), log = window.__c360.opening = [];
       var timers = [], anims = [], fly = null, gr = null, over = false;
 
@@ -2542,14 +2545,12 @@ html{scroll-snap-type:y proximity}
         word.classList.add('op-in'); word.classList.add('op-done');
         brow.classList.add('op-in'); line.classList.add('op-in');
         player.classList.add('op-in'); watch.classList.add('op-in');
-        chev.classList.add('struck');
         /* the class goes before the animations do: cancelling the lockup's
            own opacity animation while .opening still holds the chevron at
            zero would put it back to nothing for the rest of the page */
         root.classList.remove('opening');
         anims.forEach(function (a) { try { a.cancel(); } catch (e) {} });
         window.scrollTo(0, 0);
-        cine = false;
         beat('rest');
       }
       window.addEventListener('resize', settle);
@@ -2611,19 +2612,16 @@ html{scroll-snap-type:y proximity}
           { transform: 'translate(' + h.left + 'px,' + h.top + 'px) scale(' +
               (h.width / gr.width).toFixed(6) + ',' + (h.height / gr.height).toFixed(6) + ')' }
         ], { duration: 700, easing: EASE, fill: 'both' });
-        /* it leaves the door in the brand and lands in the page's own ink,
-           which is what gives the lockup its device back: the mark strikes ink
-           to purple as the closing beat. The colour crosses in the last third,
-           so the swap at the end is ink onto ink and there is nothing in it
-           to see. */
-        var c = fly.animate([{ color: BRAND }, { color: BRAND, offset: .66 }, { color: INK }],
-          { duration: 700, easing: 'linear', fill: 'both' });
+        /* THE FLIGHT CARRIES NO COLOUR. It used to cross brand to ink over the
+           last third so the lockup could strike ink to purple at the landing,
+           which is a purple mark going black and then purple again in front of
+           the visitor. Brand at the pane, brand in the air, brand on the box. */
         var out = fly.animate([{ opacity: 1 }, { opacity: 0 }],
           { duration: 700, easing: 'steps(1,end)', fill: 'forwards' });
         var into = chev.animate([{ opacity: 0 }, { opacity: 1 }],
           { duration: 700, easing: 'steps(1,end)', fill: 'forwards' });
         var st = document.timeline.currentTime;
-        [f, c, out, into].forEach(function (a) { a.startTime = st; anims.push(a); });
+        [f, out, into].forEach(function (a) { a.startTime = st; anims.push(a); });
         /* the rejection arm is the abort: settle() cancels these, and a
            cancelled animation rejects its finished promise */
         f.finished.then(land, function () {});
@@ -2651,7 +2649,7 @@ html{scroll-snap-type:y proximity}
         });
         at(560, 'line rises', function () { line.classList.add('op-in'); });
         at(1000, 'Watch fades in', function () { watch.classList.add('op-in'); });
-        at(1200, 'Watch visible, the mark strikes', function () { chev.classList.add('struck'); });
+        at(1200, 'Watch visible, the mark flashes white and back', function () { chev.classList.add('struck'); });
         timers.push(setTimeout(settle, 1283));
       }
     });
@@ -2662,10 +2660,6 @@ html{scroll-snap-type:y proximity}
   function afterGate() {
     setTimeout(warmFilm, RM ? 0 : 500);
     wakePlate();
-    /* where the opening runs, the strike is its closing beat and belongs to it */
-    if (!cine) {
-      setTimeout(function () { $('#herochev').classList.add('struck'); }, RM ? 0 : 400);
-    }
     var b1 = $('#breath-1 img');
     if (b1) { b1.loading = 'eager'; b1.fetchPriority = 'high'; }
   }
