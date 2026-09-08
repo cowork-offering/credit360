@@ -2121,7 +2121,18 @@ html{scroll-snap-type:y proximity}
         rest.forEach(function (t) { t.classList.add('gone'); });
         land(); $('#notthis').textContent = NOT; return;
       }
-      var T0 = 380, GAP = 90, CLOSE = 260, N = rest.length;
+      /* Where the strip is scrolled (a phone), the tabs that close first are
+         off the right edge and the first second of the sequence is invisible.
+         So the strip travels the row once, and the closes then sweep it back:
+         scrollLeft is clamped by the shrinking content, for free, with nothing
+         driving it. Where the eleven already fit, none of this runs. */
+      var scrolls = strip.scrollWidth > strip.clientWidth + 4;
+      if (scrolls) {
+        setTimeout(function () {
+          strip.scrollTo({ left: strip.scrollWidth, behavior: 'smooth' });
+        }, 160);
+      }
+      var T0 = scrolls ? 900 : 380, GAP = 90, CLOSE = 260, N = rest.length;
       rest.reverse().forEach(function (t, k) {
         setTimeout(function () { t.classList.add('gone'); }, T0 + k * GAP);
       });

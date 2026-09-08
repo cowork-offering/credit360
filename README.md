@@ -49,12 +49,16 @@ siblings of them, so it cannot read as a list even with the stylesheet gone.
 On a phone there is no paper to compress eleven tabs and still show a letter of
 each, so it does what a phone browser does: the tabs hold 108 px, the strip scrolls,
 and they overflow in view. That scroller is the one element on the page allowed to
-scroll sideways.
+scroll sideways. Because a scrolled strip closes its first tabs off the right edge,
+where nobody would see them, the strip travels the row once before the sequence
+starts. The closes then sweep it back: scrollLeft is clamped by the shrinking
+content, so the return costs no code and every close is watched. Where the eleven
+already fit in the row, none of that runs.
 
 The close is the browser's own. On enter, the tabs close from the right 90 ms apart,
 each over 260 ms: the closing tab animates its OWN `max-width` to zero, and because
 flex re-solves while that width is changing, its siblings re-flow continuously
-rather than jumping to their new size. Ten closes run from 380 ms to 1450 ms. The
+rather than jumping to their new size. Ten closes run from 380 ms to 1450 ms, or from 900 ms where the strip scrolls first. The
 one tab left then widens over 420 ms into a full Cowork tab, swapping its favicon
 for the chevron and its title for `Credit 360 for my book`, the address bar drops
 from the Lightning URL to `cowork`, and `Not this one.` types under it at the film's
