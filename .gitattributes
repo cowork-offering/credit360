@@ -1,0 +1,3 @@
+*.mp4 -text -diff
+*.jpg -text -diff
+*.woff2 -text -diff
