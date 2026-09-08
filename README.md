@@ -15,7 +15,7 @@ surface and rebuilt as live HTML at its real scale:
 |---|---|
 | The gate's left pane: the pre-dawn aerial full bleed and running, the `accenture` wordmark centred in the lower third at 35% of the pane, its focus-pull arrival, its one light sweep, and the two-frame strike to full purple on its own chevron | `c360-film/overture/assets/video/V1-aerial-push-film-1080p.mp4` (the uncut plate) and `c360-film/mark/index.html`, the endcard cell: the wordmark's own letter paths, its rack-in, its specular sweep and its strike |
 | The gate's right pane: the `Morning.` greeting, the 106 px composer with its 20 px radius, the `Chat \| Cowork` pillbed, the `Fable 5.1 · Medium` meta, the send control | `c360-film/door/index.html`, shots 8 and 9 (measured off the Cowork reference PNGs with PIL) |
-| The hero plate: the clean raw aerial the film's shot 1 was cut from, looping, under the page's own chevron at 70% | `c360-film/overture/assets/video/V1-aerial-push-film-1080p-cut.mp4` |
+| The hero plate: the clean raw aerial the film's shot 1 was cut from, looping, and bare (see The one mark) | `c360-film/overture/assets/video/V1-aerial-push-film-1080p-cut.mp4` |
 | The breathers: three full-bleed people frames with the film's headline typed over them at 24 characters a second, white with one purple key word and the film's own drop | the reel's own frames at 17.967 s, 44.700 s and 50.000 s, plus `c360-film/type/OVERLAY.md` for the type's rate, colour and shadow |
 | The connector rows: the 19 px slot, the coral dashed spinner resolving to the vendor glyph, the 1 px thread, the 14 px label | `c360-film/door/index.html` shot 11 and `c360-film-b/room/index.html` shot 34, including the `Credit Memo · drafting` row |
 | The Cowork window chrome and its title bar | the same two cells |
@@ -30,6 +30,23 @@ surface and rebuilt as live HTML at its real scale:
 Drawn new, because no source existed: the eleven browser tabs and their favicons,
 the modification card, the memo section list, and the plan read-back. All four are
 built out of the primitives above and carry no geometry of their own.
+
+## The one mark
+
+The chevron appears **once per screen**, on the `Credit 360` lockup, and nowhere else on
+that screen except inside the `accenture` wordmark, which keeps its own because it is the
+logo. Counted at 1440x900 and at 390x844, this is what stands on each screen at once:
+
+| Screen | Marks | Why |
+|---|---|---|
+| Gate | the wordmark's, and the composer's send control | the send button is the product's own control, not a decoration |
+| Hero | the lockup's | the plate used to carry a second copy dead centre so it cross-faded mark-on-mark into the reel's first frame. It is gone: the film brings its own mark 1.4 s in, and one small mark at the press is cheaper than two on the screen at rest |
+| Chapters | the product's own UI only | the `Credit 360 for my book` tab favicon, the `>` on the skill chip, the ask composer's send control. No decorative marks |
+| Close | the lockup's, and the wordmark's | the SF plate carries none burned in, and `Watch again` gave its glyph up for a hairline |
+
+The lockup's mark is the one moment, so it is the one thing that strikes: ink to purple
+in the hero, white to purple on the close, two frames each, and nothing else on either
+screen is purple except the pin on the map card and, on the gate, the send control.
 
 ## The eleven tabs
 
@@ -254,8 +271,11 @@ of the height and `rgba(20,12,28,.72)` at the floor. No cream wash coming down f
 page above, no top scrim, nothing stacked. Everything on it is white.
 
 The type stands in the lower third on the content margin: `DREAMFORCE 2026` in the
-eyebrow at 74% white, the lockup at the hero's own clamp with its purple chevron, then
-`Meet us at the booth.` in the landing headline.
+eyebrow at 74% white, the lockup at the hero's own clamp, then `Meet us at the booth.`
+in the landing headline. The lockup's chevron strikes here the way it strikes in the
+hero: it lands in the type's own white and goes to full purple in two frames, 240 ms
+after the close is 55% into the viewport, so the last thing that moves on the page is
+the mark.
 
 The place card is the other end of that row. It is the cockpit's own card, standing on
 the picture: white, 12 px, one hairline, the dossier's shadow, 420 px wide. Its map is
@@ -276,7 +296,9 @@ the venue name rather than being clipped.
 
 The hairline row still keeps the floor of the frame, but it is on the picture now rather
 than on paper, so its rule is white at 24% and its ink, the wordmark included, is white
-at 70%. Nothing of the plate is fetched until the last chapter leaves.
+at 70%. `Watch again` carries no glyph: it takes the place card's affordance, a hairline
+under the words, because a third mark on this screen is one too many. Nothing of the
+plate is fetched until the last chapter leaves.
 
 ## The motion
 

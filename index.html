@@ -504,7 +504,10 @@ html.locked body>*:not(#gate){visibility:hidden}
   position:relative; top:.02em;
 }
 .lockup .chev{color:var(--ink-max); transition:color 83ms steps(2,end)}
-.lockup .chev.struck{color:var(--brand)}
+/* on the close the lockup stands on the picture, so the mark starts in the
+   type's own white and strikes from there. Same two frames, same device. */
+.endlock .chev{color:#fff; transition:color 83ms steps(2,end)}
+.lockup .chev.struck,.endlock .chev.struck{color:var(--brand)}
 .hero-line{
   margin-bottom:.22em; font-size:clamp(22px,2.6vw,34px); font-weight:600;
   line-height:1.14; letter-spacing:-.024em; color:var(--ink-max); max-width:20ch;
@@ -533,17 +536,12 @@ html.locked body>*:not(#gate){visibility:hidden}
   position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
   display:block; background:#0B0B0A;
 }
-/* THE PLATE. The clean raw aerial the film's first shot was cut from, looping
-   under the page's own chevron at the film's 70%. When Watch is pressed the
-   reel's first frame carries the same mark at the same place and the two
-   cross-fade without a cut. */
+/* THE PLATE. The clean raw aerial the film's first shot was cut from, looping.
+   It carried a second copy of the page's chevron dead centre so the plate and
+   the reel's first frame cross-faded mark-on-mark. That cost the hero its one
+   moment. The plate is bare picture now; the reel brings its own mark. */
 .player .plate{opacity:1; transition:opacity .45s var(--ease-out)}
-.plate-chev{
-  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
-  height:8.52%; width:auto; aspect-ratio:19.792/20.93; color:var(--brand);
-  opacity:.70; pointer-events:none; transition:opacity .45s var(--ease-out);
-}
-.player.started .plate,.player.started .plate-chev{opacity:0; pointer-events:none}
+.player.started .plate{opacity:0; pointer-events:none}
 .player #film-video{opacity:0; transition:opacity .35s var(--ease-out)}
 .player.started #film-video{opacity:1}
 .player:fullscreen{border:0; border-radius:0; aspect-ratio:auto; width:100vw; height:100vh}
@@ -1189,9 +1187,12 @@ html{scroll-snap-type:y proximity}
   border-top:1px solid rgba(255,255,255,.24);
 }
 .endrow .lg{height:17px; width:auto; opacity:.7}
-.again{font-size:13px; color:rgba(255,255,255,.7); display:inline-flex;
-  align-items:center; gap:7px; transition:color .18s var(--ease-out)}
-.again:hover{color:#fff}
+/* the control carried a small chevron, a third mark on a screen allowed two.
+   It takes the place card's affordance instead: a hairline under the words. */
+.again{font-size:13px; color:rgba(255,255,255,.7);
+  border-bottom:1px solid rgba(255,255,255,.28); padding-bottom:1px;
+  transition:color .18s var(--ease-out), border-color .18s var(--ease-out)}
+.again:hover{color:#fff; border-bottom-color:#fff}
 /* under 1080 the row has no paper left for a 420 px card beside a 7vw lockup,
    so the card goes full width under the type, which is what it does on a
    phone anyway */
@@ -1301,7 +1302,6 @@ html{scroll-snap-type:y proximity}
   <clipPath id="gwm-clip"><use href="#g-acc-p"/><use href="#g-acc-x"/></clipPath>
   <linearGradient id="gwm-g" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity="1"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
   <symbol id="g-tick" viewBox="0 0 16 16"><path d="M3.2 8.4 6.3 11.5 12.8 4.9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-  <symbol id="g-arrow" viewBox="0 0 16 16"><path d="M6 3.5 10.5 8 6 12.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
 </defs></svg>
 
 <!-- ============================================================
@@ -1380,12 +1380,11 @@ html{scroll-snap-type:y proximity}
 
     <div id="film">
       <div class="player" id="player">
-        <!-- the living plate: the clean aerial, looping, under the page's own mark -->
+        <!-- the living plate: the clean aerial, looping, and no mark on it -->
         <video class="plate" id="plate" src="assets/film/hero-plate.mp4"
                poster="assets/film/hero-plate.jpg" width="1600" height="900"
                muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"
                disablepictureinpicture disableremoteplayback></video>
-        <svg class="plate-chev" viewBox="0 0 19.792 20.93" aria-hidden="true"><use href="#g-chev"/></svg>
         <video id="film-video" playsinline preload="none" crossorigin="anonymous"
                controlslist="nodownload noplaybackrate noremoteplayback" disablepictureinpicture disableremoteplayback></video>
         <div class="pl-watch">
@@ -1984,7 +1983,7 @@ html{scroll-snap-type:y proximity}
     </div>
     <div class="endrow">
       <img class="lg" src="assets/logos/accenture-logo-white.svg" alt="Accenture" width="124" height="17" loading="lazy" />
-      <button class="again" id="again" type="button">Watch again<svg width="14" height="14" aria-hidden="true"><use href="#g-arrow"/></svg></button>
+      <button class="again" id="again" type="button">Watch again</button>
     </div>
   </div>
 </footer>
@@ -2447,7 +2446,13 @@ html{scroll-snap-type:y proximity}
     }
     /* and the pin opens once, when the close is actually on the screen rather
        than when it starts arriving */
-    once(endsec, function () { endsec.classList.add('lit'); }, 'top 55%');
+    once(endsec, function () {
+      endsec.classList.add('lit');
+      /* the close lands on the same strike the hero opened on: the lockup's
+         chevron is the one moment, and it is the last thing that moves. */
+      var ec = $('#end .endlock .chev');
+      if (ec) { setTimeout(function () { ec.classList.add('struck'); }, RM ? 0 : 240); }
+    }, 'top 55%');
 
     if (window.__fit) { window.__fit.run(); }
     if (window.__halo) { window.__halo.place(); }
