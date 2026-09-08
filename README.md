@@ -13,7 +13,7 @@ surface and rebuilt as live HTML at its real scale:
 
 | On the page | Lifted from |
 |---|---|
-| The gate's left pane: the pre-dawn aerial full bleed and running, the `accenture` wordmark centred in the lower third at 35% of the pane, its focus-pull arrival, its one light sweep, and the two-frame strike to full purple on its own chevron | `c360-film/overture/assets/video/V1-aerial-push-film-1080p.mp4` (the uncut plate) and `c360-film/mark/index.html`, the endcard cell: the wordmark's own letter paths, its rack-in, its specular sweep and its strike |
+| The gate's left pane: the pre-dawn aerial full bleed and running, the film's own chevron dead centre at 22% of the pane, its focus-pull arrival, its 4 s breath, and the two-frame strike to white and back | `c360-film/overture/assets/video/V1-aerial-push-film-1080p.mp4` (the uncut plate) and `c360-film/mark/index.html`, the endcard cell: the mark's own path, its rack-in and its strike |
 | The gate's right pane: the `Morning.` greeting, the 106 px composer with its 20 px radius, the `Chat \| Cowork` pillbed, the `Fable 5.1 · Medium` meta, the send control | `c360-film/door/index.html`, shots 8 and 9 (measured off the Cowork reference PNGs with PIL) |
 | The hero plate: the clean raw aerial the film's shot 1 was cut from, looping, and bare (see The one mark) | `c360-film/overture/assets/video/V1-aerial-push-film-1080p-cut.mp4` |
 | The breathers: three full-bleed people frames with the film's headline typed over them at 24 characters a second, white with one purple key word and the film's own drop | the reel's own frames at 17.967 s, 44.700 s and 50.000 s, plus `c360-film/type/OVERLAY.md` for the type's rate, colour and shadow |
@@ -39,10 +39,14 @@ logo. Counted at 1440x900 and at 390x844, this is what stands on each screen at 
 
 | Screen | Marks | Why |
 |---|---|---|
-| Gate | the wordmark's, and the composer's send control | the send button is the product's own control, not a decoration |
+| Gate | the plate's mark, and the composer's send control | the count is unchanged: the pane's mark used to be the one inside the `accenture` wordmark and is now the chevron standing on its own. The send button is the product's own control, not a decoration |
 | Hero | the lockup's | the plate used to carry a second copy dead centre so it cross-faded mark-on-mark into the reel's first frame. It is gone: the film brings its own mark 1.4 s in, and one small mark at the press is cheaper than two on the screen at rest |
 | Chapters | the product's own UI only | the `Credit 360 for my book` tab favicon, the `>` on the skill chip, the ask composer's send control. No decorative marks |
 | Close | the lockup's, and the wordmark's | the SF plate carries none burned in, and `Watch again` gave its glyph up for a hairline |
+
+The gate is the exception, and it is the reason the device exists: its mark is the one
+the visitor strikes to get in. Because that mark is already at full purple, it strikes
+the other way, two frames to white and back.
 
 The lockup's mark is the one moment, so it is the one thing that strikes: ink to purple
 in the hero, white to purple on the close, two frames each, and nothing else on either
@@ -104,9 +108,8 @@ left, the Cowork greeting and the composer on the right. The
 greeting is the product's, addressed to the room it opens in: `Morning, San
 Francisco.` The composer asks for the passcode by name, and one muted line under it
 says who the page is for and where the phrase is: `Invited guests only. The passcode
-is on your invitation.` On the right phrase the chevron strikes to full purple in two
-frames, the dark pane leaves the frame, and only then does the composer type itself
-out and run the connectors.
+is on your invitation.` On the right phrase the mark strikes, the dark pane leaves the
+frame, and only then does the composer type itself out and run the connectors.
 Both pane moves are transforms, so the composer's own box never reflows while the
 visitor is looking at it. On a phone the panes stack and the plate takes a short band
 at the top. Wrong phrase: the composer moves 2 px, once, and says `Not on the list.`
@@ -117,20 +120,60 @@ frame to 672x960 for the pane's own portrait, lifted plum in the shadows (a blac
 point of +4/255 on red and +8/255 on blue, one step on green, then saturation 0.94
 and contrast 1.03), slowed 1.6x with motion interpolation and mirrored into an
 11.0 s ping-pong. Both joins are single-frame steps, at the turnaround and at the
-restart, so neither is visible. The scrim under the wordmark is CSS, not baked, so it
-tracks the pane at every aspect including the phone's band; the plate itself stays
-photographic. It ships `preload="none"` behind its own first frame as a poster, so
-the pane is painted before a byte of the loop is asked for.
+restart, so neither is visible. The scrim is CSS, not baked, so it tracks the pane at
+every aspect including the phone's band; the plate itself stays photographic. It
+ships `preload="none"` behind its own first frame as a poster, so the pane is painted
+before a byte of the loop is asked for.
 
-The mark on it is the full `accenture` with its own chevron, at 35% of the pane width
-and centred at 79% of its height. It arrives on the endcard's focus pull, 6 px of
-blur and 1.04x of scale resolving over 900 ms, then takes the endcard's one light
-sweep across the glyphs over 1.2 s and never again. On unlock the strike lands on
-that chevron, two frames to full purple, and the pane leaves as before. The sweep is
-the endcard's mechanism exactly: a white band clipped to the glyph outlines, blurred
-into a bloom and screened back. It is driven by a transform rather than a moving
-mask, because `mask-position` does not interpolate in Chromium and the band would
-jump the frame instead of crossing it.
+The mark on it is the film's own: the single chevron in `#A100FF`, the same `#g-chev`
+path the hero lockup is built on and the frame the film opens on, and nothing else.
+The pane carried the full `accenture` wordmark set in the lower third; the wordmark
+still stands on the close, where it is a signature, but on the door the page should
+open on the mark it is going to keep showing.
+
+**It is dead centre on both axes, and the centring is done by layout rather than by
+percentages.** `.gmark` is the pane exactly (`inset:0`) and centres its one child in a
+grid, so the centre is computed rather than placed and is exact at every viewport.
+Measured at the mark's own border box against the pane's: **0.000 px on both axes at
+1440x900, 0.008 px horizontally at 1920x1080, 0.008 px vertically at 390x844**: one
+1/128 px, which is the browser's own layout-unit rounding and the floor of what can be
+measured. The wrapper owns the centring and the mark owns the motion, so the settle's
+scale cannot drag the mark off centre: it is scaled about its own centre, which IS the
+pane's, and the figure is the same mid-animation as at rest.
+
+It is drawn at 22% of the pane's WIDTH, capped at 160 px: **133.05 px at 1440x900,
+160 px (capped) at 1920x1080, 64 px on the phone band**, which is the film's own size
+on a 1080 frame. The pane is a tall portrait, so a fraction of its width rather than
+its height is what lands the mark at the film's weight.
+
+It arrives on the endcard's focus pull, 6 px of blur and 1.04x of scale resolving over
+900 ms, and then breathes between 0.85 and full on a 4 s cycle, so the pane is never
+quite still behind the composer. On unlock the strike lands: the wordmark's chevron
+used to go half to full purple, and this mark is already at full purple, so the strike
+is the other half of the same device, **two frames to white and back**, hard stops so
+the colour steps rather than fades. Verified off the animation's own timeline: white at
+0, 16 and 32 ms, `#A100FF` from 40 ms.
+
+The scrim under it was the bottom 45% and was a floor for a wordmark set in the lower
+third. A floor cannot light a mark at the pane's centre whatever depth it is given, so
+it is **halved to 22.5%** (29% on the phone band) and does only what is left to do:
+seat the pane on the paper and keep the plate from resolving into noise at the bottom
+edge. The mark carries its own contrast instead, on the film's own drop from
+`type/OVERLAY.md`. That drop sits on the wrapper rather than on the mark, because
+`filter` is a single property and a keyframe setting blur alone would drop the shadow
+for the length of the settle; on the wrapper the two compose, and the shadow blurs in
+with the mark and breathes with it.
+
+The measurement that made this the right trade: the plate's centre is sky and lit
+towers, not the darkness the lower third resolved into. Sampled off the poster where
+the mark now sits, the ground is rgb(38,58,76) on the desktop crop and rgb(84,104,121)
+on the phone's, whose crop is deliberately biased up to keep a dark top for the
+eyebrow and therefore lands the brightest part of the plate behind a centred mark.
+Rendered, the mark reads at 1.67:1 against its own ground on the desktop and 1.16:1 on
+the phone. Those are luminance ratios and they understate a mark that is separated by
+hue and saturation as much as by lightness, which is how a brand mark on a
+photographic plate works; the mark is decorative and `aria-hidden`, so no text
+threshold applies to it. It reads clearly at all three viewports.
 
 Client-side only, and a courtesy lock rather than a security boundary: GitHub Pages
 serves static files and anyone with the bundle can read `assets/gate.js`. The phrase
@@ -369,9 +412,15 @@ At 1440x900, Chromium, over the local build:
 - one frame longer than 25 ms and zero long tasks over the full scroll
 - no request over 3 MB besides the reel; the hero plate is 1.19 MB and the gate
   plate is 1.01 MB
-- the gate paints on 12 requests and 686 KB, none of it the pane's loop: the loop
+- the gate paints on 12 requests and 760 KB, none of it the pane's loop: the loop
   follows as a 13th request and under `prefers-reduced-motion` it is never asked for
-  at all, the poster standing in as the whole plate
+  at all, the poster standing in as the whole plate. (686 KB before the close's own
+  poster joined the first paint; re-measured here, the count is unchanged)
+- the gate's mark sits on the pane's centre to **0.000 px** at 1440x900, **0.008 px**
+  horizontally at 1920x1080 and **0.008 px** vertically at 390x844, measured border
+  box against border box. The 0.008 is one 1/128 px, the browser's own layout-unit
+  rounding, and the same figure holds mid-settle as at rest. Drawn at 133.05, 160.00
+  and 64.00 px
 - 0 console errors, 0 failed requests, no horizontal overflow
 
 The reel in `assets/film/` is the rev 4 master. Its FILE md5 does not match the
@@ -386,8 +435,11 @@ ffmpeg -v error -i <file> -map 0:a -c copy -f md5 -   # a8b9262c929aa8462d0ab4b0
 ```
 
 Reduced motion is respected throughout: every entrance resolves instantly, the
-spinners stop, the cards arrive flat, the plate holds its first frame, the lines
-are set rather than typed, and the halo is lit without breathing.
+spinners stop, the cards arrive flat, the plate holds its first frame, the gate's mark
+is simply there with no pull, no breath and no strike, the lines are set rather than
+typed, and the halo is lit without breathing. The mark keeps its drop under reduce,
+because the drop is paint rather than motion and is the only reason it reads on the
+sky.
 
 ## Build log
-- 2026-09-08: passes landed in order: bloom and native scroll, one-screen chapters and facts, gate skyline plate, eleven tabs, two-column chapter grid, the San Francisco close with the place card.
+- 2026-09-08: passes landed in order: bloom and native scroll, one-screen chapters and facts, gate skyline plate, eleven tabs, two-column chapter grid, the San Francisco close with the place card, one chevron a screen, the gate's own mark dead centre.

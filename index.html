@@ -358,11 +358,14 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
   position:absolute; inset:0; width:100%; height:100%;
   object-fit:cover; object-position:50% 50%; pointer-events:none;
 }
-/* the pane's own ground, rising out of the bottom 45%. The plate resolves into
-   darkness down there anyway, so this reads as a floor under the wordmark
-   rather than as a bar drawn across the picture. */
+/* the pane's own ground. It was the bottom 45% and it was carrying a wordmark
+   set in the lower third; the mark is dead centre now, so a floor cannot light
+   it whatever depth it is given, and holding 45% would only be darkening a
+   picture for nothing. It is halved: enough to seat the pane on the paper and
+   to keep the plate from resolving into noise at the bottom edge, and out of
+   the mark's way entirely. The mark carries its own contrast (see .gmark-c). */
 .gscrim{
-  position:absolute; left:0; right:0; bottom:0; height:45%; z-index:1;
+  position:absolute; left:0; right:0; bottom:0; height:22.5%; z-index:1;
   background:linear-gradient(to top,
     rgba(18,0,20,.96) 0%, rgba(18,0,20,.88) 20%, rgba(18,0,20,.72) 40%,
     rgba(18,0,20,.48) 60%, rgba(18,0,20,.22) 80%, rgba(18,0,20,0) 100%);
@@ -371,36 +374,57 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
   position:absolute; left:clamp(24px,4vw,44px); top:clamp(24px,4vw,44px); z-index:3;
   color:rgba(255,255,255,.66);
 }
-/* the wordmark, centred in the lower third: the full accenture carrying its own
-   chevron, which is now the only chevron the pane has. It arrives on the
-   endcard's focus pull and takes the endcard's one light sweep, once. */
-.gwm{
-  position:absolute; left:50%; bottom:18%; z-index:3; transform:translateX(-50%);
-  width:clamp(150px,35%,300px); line-height:0;
-  animation:gwmsettle .9s cubic-bezier(.25,.46,.45,.94) both;
+/* THE MARK. The pane carried the full accenture wordmark set in the lower
+   third. It carries the film's own mark instead: the single chevron in
+   #A100FF, the same #g-chev path the hero lockup is built on and the frame
+   the film opens on, and nothing else.
+
+   It is DEAD CENTRE on both axes, and the centring is done by layout rather
+   than by percentages that would have to be kept in step with the pane's
+   aspect: .gmark is the pane exactly (inset:0) and centres its one child in
+   a grid. Two things follow. The centre is exact at every viewport, off by
+   at most one 1/128 px of the browser's own layout rounding rather than by
+   whatever a `bottom:18%` happened to land on. And the wrapper owns the
+   centring while the mark owns the motion, so the settle's scale can never
+   drag the mark off centre: it is scaled about its own centre, which IS the
+   pane's. */
+.gmark{
+  position:absolute; inset:0; z-index:2;
+  display:grid; place-items:center; pointer-events:none;
+  /* The drop is the film's own, off type/OVERLAY.md, and it is what gives the
+     mark its contrast now that the scrim is out from under it: the plate's
+     centre is sky and lit towers, not the darkness the lower third resolved
+     into, so the mark is lit at its own edge instead of standing on a floor.
+     It sits on the WRAPPER rather than on the mark because `filter` is a
+     single property: on the mark, the settle's blur keyframes would drop the
+     shadow for the length of the settle. Here the two compose, and the shadow
+     blurs in with the mark and breathes with it. */
+  filter:drop-shadow(0 2px 20px rgba(8,0,14,.62)) drop-shadow(0 0 7px rgba(8,0,14,.55));
 }
-@keyframes gwmsettle{
-  from{filter:blur(6px); transform:translateX(-50%) scale(1.04); opacity:0}
+/* The film's mark is 64 px on a 1080 frame, which is modest, and this pane is
+   a tall portrait rather than a wide one. 22% of the pane's WIDTH lands it at
+   the film's weight; the cap keeps a wide pane from turning the mark into a
+   graphic. 133 px at 1440x900, 160 px (capped) at 1920x1080, 64 px on the
+   phone band. The height comes off the viewBox's own ratio. */
+.gmark-c{
+  width:min(22%,160px); height:auto; color:var(--brand);
+  animation:gmsettle .9s cubic-bezier(.25,.46,.45,.94) both,
+            gmbreath 4s ease-in-out .9s infinite;
+}
+/* the endcard's focus pull, unchanged: 6 px of blur and 1.04x over 900 ms */
+@keyframes gmsettle{
+  from{filter:blur(6px); transform:scale(1.04); opacity:0}
   40%{opacity:1}
-  to{filter:blur(0); transform:translateX(-50%) scale(1); opacity:1}}
-.gwm-m{width:100%; height:auto}
-.gw-l{fill:#fff}
-/* the strike now lands on the wordmark's own chevron: two frames to full purple */
-.gw-c{fill:var(--brand); opacity:.5; transition:opacity 83ms steps(2,end)}
-#gate.striking .gw-c{opacity:1}
-/* the sweep is the endcard's, mechanism and all: a white band clipped to the
-   glyph outlines, blurred into a bloom and screened back, so the light can only
-   ever touch the mark. It is a transform, not a moving mask: mask-position does
-   not interpolate in Chromium and the sweep would jump the frame instead of
-   crossing it. */
-.gwm-sweep{
-  position:absolute; inset:0; z-index:1;
-  mix-blend-mode:screen; opacity:.62; filter:blur(3px);
-}
-.gwm-sweep svg{width:100%; height:auto}
-.gw-band{animation:gwmsweep 1.2s linear .95s both}
-@keyframes gwmsweep{from{transform:translateX(-66px) skewX(-12deg)}
-  to{transform:translateX(216px) skewX(-12deg)}}
+  to{filter:blur(0); transform:scale(1); opacity:1}}
+/* and then it breathes, slowly, so the pane is never quite still behind the
+   composer. Opacity only: nothing here can move the centre. */
+@keyframes gmbreath{0%,100%{opacity:1} 50%{opacity:.85}}
+/* THE STRIKE. On the wordmark this was its chevron going half to full purple.
+   This mark is already at full purple, so the strike is the other half of the
+   same device: two frames to white and back. The stops are hard, so the colour
+   steps rather than fades, which is the endcard's point. */
+#gate.striking .gmark-c{animation:gmstrike 66ms linear 1 both}
+@keyframes gmstrike{0%,49.99%{color:#fff} 50%,100%{color:var(--brand)}}
 
 /* --- the right pane: the cream, the greeting, the composer --- */
 .gpane-form{
@@ -452,20 +476,23 @@ html.locked body>*:not(#gate){visibility:hidden}
   #gate.opened .gpane-form{transform:none}
   /* the band is all the pane a phone gets, so the crop is biased up to keep the
      sky at the top: the eyebrow needs a ground, and a centre crop lands it on
-     the lit towers. The scrim reaches further for the same reason. */
+     the lit towers. The scrim reaches further for the same reason, and is
+     halved here as well now that it is a ground rather than a floor under a
+     mark. */
   .gplate{object-position:50% 12%}
-  .gscrim{height:58%}
-  .gwm{width:clamp(112px,27vw,168px); bottom:16%}
+  .gscrim{height:29%}
+  /* the film's own 64 px, which is what the band has room for: 22% of a
+     390 px pane would draw the mark at 86 px in a 208 px band. */
+  .gmark-c{width:64px}
   .gpane-form{padding:28px var(--gutter) 40px}
 }
 @media (prefers-reduced-motion:reduce){
   #gate .composer.shake{animation:none; outline:1px solid var(--brand); outline-offset:2px}
   #gate.gone{transition-duration:.18s}
-  /* the plate holds its poster and is never fetched; the wordmark is simply
-     there, with no pull and no sweep. */
-  .gwm{animation:none}
-  .gwm-sweep{display:none}
-  .gw-c{transition:none}
+  /* the plate holds its poster and is never fetched; the mark is simply there,
+     with no pull, no breath and no strike. It keeps its drop, which is paint
+     rather than motion and is the only reason it reads on the sky. */
+  .gmark-c,#gate.striking .gmark-c{animation:none}
 }
 
 /* ============================================================
@@ -1294,13 +1321,6 @@ html{scroll-snap-type:y proximity}
   <symbol id="g-memo" viewBox="0 0 19 19"><rect x="1.7" y="1.7" width="15.6" height="15.6" rx="4" fill="none" stroke="#A100FF" stroke-width="1.5"/><g fill="none" stroke="#A100FF" stroke-width="1.5" stroke-linecap="round"><path d="M5.4 6.4h8.2M5.4 9.5h8.2M5.4 12.6h5.2"/></g></symbol>
   <symbol id="g-ast" viewBox="0 0 40 40"><g stroke="#D97757" stroke-width="2.6" stroke-linecap="round"><line x1="20.00" y1="17.80" x2="20.00" y2="1.40"/><line x1="21.19" y1="18.15" x2="28.87" y2="6.20"/><line x1="22.00" y1="19.09" x2="36.19" y2="12.61"/><line x1="22.18" y1="20.31" x2="35.84" y2="22.28"/><line x1="21.66" y1="21.44" x2="33.91" y2="32.05"/><line x1="20.62" y1="22.11" x2="24.73" y2="36.12"/><line x1="19.38" y1="22.11" x2="15.10" y2="36.70"/><line x1="18.34" y1="21.44" x2="7.76" y2="30.61"/><line x1="17.82" y1="20.31" x2="1.99" y2="22.59"/><line x1="18.00" y1="19.09" x2="4.90" y2="13.10"/><line x1="18.81" y1="18.15" x2="10.48" y2="5.19"/></g><circle cx="20" cy="20" r="4.2" fill="#D97757"/></symbol>
   <symbol id="g-chev" viewBox="116.99973 0 19.792 20.93"><path fill="currentColor" d="m 116.99973,0 v 5.97866 l 11.556,4.516 -11.556,4.296 v 6.15467 l 19.792,-8.016 V 7.97066 Z"/></symbol>
-  <!-- the wordmark, as addressable geometry rather than one flat symbol: the
-       gate needs to colour the chevron on its own, and a <clipPath> may hold a
-       <use> of a path but not of a symbol. -->
-  <path id="g-acc-p" d="M 6.2,43 C 2.8,43 0,41.3 0,37.5 v -0.2 c 0,-4.6 4,-6.2 8.9,-6.2 h 2.3 v -0.9 c 0,-1.9 -0.8,-3 -2.8,-3 -1.8,0 -2.7,1 -2.8,2.4 h -5 c 0.4,-4.2 3.7,-6.2 8.1,-6.2 4.5,0 7.8,1.9 7.8,6.6 V 42.6 H 11.4 V 40.4 C 10.4,41.8 8.7,43 6.2,43 Z m 5,-6.6 V 34.6 H 9.1 c -2.6,0 -3.9,0.7 -3.9,2.4 v 0.2 c 0,1.3 0.8,2.2 2.6,2.2 1.8,-0.1 3.4,-1.1 3.4,-3 z M 28.4,43 c -5.2,0 -9,-3.2 -9,-9.6 v -0.3 c 0,-6.4 4,-9.8 9,-9.8 4.3,0 7.8,2.2 8.2,7.1 h -5 c -0.3,-1.8 -1.3,-3 -3.1,-3 -2.2,0 -3.8,1.8 -3.8,5.5 v 0.6 c 0,3.8 1.4,5.5 3.8,5.5 1.8,0 3.1,-1.3 3.4,-3.4 h 4.8 C 36.4,40 33.5,43 28.4,43 Z M 48,43 c -5.2,0 -9,-3.2 -9,-9.6 v -0.3 c 0,-6.4 4,-9.8 9,-9.8 4.3,0 7.8,2.2 8.2,7.1 h -5 c -0.3,-1.8 -1.3,-3 -3.1,-3 -2.2,0 -3.8,1.8 -3.8,5.5 v 0.6 c 0,3.8 1.4,5.5 3.8,5.5 1.8,0 3.1,-1.3 3.4,-3.4 h 4.8 C 56,40 53.1,43 48,43 Z m 19.7,0 c -5.4,0 -9.1,-3.2 -9.1,-9.5 v -0.4 c 0,-6.3 3.9,-9.8 9,-9.8 4.7,0 8.6,2.6 8.6,8.9 v 2.3 H 63.9 c 0.2,3.4 1.7,4.7 3.9,4.7 2,0 3.1,-1.1 3.5,-2.4 h 4.9 C 75.6,40.3 72.6,43 67.7,43 Z M 64,31 h 7 c -0.1,-2.8 -1.4,-4 -3.5,-4 -1.6,0.1 -3.1,1 -3.5,4 z m 15.4,-7.2 h 5.3 v 2.8 c 0.9,-1.8 2.8,-3.2 5.7,-3.2 3.4,0 5.7,2.1 5.7,6.6 V 42.6 H 90.8 V 30.8 c 0,-2.2 -0.9,-3.2 -2.8,-3.2 -1.8,0 -3.3,1.1 -3.3,3.5 v 11.5 h -5.3 z m 26.4,-5.7 v 5.7 h 3.6 v 3.9 h -3.6 v 8.9 c 0,1.4 0.6,2.1 1.9,2.1 0.8,0 1.3,-0.1 1.8,-0.3 v 4.1 c -0.6,0.2 -1.7,0.4 -3,0.4 -4.1,0 -6,-1.9 -6,-5.7 v -9.5 h -2.2 v -3.9 h 2.2 v -3.5 z m 23.4,24.5 H 124 v -2.8 c -0.9,1.8 -2.7,3.2 -5.5,3.2 -3.4,0 -5.9,-2.1 -5.9,-6.5 V 23.8 h 5.3 v 12 c 0,2.2 0.9,3.2 2.7,3.2 1.8,0 3.3,-1.2 3.3,-3.5 V 23.8 h 5.3 z m 3.9,-18.8 h 5.3 v 3.5 c 1.1,-2.5 2.9,-3.7 5.7,-3.7 v 5.2 c -3.6,0 -5.7,1.1 -5.7,4.2 v 9.7 h -5.3 z M 154.8,43 c -5.4,0 -9.1,-3.2 -9.1,-9.5 v -0.4 c 0,-6.3 3.9,-9.8 9,-9.8 4.7,0 8.6,2.6 8.6,8.9 v 2.3 h -12.2 c 0.2,3.4 1.7,4.7 3.9,4.7 2,0 3.1,-1.1 3.5,-2.4 h 4.9 c -0.8,3.5 -3.7,6.2 -8.6,6.2 z M 151,31 h 7.1 c -0.1,-2.8 -1.4,-4 -3.5,-4 -1.6,0.1 -3.1,1 -3.6,4 z"/>
-  <polygon id="g-acc-x" points="95.1,4.9 95.1,0 111.2,6.5 111.2,10.5 95.1,17 95.1,12 104.5,8.5 "/>
-  <clipPath id="gwm-clip"><use href="#g-acc-p"/><use href="#g-acc-x"/></clipPath>
-  <linearGradient id="gwm-g" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity="1"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
   <symbol id="g-tick" viewBox="0 0 16 16"><path d="M3.2 8.4 6.3 11.5 12.8 4.9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
 </defs></svg>
 
@@ -1315,8 +1335,9 @@ html{scroll-snap-type:y proximity}
 
   <!-- the entry: the film's own sky, running. This is a door, and it says so:
        the page behind it is one screening, not the whole offering. The plate is
-       the picture now, and the only mark on it is the wordmark, so the chevron
-       the visitor strikes is the wordmark's own. -->
+       the picture and the film's own mark stands on it, dead centre: the same
+       chevron the film opens on and the hero lockup is built from, so the mark
+       the visitor strikes is the one the page is going to keep showing them. -->
   <div class="gpane-mark" aria-hidden="true">
     <video class="gplate" src="assets/film/gate-plate.mp4"
            poster="assets/film/gate-plate.jpg" width="672" height="960"
@@ -1324,10 +1345,7 @@ html{scroll-snap-type:y proximity}
            disablepictureinpicture disableremoteplayback></video>
     <span class="gscrim"></span>
     <p class="eyebrow gp-eyebrow">Dreamforce 2026<span class="dot">&middot;</span>A private screening</p>
-    <span class="gwm">
-      <svg class="gwm-m" viewBox="0 0 163.4 43"><use class="gw-l" href="#g-acc-p"/><use class="gw-c" href="#g-acc-x"/></svg>
-      <span class="gwm-sweep"><svg viewBox="0 0 163.4 43"><g clip-path="url(#gwm-clip)"><rect class="gw-band" x="0" y="-22" width="46" height="87" fill="url(#gwm-g)"/></g></svg></span>
-    </span>
+    <span class="gmark"><svg class="gmark-c" viewBox="0 0 19.792 20.93"><use href="#g-chev"/></svg></span>
   </div>
 
   <div class="gpane-form">
