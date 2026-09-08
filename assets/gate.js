@@ -114,7 +114,8 @@
       });
     });
 
-    /* the door sequence, as live HTML: the prompt types, it sends, the rows resolve */
+    /* the door sequence, as live HTML: the mark strikes, the dark pane leaves,
+       the prompt types, it sends, the rows resolve */
     function open() {
       try { localStorage.setItem(KEY, JSON.stringify({ h: HASH, t: Date.now() + TTL })); } catch (e) {} 
       input.blur();
@@ -123,8 +124,16 @@
       hint.textContent = 'Opening your book';
       msg.textContent = '';
 
-      if (RM) { typedT.textContent = PROMPT; run(60); return; }
+      /* two frames to full purple: the endcard's own strike, not a fade */
+      gate.classList.add('striking');
 
+      if (RM) { gate.classList.add('opened'); typedT.textContent = PROMPT; run(60); return; }
+
+      setTimeout(function () { gate.classList.add('opened'); }, 240);
+      setTimeout(type, 860);
+    }
+
+    function type() {
       var i = 0;
       /* 16 chars per second, the film's own type rate */
       var tick = setInterval(function () {

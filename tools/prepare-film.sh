@@ -5,9 +5,10 @@
 #   2. writes fragmented (fMP4) copies with -c copy, so no re-encode and no
 #      quality loss. The page feeds these to MediaSource, which is what lets
 #      playback start on the first few seconds instead of the whole 55 MB.
-#   3. cuts a poster at 1.25 s if one is not supplied: the player wears it while
-#      the hero cross-fades out, so it has to be the film's own opening aerial
-#   4. writes assets/film/film.json with the exact codec string MSE needs
+#   3. writes assets/film/film.json with the exact codec string MSE needs
+#
+# The hero plate (the page's own looping poster) is built by sync-assets.sh, not
+# here: it comes off the raw overture plate, not off the reel.
 #
 # Usage:  tools/prepare-film.sh [source-dir]
 #         source-dir defaults to ../assets/film
@@ -20,17 +21,12 @@ mkdir -p "$out"
 if [[ -n "$src" && "$src" != "none" && -f "$src/credit360-final3b.mp4" ]]; then
   cp -f "$src/credit360-final3b.mp4" "$out/"
   [[ -f "$src/credit360-final3b-720.mp4" ]] && cp -f "$src/credit360-final3b-720.mp4" "$out/"
-  for p in film-poster.jpg credit360-final3b.jpg poster.jpg; do
-    [[ -f "$src/$p" ]] && cp -f "$src/$p" "$out/film-poster.jpg" && break
-  done
 fi
 
 [[ -f "$out/credit360-final3b.mp4" ]] || { echo "no reel at $out/credit360-final3b.mp4" >&2; exit 1; }
 [[ -f "$out/credit360-final3b-720.mp4" ]] || \
   ffmpeg -v error -y -i "$out/credit360-final3b.mp4" -vf scale=1280:-2 -c:v libx264 -preset slow -crf 23 \
     -c:a aac -b:a 128k -movflags +faststart "$out/credit360-final3b-720.mp4"
-[[ -f "$out/film-poster.jpg" ]] || \
-  ffmpeg -v error -y -ss 1.25 -i "$out/credit360-final3b.mp4" -frames:v 1 -q:v 2 "$out/film-poster.jpg"
 
 # Fragment in place. A fragmented MP4 still plays as an ordinary file, so one
 # artefact serves both the MediaSource path and the blob fallback, and the repo
